@@ -6,7 +6,10 @@
 extern VannoEngine::Game* VannoEngine::CreateGame();
 
 int main(int argc, char** argv) {
-	std::cout << "Welcome to VannoEngine v0.0.1!" << std::endl;
+	VannoEngine::Log::Init();
+	VE_CORE_WARN("Initialized log");
+	VE_INFO("Welcome to VannoEngine v0.0.1!");
+
 	auto game = VannoEngine::CreateGame();
 	game->Run();
 	delete game;

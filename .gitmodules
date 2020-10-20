@@ -1,0 +1,3 @@
+[submodule "VannoEngine/vendor/spdlog"]
+	path = VannoEngine/vendor/spdlog
+	url = https://github.com/gabime/spdlog
