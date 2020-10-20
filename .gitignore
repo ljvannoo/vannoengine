@@ -1,3 +1,5 @@
-.vs
-**\bin
-**\bin-temp
+.vs/
+bin/
+bin-temp/
+
+*.user
