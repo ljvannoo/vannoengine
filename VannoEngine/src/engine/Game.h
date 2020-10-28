@@ -9,6 +9,7 @@ namespace VannoEngine {
 		Game();
 		virtual ~Game();
 
+		virtual void Init();
 		void Run();
 	};
 

@@ -8,6 +8,10 @@ namespace VannoEngine {
 
 	}
 
+	void Game::Init() {
+		while (true);
+	}
+
 	void Game::Run() {
 		while (true);
 	}
