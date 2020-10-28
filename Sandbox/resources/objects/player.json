@@ -1,0 +1,36 @@
+{
+  "name": "player",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\adventurer.png",
+          "cols": 7,
+          "rows": 16,
+          "flipHorizontal": false,
+          "defaultAnimation": {
+            "frameOffset": 0,
+            "frameCount": 4,
+            "frameDuration": 0.2
+          }
+        },
+        "shaderProgram": "sprite.shader"
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.5,
+        "scaleY": 1.5,
+        "speed": 200.0,
+        "posX": -25.0,
+        "posY": -25.0
+      }
+    },
+    {
+      "type": "controller",
+      "data": {}
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "background1",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\background_night1.png",
+          "cols": 1,
+          "rows": 1
+        },
+        "shaderProgram": "sprite.shader"
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "speed": 0.0,
+        "posX": 0.0,
+        "posY": 0.0
+      }
+    }
+  ]
+}

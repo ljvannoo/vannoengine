@@ -1,0 +1,80 @@
+{
+  "name": "milestone2",
+  "camera": {
+    "objectFile": "objects\\camera.json"
+  },
+  "objects": [
+    {
+      "objectFile": "objects\\enemy_archetype.json",
+      "overrides": [
+        {
+          "type": "transform",
+          "data": {
+            "posX": 300.0,
+            "posY": 100.0
+          }
+        },
+        {
+          "type": "transform",
+          "data": {
+            "speed": 70.0
+          }
+        }
+      ]
+    },
+    {
+      "objectFile": "objects\\enemy_archetype.json",
+      "overrides": [
+        {
+          "type": "transform",
+          "data": {
+            "posX": 400.0,
+            "posY": 500.0
+          }
+        },
+        {
+          "type": "updown",
+          "data": {
+            "startMovingUp": false,
+            "distance": 70.0
+          }
+        }
+      ]
+    },
+    {
+      "objectFile": "objects\\enemy_archetype.json",
+      "overrides": [
+        {
+          "type": "transform",
+          "data": {
+            "posX": 100.0,
+            "posY": 400.0
+          }
+        }
+      ]
+    },
+    {
+      "objectFile": "objects\\player.json",
+      "overrides": [
+        {
+          "type": "transform",
+          "data": {
+            "posX": 100.0,
+            "posY": 100.0
+          }
+        },
+        {
+          "type": "sprite",
+          "data": {
+            "texture": {
+              "defaultAnimation": {
+                "frameOffset": 8,
+                "frameDuration": 0.1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

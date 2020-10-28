@@ -1,0 +1,32 @@
+{
+  "name": "enemy",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\HeavyBanditIdle.png",
+          "cols": 4,
+          "rows": 1,
+          "flipHorizontal": true,
+          "defaultAnimation": {
+            "frameOffset": 0,
+            "frameCount": 4,
+            "frameDuration": 0.2
+          }
+        },
+        "shaderProgram": "sprite.shader"
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.5,
+        "scaleY": 1.5,
+        "posX": -24.0,
+        "posY": -24.0,
+        "speed": 50.0
+      }
+    }
+  ]
+}

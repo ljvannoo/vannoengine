@@ -1,0 +1,88 @@
+{
+	"name": "milestone2",
+	"camera": {
+		"objectFile": "objects\\camera.json"
+	},
+	"objects": [
+		{
+			"objectFile": "objects\\background1.json",
+			"overrides": [
+				{
+					"type": "sprite",
+					"data": {
+						"zOrder": -10.0
+					}
+				}
+			]
+		},
+		{
+			"objectFile": "objects\\player.json",
+			"overrides": [
+				{
+					"type": "transform",
+					"data": {
+						"posX": -280.0,
+						"posY": -175.0
+					}
+				},
+				{
+					"type": "sprite",
+					"data": {
+						"zOrder": 1.0
+					}
+				}
+			]
+		},
+		{
+			"objectFile": "objects\\level1b.json",
+			"overrides": [
+				{
+					"type": "sprite",
+					"data": {
+						"zOrder": -7.0
+					}
+				}
+			]
+		},
+		{
+			"objectFile": "objects\\background3.json",
+			"overrides": [
+				{
+					"type": "sprite",
+					"data": {
+						"zOrder": -8.0
+					}
+				}
+			]
+		},
+		{
+			"objectFile": "objects\\background2.json",
+			"overrides": [
+				{
+					"type": "sprite",
+					"data": {
+						"zOrder": -9.0
+					}
+				}
+			]
+		},
+		{
+			"objectFile": "objects\\enemy.json",
+			"overrides": [
+				{
+					"type": "transform",
+					"data": {
+						"posX": 20.0,
+						"posY": -157.0
+					}
+				},
+				{
+					"type": "sprite",
+					"data": {
+						"zOrder": 1.0
+					}
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "camera",
+  "components": [
+    {
+      "type": "camera",
+      "data": {
+        "posX": -10.0,
+        "posY": -60.0,
+        "scale": 1.3
+      }
+    }
+  ]
+}

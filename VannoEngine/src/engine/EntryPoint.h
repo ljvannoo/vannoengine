@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
 	VE_INFO("Welcome to VannoEngine v0.0.1!");
 
 	auto game = VannoEngine::CreateGame();
-	game->Init();
+	game->Init(60);
 	game->Run();
 	delete game;
 	return 0;

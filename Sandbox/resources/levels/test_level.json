@@ -1,0 +1,23 @@
+{
+  "name": "test level",
+  "camera": {
+    "objectFile": "objects\\camera.json"
+  },
+  "objects": [
+    {
+      "objectFile": "objects\\test_player.json"
+    },
+    {
+      "objectFile": "objects\\test_static.json",
+      "overrides": [
+        {
+          "type": "transform",
+          "data": {
+            "posX": -200.0,
+            "posY": 200.0
+          }
+        }
+      ]
+    }
+  ]
+}

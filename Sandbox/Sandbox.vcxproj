@@ -66,7 +66,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y "$(SolutionDir)bin\$(Configuration)-$(Platform)\VannoEngine\VannoEngine.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
+      <Command>xcopy /y "$(SolutionDir)bin\$(Configuration)-$(Platform)\VannoEngine\VannoEngine.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"
+xcopy /y "$(SolutionDir)VannoEngine\vendor\sdl\lib\x64\SDL2.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"
+xcopy /y "$(SolutionDir)VannoEngine\vendor\freetype\win64\freetype.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -85,6 +87,11 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y "$(SolutionDir)bin\$(Configuration)-$(Platform)\VannoEngine\VannoEngine.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"
+xcopy /y "$(SolutionDir)VannoEngine\vendor\sdl\lib\x64\SDL2.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"
+xcopy /y "$(SolutionDir)VannoEngine\vendor\freetype\win64\freetype.dll" "$(SolutionDir)bin\$(Configuration)-$(Platform)\Sandbox\"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\VannoEngine\VannoEngine.vcxproj">
