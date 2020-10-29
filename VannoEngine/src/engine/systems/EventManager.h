@@ -19,12 +19,12 @@ Creation Date:	2020-Oct-13
 #include <vector>
 #include <unordered_map>
 
-#include "engine/core.h"
+
 
 #define EVT_MOVE "move"
 
 namespace VannoEngine {
-	class ENGINE_API EventHandler;
+	class EventHandler;
 
 	struct Event {
 		double time;

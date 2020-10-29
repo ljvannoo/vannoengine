@@ -18,7 +18,7 @@ Creation Date:	2020-Oct-06
 #include "TimeManager.h"
 
 namespace VannoEngine {
-	class ENGINE_API FramerateController
+	class FramerateController
 	{
 	public:
 	public:

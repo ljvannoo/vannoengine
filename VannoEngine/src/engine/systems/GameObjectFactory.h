@@ -13,7 +13,7 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-15
 *************************************************************************/
-#include "engine/core.h"
+
 #include <rapidjson/document.h>
 #include <string>
 #include <unordered_map>
@@ -24,7 +24,7 @@ namespace VannoEngine {
 	class GameComponent;
 	class ComponentCreatorInterface;
 
-	class ENGINE_API GameObjectFactory
+	class GameObjectFactory
 	{
 	public:
 		static GameObjectFactory* GetInstance();

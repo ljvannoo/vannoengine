@@ -16,10 +16,10 @@ Creation Date:	2020-Oct-13
 
 #include <chrono>
 
-#include "engine/core.h"
+
 
 namespace VannoEngine {
-	class ENGINE_API TimeManager
+	class TimeManager
 	{
 	public:
 		static TimeManager* GetInstance();

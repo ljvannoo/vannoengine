@@ -13,13 +13,13 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-05
 *************************************************************************/
-#include "engine/core.h"
+
 #include <SDL_keyboard.h>
 
 namespace VannoEngine {
 	class EventManager;
 
-	class ENGINE_API InputManager
+	class InputManager
 	{
 	public:
 		static InputManager* GetInstance();

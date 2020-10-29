@@ -2,11 +2,10 @@
 
 #include <memory>
 
-#include "core.h"
 #include "spdlog/spdlog.h"
 
 namespace VannoEngine {
-	class ENGINE_API Log
+	class Log
 	{
 	public:
 		static void Init();

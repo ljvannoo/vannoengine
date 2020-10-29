@@ -26,8 +26,6 @@ Creation Date:	2020-Oct-14
 #include <map>
 #include <vector>
 
-#include "engine/core.h"
-
 namespace VannoEngine {
 	class GameObject;
 	class Transform;
@@ -35,7 +33,7 @@ namespace VannoEngine {
 	class Camera;
 	class Sprite;
 
-	class ENGINE_API GraphicsManager
+	class GraphicsManager
 	{
 	public:
 		struct Character {

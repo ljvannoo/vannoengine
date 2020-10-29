@@ -14,7 +14,7 @@ Creation Date:	2020-Oct-21
 *************************************************************************/
 #pragma once
 
-#include "engine/core.h"
+
 
 #include <stack>
 #include <string>
@@ -23,7 +23,7 @@ namespace VannoEngine {
 	class Level;
 	class Camera;
 
-	class ENGINE_API LevelManager
+	class LevelManager
 	{
 	public:
 		static LevelManager* GetInstance();

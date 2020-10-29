@@ -14,7 +14,7 @@ Creation Date:	2020-Oct-21
 *************************************************************************/
 #pragma once
 
-#include "engine/core.h"
+
 
 #include "engine/core/GameObject.h"
 #include "engine/core/components/Camera.h"
@@ -25,7 +25,7 @@ Creation Date:	2020-Oct-21
 #include <vector>
 
 namespace VannoEngine {
-	class ENGINE_API Level
+	class Level
 	{
 	public: // Variables
 

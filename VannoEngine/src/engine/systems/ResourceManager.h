@@ -19,14 +19,14 @@ Creation Date:	2020-Oct-10
 
 #include <rapidjson/document.h>
 
-#include "engine/core.h"
+
 
 #include "engine/systems/graphics/GLTexture.h"
 
 namespace VannoEngine {
 	class ShaderProgram;
 
-	class ENGINE_API ResourceManager
+	class ResourceManager
 	{
 	public:
 	public:

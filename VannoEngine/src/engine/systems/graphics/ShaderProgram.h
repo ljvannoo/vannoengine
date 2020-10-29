@@ -14,14 +14,12 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-08
 *************************************************************************/
-#include "engine/core.h"
-
 #include <string>
 
 #include <GL/glew.h>
 
 namespace VannoEngine {
-	class ENGINE_API ShaderProgram
+	class ShaderProgram
 	{
 	public:
 		ShaderProgram();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/core.h"
+
 #include "engine/systems/EventHandler.h"
 
 #include <string>
@@ -16,7 +16,7 @@ namespace VannoEngine {
 	class TestSystem;
 
 
-	class ENGINE_API Game : EventHandler
+	class Game : EventHandler
 	{
 	public: 
 		bool IsRunning;
