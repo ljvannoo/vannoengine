@@ -25,9 +25,11 @@ Creation Date:	2020-Oct-05
 #include "engine/core/components/Components.h"
 #include "engine/core/components/ComponentCreator.h"
 
+#include "engine/Log.h"
+
 #include <SDL_events.h>
 
-#include <iostream>
+
 namespace VannoEngine {
 	Game::Game():
 		IsRunning(false),
@@ -46,7 +48,7 @@ namespace VannoEngine {
 
 	}
 
-	void Game::Init(int fpsCap) {
+	void Game::Init(int windowWidth, int windowHeight, int fpsCap) {
 		/* *****INIT INTERNAL MANAGERS ***** */
 		mpObjectFactory = GameObjectFactory::GetInstance();
 		mpObjectFactory->Init();
@@ -58,7 +60,7 @@ namespace VannoEngine {
 		mpObjectFactory->RegisterComponent(UPDOWN_COMPONENT, new ComponentCreator<UpDown>());
 
 		mpGraphicsManager = GraphicsManager::GetInstance();
-		mpGraphicsManager->Init();
+		mpGraphicsManager->Init(windowWidth, windowHeight);
 
 		mpInputManager = InputManager::GetInstance();
 		mpInputManager->Init();
@@ -71,8 +73,6 @@ namespace VannoEngine {
 		mpEventManager->DelayedNotify(1.0, "showFps", "");
 
 		mpLevelManager = LevelManager::GetInstance();
-		mpLevelManager->LoadLevel("levels\\demo_level1.json");
-		mpLevelManager->GetCamera()->SetScreenDimensions(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 		mpTimeManager = TimeManager::GetInstance();
 
@@ -108,6 +108,6 @@ namespace VannoEngine {
 		// Print the current frame rate to the console once every second
 		mpEventManager->DelayedNotify(1.0, "showFps", "");
 
-		std::printf("FPS: %.2f  Delta: %.4f\n", mpFramerateManager->GetFPS(), mpFramerateManager->GetDeltaTime());
+		LOG_CORE_DEBUG("FPS: {:.2f}  Delta: {:.4f}", mpFramerateManager->GetFPS(), mpFramerateManager->GetDeltaTime());
 	}
 }

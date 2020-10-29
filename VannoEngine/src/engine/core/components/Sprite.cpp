@@ -16,7 +16,7 @@ Creation Date:	2020-Oct-08
 #include "Sprite.h"
 #include "engine/core/GameObject.h"
 
-#include <iostream>
+
 #include <cstddef>
 
 #include "engine/systems/graphics/Vertex.h"

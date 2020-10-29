@@ -25,7 +25,8 @@ namespace VannoEngine {
 		Game();
 		virtual ~Game();
 
-		virtual void Init(int fpsCap);
+		virtual void Init() = 0;
+		void Init(int windowWidth, int windowHeight, int fpsCap);
 		void Run();
 	private:
 		void Update();

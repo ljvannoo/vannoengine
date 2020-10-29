@@ -16,7 +16,7 @@ Creation Date:	2020-Oct-13
 #include "TimeManager.h"
 #include "EventHandler.h"
 
-#include <iostream>
+
 
 namespace VannoEngine {
 	EventManager* EventManager::mpInstance = nullptr;

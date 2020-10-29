@@ -23,7 +23,7 @@ Creation Date:	2020-Oct-16
 
 #include "engine/core/components/GameComponent.h"
 
-#include <iostream>
+
 namespace VannoEngine {
 	class Transform : public GameComponent
 	{

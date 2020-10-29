@@ -14,7 +14,7 @@ Creation Date:	2020-Oct-06
 *************************************************************************/
 #include "FramerateController.h"
 
-#include <iostream>
+
 
 namespace VannoEngine {
 	FramerateController* FramerateController::mpInstance = nullptr;

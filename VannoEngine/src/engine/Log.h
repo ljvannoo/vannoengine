@@ -20,15 +20,17 @@ namespace VannoEngine {
 }
 
 // Core log macros
-#define VE_CORE_TRACE(...)	::VannoEngine::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define VE_CORE_INFO(...)	::VannoEngine::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define VE_CORE_WARN(...)	::VannoEngine::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define VE_CORE_ERROR(...)	::VannoEngine::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define VE_CORE_FATAL(...)	::VannoEngine::Log::GetCoreLogger()->fatal(__VA_ARGS_
+#define LOG_CORE_DEBUG(...)	::VannoEngine::Log::GetCoreLogger()->debug(__VA_ARGS__)
+#define LOG_CORE_TRACE(...)	::VannoEngine::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define LOG_CORE_INFO(...)	::VannoEngine::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define LOG_CORE_WARN(...)	::VannoEngine::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define LOG_CORE_ERROR(...)	::VannoEngine::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define LOG_CORE_CRITICAL(...)	::VannoEngine::Log::GetCoreLogger()->critical(__VA_ARGS__);exit(1);
 
 // Client log macros
-#define VE_TRACE(...)	::VannoEngine::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define VE_INFO(...)	::VannoEngine::Log::GetClientLogger()->info(__VA_ARGS__)
-#define VE_WARN(...)	::VannoEngine::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define VE_ERROR(...)	::VannoEngine::Log::GetClientLogger()->error(__VA_ARGS__)
-#define VE_FATAL(...)	::VannoEngine::Log::GetClientLogger()->fatal(__VA_ARGS_
+#define LOG_DEBUG(...)	::VannoEngine::Log::GetClientLogger()->debug(__VA_ARGS__)
+#define LOG_TRACE(...)	::VannoEngine::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define LOG_INFO(...)	::VannoEngine::Log::GetClientLogger()->info(__VA_ARGS__)
+#define LOG_WARN(...)	::VannoEngine::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define LOG_ERROR(...)	::VannoEngine::Log::GetClientLogger()->error(__VA_ARGS__)
+#define LOG_CRITICAL(...)	::VannoEngine::Log::GetClientLogger()->critical(__VA_ARGS__);exit(1);

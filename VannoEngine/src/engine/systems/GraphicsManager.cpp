@@ -24,12 +24,13 @@ Creation Date:	2020-Oct-14
 #include "engine/core/components/Transform.h"
 #include "engine/core/components/Camera.h"
 
+#include "engine/Log.h"
+
 #include <GL/glew.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include <iostream>
 #include <stdexcept>
 #include <sstream>
 #include <algorithm>
@@ -38,47 +39,50 @@ namespace VannoEngine {
 	GraphicsManager* GraphicsManager::mpInstance = nullptr;
 
 	void GLAPIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
-
-		std::cout << "---------------------opengl-callback-start------------" << std::endl;
-		std::cout << "message: " << message << std::endl;
-		std::cout << "type: ";
+		std::stringstream ss;
+		ss << std::endl;
+		ss << "---------------------opengl-callback-start------------" << std::endl;
+		ss << "message: " << message << std::endl;
+		ss << "type: ";
 		switch (type) {
 		case GL_DEBUG_TYPE_ERROR:
-			std::cout << "ERROR";
+			ss << "ERROR";
 			break;
 		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-			std::cout << "DEPRECATED_BEHAVIOR";
+			ss << "DEPRECATED_BEHAVIOR";
 			break;
 		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-			std::cout << "UNDEFINED_BEHAVIOR";
+			ss << "UNDEFINED_BEHAVIOR";
 			break;
 		case GL_DEBUG_TYPE_PORTABILITY:
-			std::cout << "PORTABILITY";
+			ss << "PORTABILITY";
 			break;
 		case GL_DEBUG_TYPE_PERFORMANCE:
-			std::cout << "PERFORMANCE";
+			ss << "PERFORMANCE";
 			break;
 		case GL_DEBUG_TYPE_OTHER:
-			std::cout << "OTHER";
+			ss << "OTHER";
 			break;
 		}
-		std::cout << std::endl;
+		ss << std::endl;
 
-		std::cout << "id: " << id << std::endl;
-		std::cout << "severity: ";
+		ss << "id: " << id << std::endl;
+		ss << "severity: ";
 		switch (severity) {
 		case GL_DEBUG_SEVERITY_LOW:
-			std::cout << "LOW";
+			ss << "LOW";
 			break;
 		case GL_DEBUG_SEVERITY_MEDIUM:
-			std::cout << "MEDIUM";
+			ss << "MEDIUM";
 			break;
 		case GL_DEBUG_SEVERITY_HIGH:
-			std::cout << "HIGH";
+			ss << "HIGH";
 			break;
 		}
-		std::cout << std::endl;
-		std::cout << "---------------------opengl-callback-end--------------" << std::endl;
+		ss << std::endl;
+		ss << "---------------------opengl-callback-end--------------" << std::endl;
+
+		LOG_CORE_ERROR(ss.str());
 	}
 
 	GraphicsManager* GraphicsManager::GetInstance() {
@@ -88,7 +92,14 @@ namespace VannoEngine {
 
 		return mpInstance;
 	}
-	GraphicsManager::GraphicsManager() : mpWindow(nullptr), VAO(0), VBO(0), mpFontShader(nullptr)
+	GraphicsManager::GraphicsManager() : \
+		mpWindow(nullptr), 
+		VAO(0), 
+		VBO(0), 
+		mpFontShader(nullptr), 
+		mContext(nullptr),
+		mWindowHeight(800),
+		mWindowWidth(600)
 	{}
 
 	GraphicsManager::~GraphicsManager() {
@@ -101,7 +112,9 @@ namespace VannoEngine {
 		SDL_Quit();
 	}
 
-	void GraphicsManager::Init() {
+	void GraphicsManager::Init(int windowWidth, int windowHeight) {
+		mWindowWidth = windowWidth;
+		mWindowHeight = windowHeight;
 		/* Initialize the library */
 		if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 			return;
@@ -120,30 +133,30 @@ namespace VannoEngine {
 		mpWindow = SDL_CreateWindow("Game",		// window title
 			SDL_WINDOWPOS_UNDEFINED,			// initial x position
 			SDL_WINDOWPOS_UNDEFINED,			// initial y position
-			WINDOW_WIDTH,								// width, in pixels
-			WINDOW_HEIGHT,								// height, in pixels
+			mWindowWidth,								// width, in pixels
+			mWindowHeight,								// height, in pixels
 			SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
 		if (mpWindow == NULL) {
-			throw std::runtime_error("Failed to open window");
+			LOG_CORE_CRITICAL("Failed to open window");
 		}
 
 		/* Make the window's context current */
 		mContext = SDL_GL_CreateContext(mpWindow);
 		if (!mContext) {
-			throw std::runtime_error("Failed to create context");
+			LOG_CORE_CRITICAL("Failed to create context");
 		}
 
 		if (glewInit() != GLEW_OK)
 		{
-			throw std::runtime_error("Failed to initialize GLEW");
+			LOG_CORE_CRITICAL("Failed to initialize GLEW");
 		}
 		else
 		{
-			std::cout << glGetString(GL_VERSION) << std::endl;
+			LOG_CORE_INFO(glGetString(GL_VERSION));
 		}
 
-		glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		glViewport(0, 0, mWindowWidth, mWindowHeight);
 		glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 		glEnable(GL_TEXTURE_2D);
 
@@ -161,17 +174,17 @@ namespace VannoEngine {
 		FT_Face face;
 
 		if (FT_Init_FreeType(&ft)) {
-			throw std::runtime_error("Failed to initialize Freetype");
+			LOG_CORE_CRITICAL("Failed to initialize Freetype");
 		}
 
 		if (FT_New_Face(ft, "resources/fonts/arial.ttf", 0, &face)) {
-			throw std::runtime_error("Failed to initialize font");
+			LOG_CORE_CRITICAL("Failed to initialize font");
 		}
 
 		FT_Set_Pixel_Sizes(face, 0, 12);
 
 		if (FT_Load_Char(face, 'X', FT_LOAD_RENDER)) {
-			throw std::runtime_error("Failed to initialize freetype glyph");
+			LOG_CORE_CRITICAL("Failed to initialize freetype glyph");
 		}
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
@@ -181,7 +194,7 @@ namespace VannoEngine {
 			// load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+				LOG_CORE_ERROR("ERROR::FREETYTPE: Failed to load Glyph");
 				continue;
 			}
 			// generate texture
@@ -239,8 +252,8 @@ namespace VannoEngine {
 		mpFontShader->Use();
 
 		//glm::mat4 projection = pCamera->GetProjectionMatrix();
-		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(WINDOW_WIDTH), 0.0f, static_cast<float>(WINDOW_HEIGHT));
-		//projection = glm::perspective(glm::radians(45.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 100.0f);
+		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(mWindowWidth), 0.0f, static_cast<float>(mWindowHeight));
+		//projection = glm::perspective(glm::radians(45.0f), (float)mWindowWidth / (float)mWindowHeight, 0.1f, 100.0f);
 		GLuint projectionLocation = mpFontShader->GetUniformLocation("projection");
 		glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -329,7 +342,7 @@ namespace VannoEngine {
 
 		char buff[20];
 		snprintf(buff, sizeof(buff), "%.2f fps", FramerateController::GetInstance()->GetFPS());
-		RenderText(buff, static_cast<float>(WINDOW_WIDTH) - 60.0f, static_cast<float>(WINDOW_HEIGHT) - 45.0f, 1.0f, glm::vec3(1.0, 0.0f, 0.0f));
+		RenderText(buff, static_cast<float>(mWindowWidth) - 60.0f, static_cast<float>(mWindowHeight) - 45.0f, 1.0f, glm::vec3(1.0, 0.0f, 0.0f));
 
 		SDL_GL_SwapWindow(mpWindow);
 	}

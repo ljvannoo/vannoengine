@@ -18,8 +18,9 @@ Creation Date:	2020-Oct-10
 #include "ResourceManager.h"
 #include "graphics/ShaderProgram.h"
 
+#include "engine/Log.h"
+
 #include <fstream>
-#include <iostream>
 
 namespace VannoEngine {
 	ResourceManager* ResourceManager::mpInstance = nullptr;
@@ -87,8 +88,8 @@ namespace VannoEngine {
 				mTextures[filePath] = pTexture;
 			}
 			else {
-				std::cout << "Failed to load texture " << relativePath << std::endl;
-				free(pTexture);
+				LOG_CORE_ERROR("Failed to load texture {0}", relativePath);
+				delete pTexture;
 			}
 		}
 
@@ -99,7 +100,7 @@ namespace VannoEngine {
 		std::string* pData = new std::string;
 		std::ifstream file(filePath);
 		if (file.fail()) {
-			throw std::runtime_error("Failed to open text file from " + filePath);
+			LOG_CORE_CRITICAL("Failed to open text file from " + filePath);
 		}
 
 		std::string line;
@@ -155,7 +156,7 @@ namespace VannoEngine {
 
 			std::ifstream file(filePath);
 			if (file.fail()) {
-				throw std::runtime_error("Failed to open shader source from " + filePath);
+				LOG_CORE_CRITICAL("Failed to open shader source from " + filePath);
 			}
 
 			std::string line;

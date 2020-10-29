@@ -13,8 +13,6 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-14
 *************************************************************************/
 #pragma once
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
 
 #include <ft2build.h>
 #include FT_FREETYPE_H  
@@ -45,7 +43,7 @@ namespace VannoEngine {
 		static GraphicsManager* GetInstance();
 		~GraphicsManager();
 
-		void Init();
+		void Init(int windowWidth, int windowHeight);
 		void StartDraw();
 		void Draw();
 		void EndDraw();
@@ -67,5 +65,7 @@ namespace VannoEngine {
 
 		std::vector<Sprite*> mSprites;
 		SDL_GLContext mContext;
+
+		int mWindowWidth, mWindowHeight;
 	};
 }

@@ -23,7 +23,7 @@ Creation Date:	2020-Oct-15
 
 #include <rapidjson/document.h>
 
-#include <iostream>
+
 
 namespace VannoEngine {
 	GameObjectFactory* GameObjectFactory::mpInstance = nullptr;

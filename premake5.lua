@@ -28,12 +28,12 @@ project "VannoEngine"
 	includedirs {
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/freetype/include",
-		"%{prj.name}/vendor/rapidjson/include",
 		"%{prj.name}/vendor/glew/include",
-		"%{prj.name}/vendor/glm/include",
 		"%{prj.name}/vendor/sdl/include",
 		"%{prj.name}/vendor/stb_image/include",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/../vendor/rapidjson/include",
+		"%{prj.name}/..//vendor/glm/include"
 	}
 
 	libdirs {
@@ -97,7 +97,9 @@ project "Sandbox"
 	includedirs {
 		"%{prj.name}/src",
 		"VannoEngine/vendor/spdlog/include",
-		"VannoEngine/src"
+		"VannoEngine/src",
+		"%{prj.name}/../vendor/rapidjson/include",
+		"%{prj.name}/..//vendor/glm/include"
 	}
 
 	links {

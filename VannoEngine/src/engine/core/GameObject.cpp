@@ -17,7 +17,7 @@ Creation Date:	2020-Oct-24
 
 #include "engine/util/uuid.h"
 
-#include <iostream>
+
 
 namespace VannoEngine {
 	GameObject::GameObject() : mName(""), mpParentObject(nullptr)

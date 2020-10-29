@@ -17,7 +17,7 @@ Creation Date:	2020-Oct-05
 #include "EventManager.h"
 
 #include <memory.h>
-#include <iostream>
+
 
 namespace VannoEngine {
 	InputManager* InputManager::mpInstance = nullptr;
