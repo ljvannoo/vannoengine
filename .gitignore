@@ -2,4 +2,7 @@
 bin/
 bin-temp/
 
+*.sln
+*.vcxproj*
+
 *.user
