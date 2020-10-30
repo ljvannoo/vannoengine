@@ -4,8 +4,8 @@ Copyright (C) 2020 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
 
-File Name:		ImageMapLayer.h
-Purpose:		Describes a map layer that holds images
+File Name:		TileMapLayer.h
+Purpose:		Describes a map layer that holds tiles
 Language:		C++
 Platform:		Windows 10, Microsoft Visual Studio 2019
 
@@ -13,7 +13,7 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-29
 *************************************************************************/
-#define IMAGE_LAYER "imagelayer"
+#define TILE_LAYER "tilelayer"
 
 #include "MapLayer.h"
 
@@ -24,32 +24,35 @@ Creation Date:	2020-Oct-29
 #include <rapidjson/document.h>
 
 #include <string>
+#include <vector>
 
 namespace VannoEngine {
 	// Forward declarations
-	class ImageMapLayer : public MapLayer
+	class Tileset;
+	class TileMapLayer : public MapLayer
 	{
 	public: // Variables
 
 	public: // Methods
-		ImageMapLayer();
-		~ImageMapLayer() override;
+		TileMapLayer();
+		~TileMapLayer() override;
 
-		std::string GetType() override { return IMAGE_LAYER;  }
+		std::string GetType() override { return TILE_LAYER; }
 
 		void LoadData(const rapidjson::Value* pData) override;
 
+		void AddTilesets(std::vector<Tileset*>* pTilesets) { mpTilesets = pTilesets; }
+
 		void Draw() override;
-
-
 	private: // Methods
 
 	private: // Variables
 		std::string mName;
 
-		GLuint mVboID; // Vertex buffer
-		GLuint mVaoID; // Vertex Array Object
-		GLuint mIboID; // Index buffer
-		GLTexture* mpTexture;
+		int mHeight;
+		int mWidth;
+		
+		std::vector<int> mData;
+		std::vector<Tileset*>* mpTilesets;
 	};
 }

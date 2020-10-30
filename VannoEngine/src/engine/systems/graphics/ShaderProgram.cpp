@@ -15,7 +15,9 @@ Creation Date:	2020-Oct-08
 #include "ShaderProgram.h"
 #include "../ResourceManager.h"
 
-#include <iostream>
+#include "engine/Log.h"
+
+#include <sstream>
 #include <stdexcept>
 #include <vector>
 
@@ -108,7 +110,7 @@ namespace VannoEngine {
 
 			Print(src);
 			std::printf("%s\n", &errorLog[0]);
-			throw std::runtime_error("Failed to compile shader");
+			LOG_CORE_CRITICAL("Failed to compile shader");
 		}
 
 	}
@@ -116,7 +118,7 @@ namespace VannoEngine {
 	GLint ShaderProgram::GetUniformLocation(const std::string& uniformName) {
 		GLint location = glGetUniformLocation(mProgramId, uniformName.c_str());
 		if (location == GL_INVALID_INDEX) {
-			throw std::runtime_error("Uniform " + uniformName + " not found in shader");
+			LOG_CORE_CRITICAL("Uniform {0} not found in shader", uniformName);
 		}
 
 		return location;
@@ -124,15 +126,19 @@ namespace VannoEngine {
 
 	void ShaderProgram::Print(const std::string& src) {
 		int line = 1;
-		std::cout << line << "  ";
+		std::stringstream ss;
+
+		ss << line << "  ";
 		for (unsigned int i = 0; i < src.length(); ++i) {
-			std::cout << src[i];
+			ss << src[i];
 			if (src[i] == '\n') {
 				line++;
-				std::cout << line << "  ";
+				ss << line << "  ";
 			}
 		}
-		std::cout << std::endl;
+		ss << std::endl;
+
+		LOG_CORE_ERROR(ss.str());
 	}
 
 	void ShaderProgram::Use() {

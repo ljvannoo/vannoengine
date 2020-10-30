@@ -25,7 +25,6 @@ out vec2 fragmentUV;
 
 uniform mat4 model;
 uniform mat4 projection;
-uniform int flipHorizontal = 0;
 
 void main() {
 	gl_Position = projection * model * vec4(position, 0.0, 1.0);
@@ -33,12 +32,7 @@ void main() {
 	fragmentColor = vertexColor;
 	fragmentPosition = position;
 	
-	if(flipHorizontal != 0) {
-		fragmentUV = vec2(1.0-uv.x, uv.y);
-	}
-	else {
-		fragmentUV = uv;
-	}
+	fragmentUV = uv;
 }
 
 #BEGIN_FRAGMENT_SHADER
@@ -50,26 +44,26 @@ in vec2 fragmentUV;
 
 layout(location = 0) out vec4 color;
 
-uniform sampler2D spriteSheet;
-uniform vec2 spriteSheetSize;
-uniform vec2 spriteSize;
+uniform sampler2D tileset;
+uniform vec2 tilesetSize;
+uniform vec2 tileSize;
 uniform float index;
 
 void main() {
-	float w = spriteSheetSize.x;
-	float h = spriteSheetSize.y;
+	float w = tilesetSize.x;
+	float h = tilesetSize.y;
 
 	// Normalize sprite size (0.0-1.0)
-	float dx = spriteSize.x / w;
-	float dy = spriteSize.y / h;
+	float dx = tileSize.x / w;
+	float dy = tileSize.y / h;
 
 	// Figure out number of tile cols of sprite sheet
-	float cols = w / spriteSize.x;
+	float cols = w / tileSize.x;
 
 	// From linear index to row/col pair
 	float col = mod(index, cols);
 	float row = floor(index / cols);
 
 	vec2 uv = vec2(dx * fragmentUV.x + col * dx, 1.0 - dy - row * dy + dy * fragmentUV.y);
-	gl_FragColor = texture2D(spriteSheet, uv);
+	gl_FragColor = texture2D(tileset, uv);
 }

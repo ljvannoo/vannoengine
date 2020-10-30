@@ -20,6 +20,10 @@ Creation Date:	2020-Oct-29
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/ShaderProgram.h"
 
+#include "glm/mat4x4.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "engine/Log.h"
 
 namespace VannoEngine {
@@ -89,9 +93,14 @@ namespace VannoEngine {
 	}
 
 	void ImageMapLayer::Draw() {
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(0, static_cast<float>(mpTexture->height), 0.0f));
+		GLuint loc = mpShaderProgram->GetUniformLocation("model");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, mpTexture->id);
-		GLuint loc = mpShaderProgram->GetUniformLocation("spriteSheet");
+		loc = mpShaderProgram->GetUniformLocation("spriteSheet");
 		glUniform1i(loc, 0);
 
 		loc = mpShaderProgram->GetUniformLocation("spriteSheetSize");

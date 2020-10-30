@@ -23,12 +23,14 @@ Creation Date:	2020-Oct-10
 #include <string>
 
 namespace VannoEngine {
-	Tileset::Tileset() :
+	Tileset::Tileset(int tileWidth, int tileHeight) :
 		mVboID(0),
 		mVaoID(0),
 		mIboID(0),
 		mpTexture(nullptr),
-		mStartIndex(1)
+		mStartIndex(1),
+		mTileWidth(tileWidth),
+		mTileHeight(tileHeight)
 	{ }
 
 	Tileset::~Tileset() {
@@ -42,11 +44,12 @@ namespace VannoEngine {
 			std::string filepath = (*pData)["source"].GetString();
 			filepath.replace(filepath.end() - 3, filepath.end(), "png");
 
+			LOG_CORE_DEBUG("Loading tileset from {0}", filepath);
 			mpTexture = pResourceManager->LoadTexture(filepath);
 
 			if (mpTexture) {
-				float w = static_cast<float>(mpTexture->width);
-				float h = static_cast<float>(mpTexture->height);
+				float w = mTileWidth;
+				float h = mTileHeight;
 
 				Vertex vertexData[6] = {
 					 0,  0,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left

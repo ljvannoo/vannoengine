@@ -25,10 +25,22 @@ namespace VannoEngine {
 	public: // Variables
 
 	public: // Methods
-		Tileset();
+		Tileset(int tileWidth, int tileHeight);
 		~Tileset();
 
 		void LoadData(const rapidjson::Value* pData);
+
+		int GetStartIndex() { return mStartIndex; }
+
+		GLTexture* GetTexture() { return mpTexture; }
+
+		int GetTileWidth() { return mTileWidth; }
+
+		int GetTileHeight() { return mTileHeight; }
+
+		GLuint GetVboId() { return mVboID; }
+		GLuint GetVaoId() { return mVaoID; }
+		GLuint GetIboId() { return mIboID; }
 	private: // Methods
 
 	private: // Variables
@@ -36,6 +48,9 @@ namespace VannoEngine {
 		GLuint mVaoID; // Vertex Array Object
 		GLuint mIboID; // Index buffer
 		GLTexture* mpTexture;
+
+		int mTileWidth;
+		int mTileHeight;
 
 		int mStartIndex;
 	};

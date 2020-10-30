@@ -16,6 +16,7 @@ Creation Date:	2020-Oct-29
 
 #include "MapLayer.h"
 #include "ImageMapLayer.h"
+#include "TileMapLayer.h"
 #include "Tileset.h"
 
 #include "engine/core/components/Camera.h"
@@ -66,7 +67,7 @@ namespace VannoEngine {
 			for (rapidjson::SizeType i = 0; i < tilesets.Size(); i++) {
 				const rapidjson::Value& tilesetData = tilesets[i];
 
-				Tileset* pTileset = new Tileset();
+				Tileset* pTileset = new Tileset(mTileWidth, mTileHeight);
 				pTileset->LoadData(&tilesetData);
 				mTilesets.push_back(pTileset);
 			}
@@ -83,6 +84,10 @@ namespace VannoEngine {
 					MapLayer* pMapLayer = NULL;
 					if (layerType == IMAGE_LAYER) {
 						pMapLayer = new ImageMapLayer();
+					} else if (layerType == TILE_LAYER) {
+						pMapLayer = new TileMapLayer();
+						TileMapLayer* pTileMapLayer = static_cast<TileMapLayer*>(pMapLayer);
+						pTileMapLayer->AddTilesets(&mTilesets);
 					}
 
 					if(pMapLayer) {
@@ -98,26 +103,20 @@ namespace VannoEngine {
 		for (auto it : mLayers) {
 			ShaderProgram* pShaderProgram = it->GetShaderProgram();
 
-			pShaderProgram->Use();
+			if(pShaderProgram) {
+				pShaderProgram->Use();
 
-			float w = pCamera->GetScreenWidth();
-			float h = pCamera->GetScreenHeight();
-			glm::mat4 model(1.0f);
-			if(it->GetType() == "imagelayer") {
-				glm::vec2 offset = static_cast<ImageMapLayer*>(it)->GetOffset();
-				model = glm::translate(model, glm::vec3(offset.x, offset.y, 0.0f));
+				float w = pCamera->GetScreenWidth();
+				float h = pCamera->GetScreenHeight();
+				
+				glm::mat4 projection = pCamera->GetProjectionMatrix();
+				GLuint loc = pShaderProgram->GetUniformLocation("projection");
+				glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+				it->Draw();
+
+				pShaderProgram->Unuse();
 			}
-
-			GLuint loc = pShaderProgram->GetUniformLocation("model");
-			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
-
-			glm::mat4 projection = pCamera->GetProjectionMatrix();
-			loc = pShaderProgram->GetUniformLocation("projection");
-			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
-
-			it->Draw();
-
-			pShaderProgram->Unuse();
 		}
 	}
 }
