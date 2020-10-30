@@ -243,7 +243,7 @@ namespace VannoEngine {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 
-		mpFontShader = ResourceManager::GetInstance()->LoadShaderProgram("font.shader");
+		mpFontShader = ResourceManager::GetInstance()->LoadShaderProgram("shaders/font.shader");
 	}
 
 	void GraphicsManager::RenderText(std::string text, float x, float y, float scale, glm::vec3 color)
@@ -309,6 +309,9 @@ namespace VannoEngine {
 		LevelManager* pLevelManager = LevelManager::GetInstance();
 
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		pLevelManager->Draw();
+
 		Camera* pCamera = pLevelManager->GetCamera();
 		if (!mSprites.empty() && pCamera) {
 			for (auto it = mSprites.begin(); it != mSprites.end(); ++it) {

@@ -71,4 +71,8 @@ namespace VannoEngine {
 	Camera* LevelManager::GetCamera() {
 		return GetCurrentLevel()->GetCamera();
 	}
+
+	void LevelManager::Draw() {
+		GetCurrentLevel()->Draw();
+	}
 }

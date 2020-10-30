@@ -43,6 +43,8 @@ namespace VannoEngine {
 		void SetScale(float s);
 
 		void SetScreenDimensions(float width, float height);
+		float GetScreenWidth() { return mScreenWidth; }
+		float GetScreenHeight() { return mScreenHeight; }
 
 		glm::mat4 GetProjectionMatrix() { return mProjectionMatrix; }
 

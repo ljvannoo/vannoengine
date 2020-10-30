@@ -18,4 +18,3 @@ Creation Date:	2020-Oct-16
 #include "core/components/Transform.h"
 #include "core/components/Controller.h"
 #include "core/components/Camera.h"
-#include "core/components/UpDown.h"

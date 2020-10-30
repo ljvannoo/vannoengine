@@ -1,55 +1,46 @@
+#pragma once
 /************************************************************************
 Copyright (C) 2020 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
 prior written consent of DigiPen Institute of Technology is prohibited.
 
-File Name:		Level.h
-Purpose:		Contains the objects and camera for a specific level
+File Name:		MapLayer.h
+Purpose:		Provides an interface for map layers
 Language:		C++
 Platform:		Windows 10, Microsoft Visual Studio 2019
 
 Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
-Creation Date:	2020-Oct-21
+Creation Date:	2020-Oct-29
 *************************************************************************/
-#pragma once
-
-
-
-#include "engine/core/GameObject.h"
-#include "engine/core/components/Camera.h"
-
 #include <rapidjson/document.h>
 
 #include <string>
-#include <vector>
-
 namespace VannoEngine {
-	class Map;
+	// Forward declarations
+	class ShaderProgram;
 
-	class Level
+	class MapLayer
 	{
 	public: // Variables
 
 	public: // Methods
-		Level();
-		~Level();
+		MapLayer() : mpShaderProgram(nullptr) {}
+		virtual ~MapLayer() {}
 
-		void Init(rapidjson::Document* pLevelData);
+		virtual void Draw() = 0;
 
-		void Update(double deltaTime);
+		virtual std::string GetType() = 0;
 
-		void Draw();
+		virtual void LoadData(const rapidjson::Value* pData) = 0;
 
-		Camera* GetCamera() { return static_cast<Camera*>(mpCamera->GetComponent(CAMERA_COMPONENT)); }
+		ShaderProgram* GetShaderProgram() { return mpShaderProgram; }
+
+	protected:
+		ShaderProgram* mpShaderProgram;
+
 	private: // Methods
-		void LoadOverrides(GameObject* pObject, const rapidjson::Value& overrides);
 
 	private: // Variables
-		std::string mName;
-		std::vector<GameObject*> mObjects;
-		GameObject* mpCamera;
-		Map* mpMap;
 	};
-
 }

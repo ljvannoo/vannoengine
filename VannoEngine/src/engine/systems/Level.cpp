@@ -15,17 +15,20 @@ Creation Date:	2020-Oct-21
 #include "Level.h"
 
 #include "GameObjectFactory.h"
+#include "ResourceManager.h"
 
-#include "engine/core/GameObject.h"
+#include "Map.h"
+
 #include "engine/core/components/GameComponent.h"
 
 namespace VannoEngine {
-	Level::Level() {
-
-	}
+	Level::Level() :
+		mpCamera(nullptr),
+		mpMap(nullptr)
+	{ }
 
 	Level::~Level() {
-
+		delete mpMap;
 	}
 
 
@@ -48,6 +51,15 @@ namespace VannoEngine {
 					LoadOverrides(mpCamera, cameraData["overrides"]);
 				}
 			}
+		}
+
+		if (pLevelData->HasMember("map") && (*pLevelData)["map"].IsString()) {
+			ResourceManager* pResourceManager = ResourceManager::GetInstance();
+			rapidjson::Document* mapData = pResourceManager->LoadJsonData((*pLevelData)["map"].GetString());
+
+			// Create the map
+			mpMap = new Map();
+			mpMap->LoadData(mapData);
 		}
 
 		if (pLevelData->HasMember("objects") && (*pLevelData)["objects"].IsArray()) {
@@ -84,5 +96,9 @@ namespace VannoEngine {
 		for (GameObject* pObject : mObjects) {
 			pObject->Update(deltaTime);
 		}
+	}
+
+	void Level::Draw() {
+		mpMap->Draw(static_cast<Camera*>(mpCamera->GetComponent(CAMERA_COMPONENT)));
 	}
 }

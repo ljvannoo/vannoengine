@@ -33,6 +33,7 @@ namespace VannoEngine {
 		void UnloadLevel();
 
 		void Update(double deltaTime);
+		void Draw();
 
 		Camera* GetCamera();
 
