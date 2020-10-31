@@ -16,6 +16,7 @@ Creation Date:	2020-Oct-29
 
 #include "MapLayer.h"
 #include "ImageMapLayer.h"
+#include "ObjectMapLayer.h"
 #include "TileMapLayer.h"
 #include "Tileset.h"
 
@@ -81,15 +82,21 @@ namespace VannoEngine {
 				if (layerData.HasMember("type") && layerData["type"].IsString()) {
 					std::string layerType = layerData["type"].GetString();
 
+					// Determine which type of layer we've found and load that
 					MapLayer* pMapLayer = NULL;
 					if (layerType == IMAGE_LAYER) {
 						pMapLayer = new ImageMapLayer();
-					} else if (layerType == TILE_LAYER) {
+					}
+					else if (layerType == TILE_LAYER) {
 						pMapLayer = new TileMapLayer();
 						TileMapLayer* pTileMapLayer = static_cast<TileMapLayer*>(pMapLayer);
 						pTileMapLayer->AddTilesets(&mTilesets);
 					}
+					else if (layerType == OBJECT_LAYER) {
+						pMapLayer = new ObjectMapLayer(static_cast<float>(mHeight * mTileHeight));
+					}
 
+					// If the layer is of a known type, load it
 					if(pMapLayer) {
 						pMapLayer->LoadData(&layerData);
 						mLayers.push_back(pMapLayer);

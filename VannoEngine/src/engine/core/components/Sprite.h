@@ -54,6 +54,8 @@ namespace VannoEngine {
 
 		float GetZOrder() const { return mZOrder; }
 
+		float GetHeight() { return (float)mpTexture->height / (float)mSheetRows; }
+		float GetWidth() { return (float)mpTexture->width / (float)mSheetCols; }
 	private:
 		GLuint mVboID; // Vertex buffer
 		GLuint mVaoID; // Vertex Array Object

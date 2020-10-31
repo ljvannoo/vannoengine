@@ -44,7 +44,7 @@ namespace VannoEngine {
 			std::string filepath = (*pData)["source"].GetString();
 			filepath.replace(filepath.end() - 3, filepath.end(), "png");
 
-			LOG_CORE_DEBUG("Loading tileset from {0}", filepath);
+			LOG_CORE_INFO("Loading tileset from '{0}'", filepath);
 			mpTexture = pResourceManager->LoadTexture(filepath);
 
 			if (mpTexture) {

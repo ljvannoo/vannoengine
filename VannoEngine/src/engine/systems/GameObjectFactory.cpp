@@ -12,6 +12,7 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-15
 *************************************************************************/
+#include "engine/Log.h"
 #include "GameObjectFactory.h"
 
 #include "ResourceManager.h"

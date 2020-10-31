@@ -135,7 +135,7 @@ namespace VannoEngine {
 					mAnimationLength = animationData["frameCount"].GetInt();
 				}
 
-				if (animationData.HasMember("frameDuration") && animationData["frameDuration"].GetFloat()) {
+				if (animationData.HasMember("frameDuration") && animationData["frameDuration"].IsFloat()) {
 					mFrameTime = animationData["frameDuration"].GetFloat();
 				}
 			}

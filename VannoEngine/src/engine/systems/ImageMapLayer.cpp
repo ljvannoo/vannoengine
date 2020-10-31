@@ -42,6 +42,7 @@ namespace VannoEngine {
 	void ImageMapLayer::LoadData(const rapidjson::Value* pData) {
 		if (pData->HasMember("name") && (*pData)["name"].IsString()) {
 			mName = (*pData)["name"].GetString();
+			LOG_CORE_INFO("Loading image map layer '{0}'", mName);
 		}
 
 		if (pData->HasMember("image") && (*pData)["image"].IsString()) {

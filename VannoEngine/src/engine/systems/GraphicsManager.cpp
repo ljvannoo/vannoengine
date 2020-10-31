@@ -157,7 +157,7 @@ namespace VannoEngine {
 		}
 
 		glViewport(0, 0, mWindowWidth, mWindowHeight);
-		glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
+		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		glEnable(GL_TEXTURE_2D);
 
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -300,10 +300,6 @@ namespace VannoEngine {
 		mpFontShader->Unuse();
 	}
 
-	void GraphicsManager::StartDraw() {
-		glClear(GL_COLOR_BUFFER_BIT);
-	}
-
 	void GraphicsManager::Draw() {
 		GameObjectFactory* pFactory = GameObjectFactory::GetInstance();
 		LevelManager* pLevelManager = LevelManager::GetInstance();
@@ -347,10 +343,6 @@ namespace VannoEngine {
 		snprintf(buff, sizeof(buff), "%.2f fps", FramerateController::GetInstance()->GetFPS());
 		RenderText(buff, static_cast<float>(mWindowWidth) - 60.0f, static_cast<float>(mWindowHeight) - 45.0f, 1.0f, glm::vec3(1.0, 0.0f, 0.0f));
 
-		SDL_GL_SwapWindow(mpWindow);
-	}
-
-	void GraphicsManager::EndDraw() {
 		SDL_GL_SwapWindow(mpWindow);
 	}
 

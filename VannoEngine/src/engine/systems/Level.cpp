@@ -12,6 +12,7 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-21
 *************************************************************************/
+#include "engine/Log.h"
 #include "Level.h"
 
 #include "GameObjectFactory.h"
@@ -55,6 +56,7 @@ namespace VannoEngine {
 
 		if (pLevelData->HasMember("map") && (*pLevelData)["map"].IsString()) {
 			ResourceManager* pResourceManager = ResourceManager::GetInstance();
+			LOG_CORE_INFO("Loading map from '{0}'", (*pLevelData)["map"].GetString());
 			rapidjson::Document* mapData = pResourceManager->LoadJsonData((*pLevelData)["map"].GetString());
 
 			// Create the map

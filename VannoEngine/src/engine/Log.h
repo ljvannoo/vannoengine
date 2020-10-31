@@ -25,7 +25,7 @@ namespace VannoEngine {
 #define LOG_CORE_INFO(...)	::VannoEngine::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define LOG_CORE_WARN(...)	::VannoEngine::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define LOG_CORE_ERROR(...)	::VannoEngine::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define LOG_CORE_CRITICAL(...)	::VannoEngine::Log::GetCoreLogger()->critical(__VA_ARGS__);exit(1);
+#define LOG_CORE_CRITICAL(...)	::VannoEngine::Log::GetCoreLogger()->critical(__VA_ARGS__);exit(1)
 
 // Client log macros
 #define LOG_DEBUG(...)	::VannoEngine::Log::GetClientLogger()->debug(__VA_ARGS__)
@@ -33,4 +33,4 @@ namespace VannoEngine {
 #define LOG_INFO(...)	::VannoEngine::Log::GetClientLogger()->info(__VA_ARGS__)
 #define LOG_WARN(...)	::VannoEngine::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define LOG_ERROR(...)	::VannoEngine::Log::GetClientLogger()->error(__VA_ARGS__)
-#define LOG_CRITICAL(...)	::VannoEngine::Log::GetClientLogger()->critical(__VA_ARGS__);exit(1);
+#define LOG_CRITICAL(...)	::VannoEngine::Log::GetClientLogger()->critical(__VA_ARGS__);exit(1)

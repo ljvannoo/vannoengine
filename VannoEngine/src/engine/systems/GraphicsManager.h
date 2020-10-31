@@ -44,9 +44,7 @@ namespace VannoEngine {
 		~GraphicsManager();
 
 		void Init(int windowWidth, int windowHeight);
-		void StartDraw();
 		void Draw();
-		void EndDraw();
 		void RenderText(std::string text, float x, float y, float scale, glm::vec3 color);
 
 		void AddSprite(Sprite* pSprite);
