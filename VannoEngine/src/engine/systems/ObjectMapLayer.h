@@ -18,7 +18,11 @@ Creation Date:	2020-Oct-31
 #include "MapLayer.h"
 
 #include <string>
+#include <vector>
+
 namespace VannoEngine {
+	class GameObject;
+
 	class ObjectMapLayer : public MapLayer
 	{
 	public: // Variables
@@ -37,5 +41,6 @@ namespace VannoEngine {
 	private: // Methods
 
 	private: // Variables
+		std::vector<GameObject*> mObjects;
 	};
 }

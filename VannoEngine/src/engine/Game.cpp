@@ -92,7 +92,10 @@ namespace VannoEngine {
 
 			mpInputManager->HandleInput();
 			Update();
-			mpGraphicsManager->Draw();
+
+			mpGraphicsManager->StartDraw();
+			LevelManager::GetInstance()->Draw();
+			mpGraphicsManager->EndDraw();
 
 			mpFramerateManager->EndFrame();
 		}

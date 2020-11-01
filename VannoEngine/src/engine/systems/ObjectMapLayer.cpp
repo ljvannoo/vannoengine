@@ -12,6 +12,8 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-31
 *************************************************************************/
+#include "engine/Log.h"
+
 #include "ObjectMapLayer.h"
 #include "GameObjectFactory.h"
 
@@ -19,7 +21,6 @@ Creation Date:	2020-Oct-31
 #include "engine/core/components/Transform.h"
 #include "engine/core/components/Sprite.h"
 
-#include "engine/Log.h"
 namespace VannoEngine {
 	ObjectMapLayer::ObjectMapLayer(float width, float height) : 
 		MapLayer()
@@ -95,6 +96,7 @@ namespace VannoEngine {
 					else {
 						LOG_CORE_ERROR("Game object has no transform!");
 					}
+					mObjects.push_back(pGameObject);
 				}
 				else {
 					LOG_CORE_ERROR("Failed to load game object");
@@ -108,6 +110,11 @@ namespace VannoEngine {
 	}
 
 	void ObjectMapLayer::Draw() {
-		
+		for (GameObject* pObject : mObjects) {
+			if (pObject->HasComponent(SPRITE_COMPONENT)) {
+				Sprite* pSprite = static_cast<Sprite*>(pObject->GetComponent(SPRITE_COMPONENT));
+				pSprite->Draw();
+			}
+		}
 	}
 }

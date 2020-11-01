@@ -369,27 +369,11 @@ namespace VannoEngine {
 		mpGeneralShader->Unuse();
 	}
 
-	void GraphicsManager::Draw() {
-		GameObjectFactory* pFactory = GameObjectFactory::GetInstance();
-		LevelManager* pLevelManager = LevelManager::GetInstance();
-
+	void GraphicsManager::StartDraw() {
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		pLevelManager->Draw();
-
-		Camera* pCamera = pLevelManager->GetCamera();
-		if (!mSprites.empty() && pCamera) {
-			for (auto it = mSprites.begin(); it != mSprites.end(); ++it) {
-				Sprite* pSprite = *it;
-				GameObject* pObject = pSprite->GetOwner();
-				Transform* pTransform = static_cast<Transform*>(pObject->GetComponent(TRANSFORM_COMPONENT));
-
-				if (pTransform) {
-					pSprite->Draw();
-				}
-			}
-		}
-
+	}
+	
+	void GraphicsManager::EndDraw() {
 		char buff[20];
 		snprintf(buff, sizeof(buff), "%.2f fps", FramerateController::GetInstance()->GetFPS());
 		RenderText(buff, static_cast<float>(mWindowWidth) - 60.0f, static_cast<float>(mWindowHeight) - 45.0f, 1.0f, glm::vec3(1.0, 0.0f, 0.0f));
