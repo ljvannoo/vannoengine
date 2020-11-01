@@ -21,8 +21,11 @@ Creation Date:	2020-Oct-31
 
 #include "engine/Log.h"
 namespace VannoEngine {
-	ObjectMapLayer::ObjectMapLayer(float height) : MapLayer(), mHeight(height)
-	{ }
+	ObjectMapLayer::ObjectMapLayer(float width, float height) : 
+		MapLayer()
+	{
+		SetDimensions(width, height);
+	}
 
 	ObjectMapLayer::~ObjectMapLayer() {
 
@@ -34,6 +37,17 @@ namespace VannoEngine {
 			mName = (*pData)["name"].GetString();
 			LOG_CORE_INFO("Loading object map layer '{0}'", mName);
 		}
+
+		float x = 0.0f;
+		if (pData->HasMember("x") && (*pData)["x"].IsNumber()) {
+			x = (*pData)["x"].GetFloat();
+		}
+
+		float y = 0.0f;
+		if (pData->HasMember("y") && (*pData)["y"].IsNumber()) {
+			y = (*pData)["y"].GetFloat();
+		}
+		SetPosition(x, y);
 
 		if (pData->HasMember("objects") && (*pData)["objects"].IsArray()) {
 			GameObjectFactory* pObjectFactory = GameObjectFactory::GetInstance();
@@ -69,7 +83,7 @@ namespace VannoEngine {
 							}
 
 							if (object.HasMember("y") && object["y"].IsNumber()) {
-								pTransform->SetPositionY(mHeight - object["y"].GetFloat());
+								pTransform->SetPositionY(GetHeight() - object["y"].GetFloat());
 							}
 
 							Sprite* pSprite = static_cast<Sprite*>(pGameObject->GetComponent(SPRITE_COMPONENT));
@@ -89,8 +103,11 @@ namespace VannoEngine {
 		}
 	}
 
-	void ObjectMapLayer::Draw()
-	{
+	void ObjectMapLayer::Update(double deltaTime) {
+
+	}
+
+	void ObjectMapLayer::Draw() {
 		
 	}
 }

@@ -14,6 +14,7 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-29
 *************************************************************************/
 #include <rapidjson/document.h>
+#include <glm/vec2.hpp>
 
 #include <string>
 namespace VannoEngine {
@@ -25,9 +26,16 @@ namespace VannoEngine {
 	public: // Variables
 
 	public: // Methods
-		MapLayer() : mpShaderProgram(nullptr) {}
+		MapLayer() : 
+			mName(""),
+			mpShaderProgram(nullptr), 
+			mPosition(glm::vec2(0.0f, 0.0f)), 
+			mDimensions(glm::vec2(0.0f, 0.0f))
+		{}
+
 		virtual ~MapLayer() {}
 
+		virtual void Update(double deltaTime) = 0;
 		virtual void Draw() = 0;
 
 		virtual std::string GetType() = 0;
@@ -35,9 +43,15 @@ namespace VannoEngine {
 		virtual void LoadData(const rapidjson::Value* pData) = 0;
 
 		ShaderProgram* GetShaderProgram() { return mpShaderProgram; }
-
+		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); }
+		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); }
+		float GetWidth() { return mDimensions.x; }
+		float GetHeight() { return mDimensions.y; }
 	protected:
 		ShaderProgram* mpShaderProgram;
+		glm::vec2 mPosition;
+		glm::vec2 mDimensions;
+		std::string mName;
 
 	private: // Methods
 

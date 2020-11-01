@@ -88,12 +88,14 @@ namespace VannoEngine {
 						pMapLayer = new ImageMapLayer();
 					}
 					else if (layerType == TILE_LAYER) {
-						pMapLayer = new TileMapLayer();
+						pMapLayer = new TileMapLayer(mTileWidth, mTileHeight);
+
+						// TODO Move tilesets to ResourceManager?
 						TileMapLayer* pTileMapLayer = static_cast<TileMapLayer*>(pMapLayer);
 						pTileMapLayer->AddTilesets(&mTilesets);
 					}
 					else if (layerType == OBJECT_LAYER) {
-						pMapLayer = new ObjectMapLayer(static_cast<float>(mHeight * mTileHeight));
+						pMapLayer = new ObjectMapLayer(static_cast<float>(mWidth * mTileWidth), static_cast<float>(mHeight * mTileHeight));
 					}
 
 					// If the layer is of a known type, load it

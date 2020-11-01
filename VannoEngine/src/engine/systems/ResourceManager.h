@@ -19,8 +19,6 @@ Creation Date:	2020-Oct-10
 
 #include <rapidjson/document.h>
 
-
-
 #include "engine/systems/graphics/GLTexture.h"
 
 namespace VannoEngine {
@@ -32,8 +30,6 @@ namespace VannoEngine {
 	public:
 		static ResourceManager* GetInstance();
 		~ResourceManager();
-
-		void Init();
 
 		GLTexture* LoadTexture(const std::string& relativePath);
 

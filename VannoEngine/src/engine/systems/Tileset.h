@@ -14,12 +14,12 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-29
 *************************************************************************/
 
-#include "engine/systems/graphics/GLTexture.h"
-
-#include <GL/glew.h>
 #include <rapidjson/document.h>
 
 namespace VannoEngine {
+	struct GLTexture;
+	class Surface;
+
 	class Tileset
 	{
 	public: // Variables
@@ -32,22 +32,21 @@ namespace VannoEngine {
 
 		int GetStartIndex() { return mStartIndex; }
 
-		GLTexture* GetTexture() { return mpTexture; }
+		unsigned int Tileset::GetTextureId();
+
+		float GetWidth();
+		float GetHeight();
 
 		int GetTileWidth() { return mTileWidth; }
-
 		int GetTileHeight() { return mTileHeight; }
 
-		GLuint GetVboId() { return mVboID; }
-		GLuint GetVaoId() { return mVaoID; }
-		GLuint GetIboId() { return mIboID; }
+		unsigned int GetVertexBufferId();
+		unsigned int GetVertexArrayId();
+		unsigned int GetIndexBufferId();
 	private: // Methods
 
 	private: // Variables
-		GLuint mVboID; // Vertex buffer
-		GLuint mVaoID; // Vertex Array Object
-		GLuint mIboID; // Index buffer
-		GLTexture* mpTexture;
+		Surface* mpSurface;
 
 		int mTileWidth;
 		int mTileHeight;

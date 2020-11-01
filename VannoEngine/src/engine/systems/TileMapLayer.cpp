@@ -29,10 +29,10 @@ Creation Date:	2020-Oct-29
 #include <math.h>
 
 namespace VannoEngine {
-	TileMapLayer::TileMapLayer() :
-		mName(""),
-		mHeight(0),
-		mWidth(0),
+	TileMapLayer::TileMapLayer(int tileWidth, int tileHeight) :
+		MapLayer(),
+		mTileWidth(tileWidth),
+		mTileHeight(tileHeight),
 		mpTilesets(nullptr)
 	{ }
 
@@ -46,17 +46,31 @@ namespace VannoEngine {
 			LOG_CORE_INFO("Loading tile map layer '{0}'", mName);
 		}
 
-		if (pData->HasMember("height") && (*pData)["height"].IsInt()) {
-			mHeight = (*pData)["height"].GetInt();
+		float x = 0.0f;
+		if (pData->HasMember("x") && (*pData)["x"].IsNumber()) {
+			x = (*pData)["x"].GetFloat();
 		}
 
-		if (pData->HasMember("width") && (*pData)["width"].IsInt()) {
-			mWidth = (*pData)["width"].GetInt();
+		float y = 0.0f;
+		if (pData->HasMember("y") && (*pData)["y"].IsNumber()) {
+			y = (*pData)["y"].GetFloat();
 		}
+		SetPosition(x, y);
+
+		float height = 1.0f;
+		if (pData->HasMember("height") && (*pData)["height"].IsNumber()) {
+			height = (*pData)["height"].GetFloat() * static_cast<float>(mTileHeight);
+		}
+
+		float width = 0.0f;
+		if (pData->HasMember("width") && (*pData)["width"].IsNumber()) {
+			width = (*pData)["width"].GetFloat() * static_cast<float>(mTileWidth);
+		}
+		SetDimensions(width, height);
 
 		if (pData->HasMember("data") && (*pData)["data"].IsArray()) {
 			const rapidjson::Value& cells = (*pData)["data"];
-			mData.reserve((size_t)mWidth * (size_t)mHeight);
+			mData.reserve((size_t)GetWidth() * (size_t)GetHeight());
 			for (rapidjson::SizeType i = 0; i < cells.Size(); i++) {
 				const rapidjson::Value& cell = cells[i];
 				mData.push_back(cell.GetInt());
@@ -65,6 +79,10 @@ namespace VannoEngine {
 
 		ResourceManager* pResourceManager = ResourceManager::GetInstance();
 		mpShaderProgram = pResourceManager->LoadShaderProgram("shaders/tileset.shader");
+	}
+
+	void TileMapLayer::Update(double deltaTime) {
+
 	}
 
 	void TileMapLayer::Draw() {
@@ -89,9 +107,9 @@ namespace VannoEngine {
 				}
 
 				if(pTileset) {
-					glm::vec2 topLeft(0.0f, pTileset->GetTileHeight() * mHeight);
-					int col = i % mWidth;
-					int row = i / mWidth;
+					glm::vec2 topLeft(0.0f, GetHeight());
+					int col = i % ((int)GetWidth() / mTileWidth);
+					int row = i / ((int)GetWidth() / mTileWidth);
 					float x = topLeft.x + static_cast<float>(col * pTileset->GetTileWidth());
 					float y = topLeft.y - static_cast<float>((row+1) * pTileset->GetTileHeight());
 					glm::mat4 t(1.0f);
@@ -102,12 +120,12 @@ namespace VannoEngine {
 					glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(t));
 
 					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, pTileset->GetTexture()->id);
+					glBindTexture(GL_TEXTURE_2D, pTileset->GetTextureId());
 					loc = mpShaderProgram->GetUniformLocation("tileset");
 					glUniform1i(loc, 0);
 
 					loc = mpShaderProgram->GetUniformLocation("tilesetSize");
-					glUniform2f(loc, static_cast<float>(pTileset->GetTexture()->width), static_cast<float>(pTileset->GetTexture()->height));
+					glUniform2f(loc, static_cast<float>(pTileset->GetWidth()), static_cast<float>(pTileset->GetHeight()));
 
 					loc = mpShaderProgram->GetUniformLocation("tileSize");
 					glUniform2f(loc, static_cast<float>(pTileset->GetTileWidth()), static_cast<float>(pTileset->GetTileHeight()));
@@ -116,9 +134,9 @@ namespace VannoEngine {
 					loc = mpShaderProgram->GetUniformLocation("index");
 					glUniform1f(loc, index);
 
-					glBindVertexArray(pTileset->GetVaoId());
-					glBindBuffer(GL_ARRAY_BUFFER, pTileset->GetVboId());
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pTileset->GetIboId());
+					glBindVertexArray(pTileset->GetVertexArrayId());
+					glBindBuffer(GL_ARRAY_BUFFER, pTileset->GetVertexBufferId());
+					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pTileset->GetIndexBufferId());
 
 					glEnableVertexAttribArray(0);
 

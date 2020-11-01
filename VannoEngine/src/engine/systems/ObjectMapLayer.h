@@ -24,20 +24,18 @@ namespace VannoEngine {
 	public: // Variables
 
 	public: // Methods
-		ObjectMapLayer(float pixelHeight);
+		ObjectMapLayer(float width, float height);
 		~ObjectMapLayer() override;
 
 		std::string GetType() override { return OBJECT_LAYER; }
 
 		void LoadData(const rapidjson::Value* pData) override;
-
+		
+		void Update(double deltaTime) override;
 		void Draw() override;
 
 	private: // Methods
 
 	private: // Variables
-		std::string mName;
-
-		float mHeight; // In pixels
 	};
 }

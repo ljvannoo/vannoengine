@@ -34,7 +34,7 @@ namespace VannoEngine {
 	public: // Variables
 
 	public: // Methods
-		TileMapLayer();
+		TileMapLayer(int tileWidth, int tileHeight);
 		~TileMapLayer() override;
 
 		std::string GetType() override { return TILE_LAYER; }
@@ -43,14 +43,13 @@ namespace VannoEngine {
 
 		void AddTilesets(std::vector<Tileset*>* pTilesets) { mpTilesets = pTilesets; }
 
+		void Update(double deltaTime) override;
 		void Draw() override;
 	private: // Methods
 
 	private: // Variables
-		std::string mName;
-
-		int mHeight;
-		int mWidth;
+		int mTileWidth;
+		int mTileHeight;
 		
 		std::vector<int> mData;
 		std::vector<Tileset*>* mpTilesets;

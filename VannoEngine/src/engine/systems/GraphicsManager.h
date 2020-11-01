@@ -14,6 +14,9 @@ Creation Date:	2020-Oct-14
 *************************************************************************/
 #pragma once
 
+#include "engine/systems/graphics/GLTexture.h"
+#include "engine/systems/graphics/Vertex.h"
+
 #include <ft2build.h>
 #include FT_FREETYPE_H  
 
@@ -30,6 +33,7 @@ namespace VannoEngine {
 	class ShaderProgram;
 	class Camera;
 	class Sprite;
+	class Surface;
 
 	class GraphicsManager
 	{
@@ -49,6 +53,9 @@ namespace VannoEngine {
 
 		void AddSprite(Sprite* pSprite);
 		void SortSprites();
+
+		static Surface* BuildSurface(GLTexture* pTexture, Vertex vertexData[4]);
+
 	private:
 		GraphicsManager();
 

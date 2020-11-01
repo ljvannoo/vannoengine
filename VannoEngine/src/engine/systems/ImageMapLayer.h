@@ -17,9 +17,8 @@ Creation Date:	2020-Oct-29
 
 #include "MapLayer.h"
 
-#include "engine/systems/graphics/GLTexture.h"
+#include "engine/systems/graphics/Surface.h"
 
-#include <GL/glew.h>
 #include <glm/vec2.hpp>
 #include <rapidjson/document.h>
 
@@ -29,8 +28,6 @@ namespace VannoEngine {
 	// Forward declarations
 	class ImageMapLayer : public MapLayer
 	{
-	public: // Variables
-
 	public: // Methods
 		ImageMapLayer();
 		~ImageMapLayer() override;
@@ -39,17 +36,10 @@ namespace VannoEngine {
 
 		void LoadData(const rapidjson::Value* pData) override;
 
+		void Update(double deltaTime) override;
 		void Draw() override;
 
-
-	private: // Methods
-
 	private: // Variables
-		std::string mName;
-
-		GLuint mVboID; // Vertex buffer
-		GLuint mVaoID; // Vertex Array Object
-		GLuint mIboID; // Index buffer
-		GLTexture* mpTexture;
+		Surface* mpSurface;
 	};
 }

@@ -27,6 +27,8 @@ Creation Date:	2020-Oct-08
 #include "engine/systems/graphics/ShaderProgram.h"
 
 namespace VannoEngine {
+	class Surface;
+
 	class Sprite : public GameComponent
 	{
 	public:
@@ -54,13 +56,10 @@ namespace VannoEngine {
 
 		float GetZOrder() const { return mZOrder; }
 
-		float GetHeight() { return (float)mpTexture->height / (float)mSheetRows; }
-		float GetWidth() { return (float)mpTexture->width / (float)mSheetCols; }
+		float GetHeight();
+		float GetWidth();
 	private:
-		GLuint mVboID; // Vertex buffer
-		GLuint mVaoID; // Vertex Array Object
-		GLuint mIboID; // Index buffer
-		GLTexture* mpTexture;
+		Surface* mpSurface;
 
 		int mSheetRows;
 		int mSheetCols;

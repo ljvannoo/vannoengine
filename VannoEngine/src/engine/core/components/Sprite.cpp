@@ -13,6 +13,7 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-08
 *************************************************************************/
 
+#include "engine/Log.h"
 #include "Sprite.h"
 #include "engine/core/GameObject.h"
 
@@ -22,15 +23,15 @@ Creation Date:	2020-Oct-08
 #include "engine/systems/graphics/Vertex.h"
 
 #include "engine/systems/graphics/GLTexture.h"
+#include "engine/systems/graphics/Surface.h"
+
 #include "engine/systems/ResourceManager.h"
+#include "engine/systems/GraphicsManager.h"
 
 namespace VannoEngine {
 	Sprite::Sprite(GameObject* owner) :
 		GameComponent(owner),
-		mVboID(0),
-		mVaoID(0),
-		mIboID(0),
-		mpTexture(nullptr),
+		mpSurface(nullptr),
 		mpShaderProgram(nullptr),
 		mSheetRows(1),
 		mSheetCols(1),
@@ -44,9 +45,17 @@ namespace VannoEngine {
 	{}
 
 	Sprite::~Sprite() {
-		if (mVboID != 0) {
-			glDeleteBuffers(1, &mVboID);
+		unsigned int bufferId = mpSurface->GetVertexBufferId();
+		if (bufferId != 0) {
+			glDeleteBuffers(1, &bufferId);
 		}
+
+		bufferId = mpSurface->GetIndexBufferId();
+		if (bufferId != 0) {
+			glDeleteBuffers(1, &bufferId);
+		}
+
+		delete mpSurface;
 	}
 
 	void Sprite::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
@@ -68,55 +77,22 @@ namespace VannoEngine {
 			}
 
 			if (textureData.HasMember("file") && textureData["file"].IsString()) {
-				mpTexture = pResourceManager->LoadTexture(textureData["file"].GetString());
+				GLTexture* pTexture = pResourceManager->LoadTexture(textureData["file"].GetString());
 
-				if (mpTexture) {
-					float w = static_cast<float>(mpTexture->width) / static_cast<float>(mSheetCols);
+				if(pTexture) {
+					float w = static_cast<float>(pTexture->width) / static_cast<float>(mSheetCols);
 					float hW = w / 2.0f;
-					float h = static_cast<float>(mpTexture->height) / static_cast<float>(mSheetRows);
+					float h = static_cast<float>(pTexture->height) / static_cast<float>(mSheetRows);
 					float hH = h / 2.0f;
 
-					//Vertex vertexData[6] = {
-					//	-hW,  hH,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
-					//	-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
-					//	 hW,  hH, 255,   0, 255, 255, 1.0f, 1.0f, // Upper Right
-					//	 hW,  hH, 255,   0, 255, 255, 1.0f, 1.0f, // Upper Right
-					//	-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
-					//	 hW, -hH,   0, 255,   0, 255, 1.0f, 0.0f  // Bottom right
-					//};
-
-					Vertex vertexData[6] = {
+					Vertex vertexData[4] = {
 						-hW,  hH,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
 						-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
 						 hW, -hH,   0, 255,   0, 255, 1.0f, 0.0f, // Bottom right
 						 hW,  hH, 255,   0, 255, 255, 1.0f, 1.0f  // Upper Right
 					};
 
-					unsigned int indices[] = {
-						0, 1, 2,
-						2, 3, 0
-					};
-
-					if (mVaoID == 0) {
-						glGenVertexArrays(1, &mVaoID);
-					}
-					glBindVertexArray(mVaoID);
-
-					if (mVboID == 0) {
-						glGenBuffers(1, &mVboID);
-					}
-					glBindBuffer(GL_ARRAY_BUFFER, mVboID);
-					glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-					glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-					if (mIboID == 0) {
-						glGenBuffers(1, &mIboID);
-					}
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIboID);
-					glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-					glBindVertexArray(0);
+					mpSurface = GraphicsManager::BuildSurface(pTexture, vertexData);
 				}
 			}
 
@@ -159,15 +135,15 @@ namespace VannoEngine {
 
 	void Sprite::Draw() {
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mpTexture->id);
+		glBindTexture(GL_TEXTURE_2D, mpSurface->GetTextureId());
 		GLuint loc = mpShaderProgram->GetUniformLocation("spriteSheet");
 		glUniform1i(loc, 0);
 
 		loc = mpShaderProgram->GetUniformLocation("spriteSheetSize");
-		glUniform2f(loc, static_cast<float>(mpTexture->width), static_cast<float>(mpTexture->height));
+		glUniform2f(loc, static_cast<float>(mpSurface->GetWidth()), static_cast<float>(mpSurface->GetHeight()));
 
 		loc = mpShaderProgram->GetUniformLocation("spriteSize");
-		glUniform2f(loc, static_cast<float>(mpTexture->width / mSheetCols), static_cast<float>(mpTexture->height / mSheetRows));
+		glUniform2f(loc, static_cast<float>(mpSurface->GetWidth() / mSheetCols), static_cast<float>(mpSurface->GetHeight() / mSheetRows));
 
 		loc = mpShaderProgram->GetUniformLocation("index");
 		glUniform1f(loc, static_cast<GLfloat>(mFrameOffset + mFrameIndex));
@@ -175,9 +151,9 @@ namespace VannoEngine {
 		loc = mpShaderProgram->GetUniformLocation("flipHorizontal");
 		glUniform1i(loc, mFlipHorizontal ? 1 : 0);
 
-		glBindVertexArray(mVaoID);
-		glBindBuffer(GL_ARRAY_BUFFER, mVboID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIboID);
+		glBindVertexArray(mpSurface->GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, mpSurface->GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mpSurface->GetIndexBufferId());
 
 		glEnableVertexAttribArray(0);
 
@@ -208,5 +184,13 @@ namespace VannoEngine {
 
 	ShaderProgram* Sprite::GetShaderProgram() {
 		return mpShaderProgram;
+	}
+
+	float Sprite::GetHeight() {
+		return (float)mpSurface->GetHeight() / (float)mSheetRows;
+	}
+
+	float Sprite::GetWidth() {
+		return (float)mpSurface->GetWidth() / (float)mSheetCols;
 	}
 }

@@ -24,6 +24,10 @@ Creation Date:	2020-Oct-14
 #include "engine/core/components/Transform.h"
 #include "engine/core/components/Camera.h"
 
+#include "engine/systems/graphics/GLTexture.h"
+#include "engine/systems/graphics/Vertex.h"
+#include "engine/systems/graphics/Surface.h"
+
 #include "engine/Log.h"
 
 #include <GL/glew.h>
@@ -325,6 +329,9 @@ namespace VannoEngine {
 					glm::mat4 s = pTransform->GetScaleMatrix();
 					glm::mat4 model = t * r * s;
 
+					std::stringstream ss;
+					ss << glm::to_string(model);
+
 					GLuint loc = pShaderProgram->GetUniformLocation("model");
 					glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -355,5 +362,38 @@ namespace VannoEngine {
 
 	void GraphicsManager::SortSprites() {
 		std::sort(mSprites.begin(), mSprites.end(), CompareSprites);
+	}
+
+	Surface* GraphicsManager::BuildSurface(GLTexture* pTexture, Vertex vertexData[4]) {
+		if (!pTexture) {
+			LOG_CORE_ERROR("Unable to build surface from null texture!");
+			return nullptr;
+		}
+
+		unsigned int indices[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		unsigned int vaoId, vboId, iboId;
+		glGenVertexArrays(1, &vaoId);
+		glBindVertexArray(vaoId);
+
+		glGenBuffers(1, &vboId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboId);
+		glBufferData(GL_ARRAY_BUFFER, 4*sizeof(Vertex), vertexData, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+		glGenBuffers(1, &iboId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6*sizeof(unsigned int), indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+
+		
+
+		return new Surface(pTexture, vboId, vaoId, iboId);
 	}
 }

@@ -15,8 +15,11 @@ Creation Date:	2020-Oct-10
 #include "Tileset.h"
 
 #include "engine/systems/ResourceManager.h"
+#include "engine/systems/GraphicsManager.h"
+
 #include "engine/systems/graphics/Vertex.h"
 #include "engine/systems/graphics/GLTexture.h"
+#include "engine/systems/graphics/Surface.h"
 
 #include "engine/Log.h"
 
@@ -24,10 +27,7 @@ Creation Date:	2020-Oct-10
 
 namespace VannoEngine {
 	Tileset::Tileset(int tileWidth, int tileHeight) :
-		mVboID(0),
-		mVaoID(0),
-		mIboID(0),
-		mpTexture(nullptr),
+		mpSurface(nullptr),
 		mStartIndex(1),
 		mTileWidth(tileWidth),
 		mTileHeight(tileHeight)
@@ -45,49 +45,48 @@ namespace VannoEngine {
 			filepath.replace(filepath.end() - 3, filepath.end(), "png");
 
 			LOG_CORE_INFO("Loading tileset from '{0}'", filepath);
-			mpTexture = pResourceManager->LoadTexture(filepath);
+			GLTexture* pTexture = pResourceManager->LoadTexture(filepath);
 
-			if (mpTexture) {
-				float w = mTileWidth;
-				float h = mTileHeight;
+			if (pTexture) {
+				float w = (float)mTileWidth;
+				float h = (float)mTileHeight;
 
-				Vertex vertexData[6] = {
+				Vertex vertexData[4] = {
 					 0,  0,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
 					 0, -h, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
 					 w, -h,   0, 255,   0, 255, 1.0f, 0.0f, // Bottom right
 					 w,  0, 255,   0, 255, 255, 1.0f, 1.0f  // Upper Right
 				};
-
-				unsigned int indices[] = {
-					0, 1, 2,
-					2, 3, 0
-				};
-
-				if (mVaoID == 0) {
-					glGenVertexArrays(1, &mVaoID);
-				}
-				glBindVertexArray(mVaoID);
-
-				if (mVboID == 0) {
-					glGenBuffers(1, &mVboID);
-				}
-				glBindBuffer(GL_ARRAY_BUFFER, mVboID);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-				glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-				if (mIboID == 0) {
-					glGenBuffers(1, &mIboID);
-				}
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIboID);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-				glBindVertexArray(0);
+				mpSurface = GraphicsManager::BuildSurface(pTexture, vertexData);
 			}
 
 			if (pData->HasMember("firstgid") && (*pData)["firstgid"].IsInt()) {
 				mStartIndex = (*pData)["firstgid"].GetInt();
 			}
 		}
+	}
+
+	float Tileset::GetWidth() {
+		return (float)mpSurface->GetWidth();
+	}
+
+	float Tileset::GetHeight() {
+		return (float)mpSurface->GetHeight();
+	}
+
+	unsigned int Tileset::GetTextureId() {
+		return mpSurface->GetTextureId();
+	}
+
+	unsigned int Tileset::GetVertexBufferId() {
+		return mpSurface->GetVertexBufferId(); 
+	}
+
+	unsigned int Tileset::GetVertexArrayId() {
+		return mpSurface->GetVertexArrayId();
+	}
+
+	unsigned int Tileset::GetIndexBufferId() {
+		return mpSurface->GetIndexBufferId(); 
 	}
 }
