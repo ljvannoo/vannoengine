@@ -14,8 +14,7 @@
             "frameCount": 4,
             "frameDuration": 0.2
           }
-        },
-        "shaderProgram": "shaders\\sprite.shader"
+        }
       }
     },
     {

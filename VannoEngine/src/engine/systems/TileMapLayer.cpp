@@ -17,6 +17,7 @@ Creation Date:	2020-Oct-29
 #include "Tileset.h"
 
 #include "engine/systems/ResourceManager.h"
+#include "engine/systems/GraphicsManager.h"
 #include "engine/systems/graphics/ShaderProgram.h"
 #include "engine/systems/graphics/Vertex.h"
 
@@ -76,9 +77,6 @@ namespace VannoEngine {
 				mData.push_back(cell.GetInt());
 			}
 		}
-
-		ResourceManager* pResourceManager = ResourceManager::GetInstance();
-		mpShaderProgram = pResourceManager->LoadShaderProgram("shaders/tileset.shader");
 	}
 
 	void TileMapLayer::Update(double deltaTime) {
@@ -107,6 +105,8 @@ namespace VannoEngine {
 				}
 
 				if(pTileset) {
+					GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+
 					glm::vec2 topLeft(0.0f, GetHeight());
 					int col = i % ((int)GetWidth() / mTileWidth);
 					int row = i / ((int)GetWidth() / mTileWidth);
@@ -116,53 +116,16 @@ namespace VannoEngine {
 					t = glm::translate(t, glm::vec3(0.0f, static_cast<float>(pTileset->GetTileWidth()), 0.0f));
 					t = glm::translate(t, glm::vec3(x, y, 0.0f));
 
-					GLuint loc = mpShaderProgram->GetUniformLocation("model");
-					glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(t));
+					pGraphicsManager->Render(
+						pTileset->GetSurface(), 
+						&t, 
+						static_cast<float>(pTileset->GetWidth()),
+						static_cast<float>(pTileset->GetHeight()),
+						static_cast<float>(pTileset->GetTileWidth()), 
+						static_cast<float>(pTileset->GetTileHeight()),
+						tileId,
+						false);
 
-					glActiveTexture(GL_TEXTURE0);
-					glBindTexture(GL_TEXTURE_2D, pTileset->GetTextureId());
-					loc = mpShaderProgram->GetUniformLocation("tileset");
-					glUniform1i(loc, 0);
-
-					loc = mpShaderProgram->GetUniformLocation("tilesetSize");
-					glUniform2f(loc, static_cast<float>(pTileset->GetWidth()), static_cast<float>(pTileset->GetHeight()));
-
-					loc = mpShaderProgram->GetUniformLocation("tileSize");
-					glUniform2f(loc, static_cast<float>(pTileset->GetTileWidth()), static_cast<float>(pTileset->GetTileHeight()));
-
-					float index = static_cast<GLfloat>(tileId);
-					loc = mpShaderProgram->GetUniformLocation("index");
-					glUniform1f(loc, index);
-
-					glBindVertexArray(pTileset->GetVertexArrayId());
-					glBindBuffer(GL_ARRAY_BUFFER, pTileset->GetVertexBufferId());
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pTileset->GetIndexBufferId());
-
-					glEnableVertexAttribArray(0);
-
-					// Position
-					glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-
-					// Color
-					glEnableVertexAttribArray(1);
-					glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-
-					// Texture coordinates
-					glEnableVertexAttribArray(2);
-					glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
-
-					glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-					glDisableVertexAttribArray(0);
-					glDisableVertexAttribArray(1);
-					glDisableVertexAttribArray(2);
-
-					// Unbind the buffer
-					glBindBuffer(GL_ARRAY_BUFFER, 0);
-					glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-					glBindVertexArray(0);
-
-					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 			}
 		}

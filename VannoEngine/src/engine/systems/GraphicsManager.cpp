@@ -160,6 +160,8 @@ namespace VannoEngine {
 			LOG_CORE_INFO(glGetString(GL_VERSION));
 		}
 
+		mpGeneralShader = ResourceManager::GetInstance()->LoadShaderProgram("shaders/sprite.shader");
+
 		glViewport(0, 0, mWindowWidth, mWindowHeight);
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
 		glEnable(GL_TEXTURE_2D);
@@ -304,6 +306,69 @@ namespace VannoEngine {
 		mpFontShader->Unuse();
 	}
 
+	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int spriteIndex, bool flipHorizontal) {
+		mpGeneralShader->Use();
+
+		GLuint loc = 0;
+		if (transformation) {
+			loc = mpGeneralShader->GetUniformLocation("model");
+			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(*transformation));
+		}
+
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		loc = mpGeneralShader->GetUniformLocation("projection");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pSurface->GetTextureId());
+		loc = mpGeneralShader->GetUniformLocation("spriteSheet");
+		glUniform1i(loc, 0);
+
+		loc = mpGeneralShader->GetUniformLocation("spriteSheetSize");
+		glUniform2f(loc, spriteSheetWidth, spriteSheetHeight);
+
+		loc = mpGeneralShader->GetUniformLocation("spriteSize");
+		glUniform2f(loc, spriteWidth, spriteHeight);
+
+		loc = mpGeneralShader->GetUniformLocation("index");
+		glUniform1f(loc, static_cast<GLfloat>(spriteIndex));
+
+		loc = mpGeneralShader->GetUniformLocation("flipHorizontal");
+		glUniform1i(loc, flipHorizontal ? 1 : 0);
+
+		glBindVertexArray(pSurface->GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, pSurface->GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pSurface->GetIndexBufferId());
+
+		glEnableVertexAttribArray(0);
+
+		// Position
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+
+		// Color
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
+		// Texture coordinates
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+
+		// Unbind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		mpGeneralShader->Unuse();
+	}
+
 	void GraphicsManager::Draw() {
 		GameObjectFactory* pFactory = GameObjectFactory::GetInstance();
 		LevelManager* pLevelManager = LevelManager::GetInstance();
@@ -320,28 +385,7 @@ namespace VannoEngine {
 				Transform* pTransform = static_cast<Transform*>(pObject->GetComponent(TRANSFORM_COMPONENT));
 
 				if (pTransform) {
-					ShaderProgram* pShaderProgram = pSprite->GetShaderProgram();
-
-					pShaderProgram->Use();
-
-					glm::mat4 t = pTransform->GetTranslationMatrix();
-					glm::mat4 r = pTransform->GetRotationMatrix();
-					glm::mat4 s = pTransform->GetScaleMatrix();
-					glm::mat4 model = t * r * s;
-
-					std::stringstream ss;
-					ss << glm::to_string(model);
-
-					GLuint loc = pShaderProgram->GetUniformLocation("model");
-					glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
-
-					glm::mat4 projection = pCamera->GetProjectionMatrix();
-					loc = pShaderProgram->GetUniformLocation("projection");
-					glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
-
 					pSprite->Draw();
-
-					pShaderProgram->Unuse();
 				}
 			}
 		}
@@ -391,8 +435,6 @@ namespace VannoEngine {
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 		glBindVertexArray(0);
-
-		
 
 		return new Surface(pTexture, vboId, vaoId, iboId);
 	}

@@ -15,6 +15,7 @@ Creation Date:	2020-Oct-08
 
 #include "engine/Log.h"
 #include "Sprite.h"
+#include "Transform.h"
 #include "engine/core/GameObject.h"
 
 
@@ -32,7 +33,6 @@ namespace VannoEngine {
 	Sprite::Sprite(GameObject* owner) :
 		GameComponent(owner),
 		mpSurface(nullptr),
-		mpShaderProgram(nullptr),
 		mSheetRows(1),
 		mSheetCols(1),
 		mFrameOffset(0),
@@ -116,12 +116,6 @@ namespace VannoEngine {
 				}
 			}
 		}
-
-		ShaderProgram* pShaderProgram = nullptr;
-		if (pData->HasMember("shaderProgram") && (*pData)["shaderProgram"].IsString()) {
-			mpShaderProgram = pResourceManager->LoadShaderProgram((*pData)["shaderProgram"].GetString());
-		}
-
 	}
 
 	void Sprite::Update(double deltaTime) {
@@ -134,56 +128,24 @@ namespace VannoEngine {
 	}
 
 	void Sprite::Draw() {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mpSurface->GetTextureId());
-		GLuint loc = mpShaderProgram->GetUniformLocation("spriteSheet");
-		glUniform1i(loc, 0);
+		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
 
-		loc = mpShaderProgram->GetUniformLocation("spriteSheetSize");
-		glUniform2f(loc, static_cast<float>(mpSurface->GetWidth()), static_cast<float>(mpSurface->GetHeight()));
+		float spriteSheetWidth = static_cast<float>(mpSurface->GetWidth());
+		float spriteSheetHeight = static_cast<float>(mpSurface->GetHeight());
+		float spriteWidth = static_cast<float>(mpSurface->GetWidth() / mSheetCols);
+		float spriteHeight = static_cast<float>(mpSurface->GetHeight() / mSheetRows);
+		int spriteIndex = mFrameOffset + mFrameIndex;
 
-		loc = mpShaderProgram->GetUniformLocation("spriteSize");
-		glUniform2f(loc, static_cast<float>(mpSurface->GetWidth() / mSheetCols), static_cast<float>(mpSurface->GetHeight() / mSheetRows));
-
-		loc = mpShaderProgram->GetUniformLocation("index");
-		glUniform1f(loc, static_cast<GLfloat>(mFrameOffset + mFrameIndex));
-
-		loc = mpShaderProgram->GetUniformLocation("flipHorizontal");
-		glUniform1i(loc, mFlipHorizontal ? 1 : 0);
-
-		glBindVertexArray(mpSurface->GetVertexArrayId());
-		glBindBuffer(GL_ARRAY_BUFFER, mpSurface->GetVertexBufferId());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mpSurface->GetIndexBufferId());
-
-		glEnableVertexAttribArray(0);
-
-		// Position
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-
-		// Color
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-
-		// Texture coordinates
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-
-		// Unbind the buffer
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	ShaderProgram* Sprite::GetShaderProgram() {
-		return mpShaderProgram;
+		glm::mat4 model(1.0f);
+		
+		Transform* pTransform = static_cast<Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+		if(pTransform) {
+			glm::mat4 t = pTransform->GetTranslationMatrix();
+			glm::mat4 r = pTransform->GetRotationMatrix();
+			glm::mat4 s = pTransform->GetScaleMatrix();
+			model = t * r * s;
+		}
+		pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal);
 	}
 
 	float Sprite::GetHeight() {

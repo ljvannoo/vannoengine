@@ -110,22 +110,7 @@ namespace VannoEngine {
 
 	void Map::Draw(Camera* pCamera) {
 		for (auto it : mLayers) {
-			ShaderProgram* pShaderProgram = it->GetShaderProgram();
-
-			if(pShaderProgram) {
-				pShaderProgram->Use();
-
-				float w = pCamera->GetScreenWidth();
-				float h = pCamera->GetScreenHeight();
-				
-				glm::mat4 projection = pCamera->GetProjectionMatrix();
-				GLuint loc = pShaderProgram->GetUniformLocation("projection");
-				glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
-
-				it->Draw();
-
-				pShaderProgram->Unuse();
-			}
+			it->Draw();
 		}
 	}
 }

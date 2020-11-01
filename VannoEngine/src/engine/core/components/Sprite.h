@@ -16,7 +16,6 @@ Creation Date:	2020-Oct-08
 
 #define SPRITE_COMPONENT "sprite"
 
-#include <GL/glew.h>
 #include <glm/vec2.hpp>
 
 #include <rapidjson/document.h>
@@ -63,9 +62,6 @@ namespace VannoEngine {
 
 		int mSheetRows;
 		int mSheetCols;
-
-		// TODO: Should store the program ID, not a pointer to the program
-		ShaderProgram* mpShaderProgram;
 
 		int mFrameOffset;
 		int mAnimationLength;

@@ -17,7 +17,6 @@ namespace VannoEngine {
 		unsigned int GetVertexArrayId() { return mVaoID; }
 		unsigned int GetIndexBufferId() { return mIboID; }
 		unsigned int GetTextureId() { return mpTexture->id; }
-		GLTexture* GetTexture() { return mpTexture; }
 		int GetHeight() { return mpTexture->height; }
 		int GetWidth() { return mpTexture->width; }
 

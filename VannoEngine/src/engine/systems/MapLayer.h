@@ -28,7 +28,6 @@ namespace VannoEngine {
 	public: // Methods
 		MapLayer() : 
 			mName(""),
-			mpShaderProgram(nullptr), 
 			mPosition(glm::vec2(0.0f, 0.0f)), 
 			mDimensions(glm::vec2(0.0f, 0.0f))
 		{}
@@ -42,13 +41,11 @@ namespace VannoEngine {
 
 		virtual void LoadData(const rapidjson::Value* pData) = 0;
 
-		ShaderProgram* GetShaderProgram() { return mpShaderProgram; }
 		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); }
 		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); }
 		float GetWidth() { return mDimensions.x; }
 		float GetHeight() { return mDimensions.y; }
 	protected:
-		ShaderProgram* mpShaderProgram;
 		glm::vec2 mPosition;
 		glm::vec2 mDimensions;
 		std::string mName;

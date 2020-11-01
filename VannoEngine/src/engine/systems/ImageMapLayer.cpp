@@ -23,12 +23,12 @@ Creation Date:	2020-Oct-29
 
 #include "glm/mat4x4.hpp"
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 #include "engine/Log.h"
 
 namespace VannoEngine {
-	ImageMapLayer::ImageMapLayer()
+	ImageMapLayer::ImageMapLayer() :
+		mpSurface(nullptr)
 	{ }
 
 	ImageMapLayer::~ImageMapLayer() {
@@ -71,8 +71,6 @@ namespace VannoEngine {
 				};
 
 				mpSurface = GraphicsManager::BuildSurface(pTexture, vertexData);
-
-				mpShaderProgram = pResourceManager->LoadShaderProgram("shaders/parallax.shader");
 			}
 		}
 	}
@@ -82,56 +80,14 @@ namespace VannoEngine {
 	}
 
 	void ImageMapLayer::Draw() {
+		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+
+		float imageWidth = static_cast<float>(mpSurface->GetWidth());
+		float imageHeight = static_cast<float>(mpSurface->GetHeight());
+
 		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(0, static_cast<float>(mpSurface->GetHeight()), 0.0f));
-		GLuint loc = mpShaderProgram->GetUniformLocation("model");
-		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
+		model = glm::translate(model, glm::vec3(0, imageHeight, 0.0f));
 
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, mpSurface->GetTextureId());
-		loc = mpShaderProgram->GetUniformLocation("spriteSheet");
-		glUniform1i(loc, 0);
-
-		loc = mpShaderProgram->GetUniformLocation("spriteSheetSize");
-		glUniform2f(loc, static_cast<float>(mpSurface->GetWidth()), static_cast<float>(mpSurface->GetHeight()));
-
-		loc = mpShaderProgram->GetUniformLocation("spriteSize");
-		glUniform2f(loc, static_cast<float>(mpSurface->GetWidth()), static_cast<float>(mpSurface->GetHeight()));
-
-		loc = mpShaderProgram->GetUniformLocation("index");
-		glUniform1f(loc, static_cast<GLfloat>(0));
-
-		loc = mpShaderProgram->GetUniformLocation("flipHorizontal");
-		glUniform1i(loc, 0);
-
-		glBindVertexArray(mpSurface->GetVertexArrayId());
-		glBindBuffer(GL_ARRAY_BUFFER, mpSurface->GetVertexBufferId());
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mpSurface->GetIndexBufferId());
-
-		glEnableVertexAttribArray(0);
-
-		// Position
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-
-		// Color
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-
-		// Texture coordinates
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-
-		// Unbind the buffer
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
+		pGraphicsManager->Render(mpSurface, &model, imageWidth, imageHeight, imageWidth, imageHeight, 0, false);
 	}
 }

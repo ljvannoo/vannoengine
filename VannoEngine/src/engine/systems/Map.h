@@ -37,7 +37,6 @@ namespace VannoEngine {
 	private: // Methods
 
 	private: // Variables
-		//ShaderProgram* mpShaderProgram;
 		int mHeight;		// Height of the map, in tiles
 		int mWidth;			// Width of the map, in tiles
 		int mTileHeight;	// How high an individual tile is, in pixels

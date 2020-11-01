@@ -54,6 +54,15 @@ namespace VannoEngine {
 		void AddSprite(Sprite* pSprite);
 		void SortSprites();
 
+		void Render(
+			Surface* pSurface,
+			glm::mat4* transformation,
+			float spriteSheetWidth,
+			float spriteSheetHeight,
+			float spriteWidth,
+			float spriteHeight,
+			int spriteIndex,
+			bool flipHorizontal);
 		static Surface* BuildSurface(GLTexture* pTexture, Vertex vertexData[4]);
 
 	private:
@@ -65,6 +74,8 @@ namespace VannoEngine {
 		SDL_Window* mpWindow;
 
 		ShaderProgram* mpFontShader;
+		ShaderProgram* mpGeneralShader;
+
 		unsigned int VAO, VBO;
 		std::map<char, Character> Characters;
 
@@ -72,5 +83,6 @@ namespace VannoEngine {
 		SDL_GLContext mContext;
 
 		int mWindowWidth, mWindowHeight;
+
 	};
 }

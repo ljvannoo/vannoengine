@@ -43,6 +43,8 @@ namespace VannoEngine {
 		unsigned int GetVertexBufferId();
 		unsigned int GetVertexArrayId();
 		unsigned int GetIndexBufferId();
+
+		Surface* GetSurface() { return mpSurface; }
 	private: // Methods
 
 	private: // Variables

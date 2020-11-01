@@ -19,7 +19,6 @@ Creation Date:	2020-Oct-29
 
 #include "engine/systems/graphics/GLTexture.h"
 
-#include <GL/glew.h>
 #include <glm/vec2.hpp>
 #include <rapidjson/document.h>
 
