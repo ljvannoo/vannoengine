@@ -116,12 +116,6 @@ namespace VannoEngine {
 		GameObject* pObject = BuildObject(relativeFilePath);
 		if (pObject) {
 			mObjects.push_front(pObject);
-
-			Sprite* pSprite = static_cast<Sprite*>(pObject->GetComponent(SPRITE_COMPONENT));
-			if (pSprite) {
-				GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
-				pGraphicsManager->AddSprite(pSprite);
-			}
 		}
 
 		return pObject;

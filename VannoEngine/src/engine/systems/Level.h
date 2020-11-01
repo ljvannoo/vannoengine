@@ -43,11 +43,10 @@ namespace VannoEngine {
 
 		Camera* GetCamera() { return static_cast<Camera*>(mpCamera->GetComponent(CAMERA_COMPONENT)); }
 	private: // Methods
-		void LoadOverrides(GameObject* pObject, const rapidjson::Value& overrides);
 
 	private: // Variables
 		std::string mName;
-		std::vector<GameObject*> mObjects;
+
 		GameObject* mpCamera;
 		Map* mpMap;
 	};

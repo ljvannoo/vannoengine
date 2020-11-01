@@ -55,7 +55,6 @@ namespace VannoEngine {
 		Level* pLevel = new Level();
 		pLevel->Init(pLevelData);
 		mLevels.push(pLevel);
-		GraphicsManager::GetInstance()->SortSprites();
 	}
 
 	void LevelManager::UnloadLevel() {

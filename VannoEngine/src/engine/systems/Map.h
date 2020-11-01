@@ -21,7 +21,6 @@ namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
 	class MapLayer;
-	class Camera;
 
 	class Map 
 	{
@@ -32,7 +31,9 @@ namespace VannoEngine {
 		~Map();
 
 		void LoadData(const rapidjson::Document* pData);
-		void Draw(Camera* pCamera);
+
+		void Update(double deltaTime);
+		void Draw();
 
 	private: // Methods
 

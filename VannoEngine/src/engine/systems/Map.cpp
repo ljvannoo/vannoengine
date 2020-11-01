@@ -41,8 +41,12 @@ namespace VannoEngine {
 	{ }
 
 	Map::~Map() {
-		// TODO delete layers
-		// TODO delete tilesets
+		for (auto it : mTilesets) {
+			delete it;
+		}
+		for (auto it : mLayers) {
+			delete it;
+		}
 	}
 
 	void Map::LoadData(const rapidjson::Document* pData)
@@ -108,7 +112,13 @@ namespace VannoEngine {
 		}
 	}
 
-	void Map::Draw(Camera* pCamera) {
+	void Map::Update(double deltaTime) {
+		for (auto it : mLayers) {
+			it->Update(deltaTime);
+		}
+	}
+
+	void Map::Draw() {
 		for (auto it : mLayers) {
 			it->Draw();
 		}

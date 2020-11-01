@@ -106,7 +106,9 @@ namespace VannoEngine {
 	}
 
 	void ObjectMapLayer::Update(double deltaTime) {
-
+		for (GameObject* pObject : mObjects) {
+			pObject->Update(deltaTime);
+		}
 	}
 
 	void ObjectMapLayer::Draw() {
