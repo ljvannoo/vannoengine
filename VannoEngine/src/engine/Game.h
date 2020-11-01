@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "engine/systems/EventHandler.h"
+#include "engine/systems/events/EventHandler.h"
 
 #include <string>
 

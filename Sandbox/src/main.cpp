@@ -1,6 +1,6 @@
 #include <VannoEngine.h>
-#include "engine/systems/LevelManager.h"
-#include "engine/core/components/Camera.h"
+#include "engine/systems/levels/LevelManager.h"
+#include "engine/components/Camera.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600

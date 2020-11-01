@@ -14,7 +14,8 @@ Creation Date:	2020-Oct-05
 *************************************************************************/
 
 #include "InputManager.h"
-#include "EventManager.h"
+
+#include "engine/systems/events/EventManager.h"
 
 #include <memory.h>
 

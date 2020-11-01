@@ -12,11 +12,12 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-08
 *************************************************************************/
-
-#include "engine/Log.h"
 #include "Sprite.h"
-#include "Transform.h"
-#include "engine/core/GameObject.h"
+
+#include "engine/core/Log.h"
+
+#include "engine/components/Transform.h"
+#include "engine/systems/objects/GameObject.h"
 
 
 #include <cstddef>
@@ -27,7 +28,7 @@ Creation Date:	2020-Oct-08
 #include "engine/systems/graphics/Surface.h"
 
 #include "engine/systems/ResourceManager.h"
-#include "engine/systems/GraphicsManager.h"
+#include "engine/systems/graphics/GraphicsManager.h"
 
 namespace VannoEngine {
 	Sprite::Sprite(GameObject* owner) :

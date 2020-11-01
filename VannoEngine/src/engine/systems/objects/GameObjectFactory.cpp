@@ -12,19 +12,19 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-15
 *************************************************************************/
-#include "engine/Log.h"
-#include "GameObjectFactory.h"
+#include "engine/core/Log.h"
 
-#include "ResourceManager.h"
-#include "GraphicsManager.h"
-#include "engine/core/GameObject.h"
-#include "engine/core/components/GameComponent.h"
-#include "engine/core/components/Sprite.h"
-#include "engine/core/components/ComponentCreator.h"
+#include "engine/systems/objects/GameObjectFactory.h"
+#include "engine/systems/objects/GameObject.h"
+
+#include "engine/systems/ResourceManager.h"
+#include "engine/systems/graphics/GraphicsManager.h"
+
+#include "engine/components/GameComponent.h"
+#include "engine/components/Sprite.h"
+#include "engine/components/ComponentCreator.h"
 
 #include <rapidjson/document.h>
-
-
 
 namespace VannoEngine {
 	GameObjectFactory* GameObjectFactory::mpInstance = nullptr;

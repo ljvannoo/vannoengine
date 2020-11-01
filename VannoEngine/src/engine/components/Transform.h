@@ -21,7 +21,7 @@ Creation Date:	2020-Oct-16
 
 #include <rapidjson/document.h>
 
-#include "engine/core/components/GameComponent.h"
+#include "engine/components/GameComponent.h"
 
 
 namespace VannoEngine {

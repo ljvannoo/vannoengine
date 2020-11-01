@@ -16,8 +16,8 @@ Creation Date:	2020-Oct-19
 #include "Controller.h"
 #include "Transform.h"
 #include "Sprite.h"
-#include "engine/core/GameObject.h"
-#include "engine/systems/EventManager.h"
+#include "engine/systems/objects/GameObject.h"
+#include "engine/systems/events/EventManager.h"
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/InputManager.h"
 

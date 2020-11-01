@@ -13,9 +13,10 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-08
 *************************************************************************/
 #include "ShaderProgram.h"
-#include "../ResourceManager.h"
 
-#include "engine/Log.h"
+#include "engine/systems/ResourceManager.h"
+
+#include "engine/core/Log.h"
 
 #include <sstream>
 #include <stdexcept>

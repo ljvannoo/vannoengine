@@ -19,8 +19,8 @@ Creation Date:	2020-Oct-19
 
 #include <rapidjson/document.h>
 
-#include "engine/core/components/GameComponent.h"
-#include "engine/systems/EventHandler.h"
+#include "engine/components/GameComponent.h"
+#include "engine/systems/events/EventHandler.h"
 
 namespace VannoEngine {
 	class GameObject;

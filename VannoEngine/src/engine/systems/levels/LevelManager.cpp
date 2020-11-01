@@ -14,11 +14,11 @@ Creation Date:	2020-Oct-21
 *************************************************************************/
 #include "LevelManager.h"
 
-#include "ResourceManager.h"
-#include "GraphicsManager.h"
+#include "engine/systems/ResourceManager.h"
+#include "engine/systems/graphics/GraphicsManager.h"
 
-#include "Level.h"
-#include "engine/core/components/Camera.h"
+#include "engine/systems/levels/Level.h"
+#include "engine/components/Camera.h"
 
 #include <rapidjson/document.h>
 

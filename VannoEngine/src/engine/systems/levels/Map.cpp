@@ -20,11 +20,11 @@ Creation Date:	2020-Oct-29
 #include "TileMapLayer.h"
 #include "Tileset.h"
 
-#include "engine/core/components/Camera.h"
+#include "engine/components/Camera.h"
 
 #include "engine/systems/graphics/ShaderProgram.h"
 
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include "glm/mat4x4.hpp"
 #include <glm/gtc/matrix_transform.hpp>

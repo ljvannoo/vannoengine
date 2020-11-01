@@ -14,7 +14,7 @@ Creation Date:	2020-Oct-16
 *************************************************************************/
 #pragma once
 
-#include "core/components/Sprite.h"
-#include "core/components/Transform.h"
-#include "core/components/Controller.h"
-#include "core/components/Camera.h"
+#include "engine/components/Sprite.h"
+#include "engine/components/Transform.h"
+#include "engine/components/Controller.h"
+#include "engine/components/Camera.h"

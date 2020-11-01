@@ -15,13 +15,13 @@ Creation Date:	2020-Oct-10
 #include "Tileset.h"
 
 #include "engine/systems/ResourceManager.h"
-#include "engine/systems/GraphicsManager.h"
 
+#include "engine/systems/graphics/GraphicsManager.h"
 #include "engine/systems/graphics/Vertex.h"
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Surface.h"
 
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include <string>
 

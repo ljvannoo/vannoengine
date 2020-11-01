@@ -17,11 +17,11 @@ Creation Date:	2020-Oct-29
 #include "Tileset.h"
 
 #include "engine/systems/ResourceManager.h"
-#include "engine/systems/GraphicsManager.h"
+#include "engine/systems/graphics/GraphicsManager.h"
 #include "engine/systems/graphics/ShaderProgram.h"
 #include "engine/systems/graphics/Vertex.h"
 
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include "glm/mat4x4.hpp"
 #include <glm/gtc/matrix_transform.hpp>

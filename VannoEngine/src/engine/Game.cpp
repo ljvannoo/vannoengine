@@ -16,16 +16,16 @@ Creation Date:	2020-Oct-05
 #include "engine/systems/InputManager.h"
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/TimeManager.h"
-#include "engine/systems/EventManager.h"
-#include "engine/systems/GameObjectFactory.h"
-#include "engine/systems/GraphicsManager.h"
-#include "engine/systems/LevelManager.h"
+#include "engine/systems/events/EventManager.h"
+#include "engine/systems/objects/GameObjectFactory.h"
+#include "engine/systems/graphics/GraphicsManager.h"
+#include "engine/systems/levels/LevelManager.h"
 
-#include "engine/core/GameObject.h"
-#include "engine/core/components/Components.h"
-#include "engine/core/components/ComponentCreator.h"
+#include "engine/systems/objects/GameObject.h"
+#include "engine/components/Components.h"
+#include "engine/components/ComponentCreator.h"
 
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include <SDL_events.h>
 

@@ -12,10 +12,10 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-24
 *************************************************************************/
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include "GameObject.h"
-#include "engine/core/components/GameComponent.h"
+#include "engine/components/GameComponent.h"
 
 #include "engine/util/uuid.h"
 

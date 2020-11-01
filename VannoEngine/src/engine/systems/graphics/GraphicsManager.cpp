@@ -13,22 +13,23 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-14
 *************************************************************************/
 #include "GraphicsManager.h"
-#include "GameObjectFactory.h"
-#include "LevelManager.h"
-#include "ResourceManager.h"
-#include "TimeManager.h"
-#include "FramerateController.h"
-#include "engine/core/GameObject.h"
 
-#include "engine/core/components/Sprite.h"
-#include "engine/core/components/Transform.h"
-#include "engine/core/components/Camera.h"
+#include "engine/systems/objects/GameObjectFactory.h"
+#include "engine/systems/levels/LevelManager.h"
+#include "engine/systems/ResourceManager.h"
+#include "engine/systems/TimeManager.h"
+#include "engine/systems/FramerateController.h"
+#include "engine/systems/objects/GameObject.h"
+
+#include "engine/components/Sprite.h"
+#include "engine/components/Transform.h"
+#include "engine/components/Camera.h"
 
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Vertex.h"
 #include "engine/systems/graphics/Surface.h"
 
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include <GL/glew.h>
 #include <glm/gtc/matrix_transform.hpp>

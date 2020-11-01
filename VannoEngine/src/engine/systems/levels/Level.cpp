@@ -12,15 +12,16 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-21
 *************************************************************************/
-#include "engine/Log.h"
 #include "Level.h"
 
-#include "GameObjectFactory.h"
-#include "ResourceManager.h"
+#include "engine/core/Log.h"
+
+#include "engine/systems/objects/GameObjectFactory.h"
+#include "engine/systems/ResourceManager.h"
 
 #include "Map.h"
 
-#include "engine/core/components/GameComponent.h"
+#include "engine/components/GameComponent.h"
 
 namespace VannoEngine {
 	Level::Level() :

@@ -20,7 +20,7 @@ Creation Date:	2020-Oct-08
 
 #include <rapidjson/document.h>
 
-#include "engine/core/components/GameComponent.h"
+#include "engine/components/GameComponent.h"
 #include "engine/systems/ResourceManager.h"
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/ShaderProgram.h"

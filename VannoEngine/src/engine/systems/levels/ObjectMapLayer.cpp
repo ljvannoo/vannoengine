@@ -12,14 +12,16 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-31
 *************************************************************************/
-#include "engine/Log.h"
 
 #include "ObjectMapLayer.h"
-#include "GameObjectFactory.h"
 
-#include "engine/core/GameObject.h"
-#include "engine/core/components/Transform.h"
-#include "engine/core/components/Sprite.h"
+#include "engine/core/Log.h"
+
+#include "engine/systems/objects/GameObjectFactory.h"
+
+#include "engine/systems/objects/GameObject.h"
+#include "engine/components/Transform.h"
+#include "engine/components/Sprite.h"
 
 namespace VannoEngine {
 	ObjectMapLayer::ObjectMapLayer(float width, float height) : 

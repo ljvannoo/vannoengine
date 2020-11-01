@@ -16,8 +16,8 @@ Creation Date:	2020-Oct-21
 
 
 
-#include "engine/core/GameObject.h"
-#include "engine/core/components/Camera.h"
+#include "engine/systems/objects/GameObject.h"
+#include "engine/components/Camera.h"
 
 #include <rapidjson/document.h>
 

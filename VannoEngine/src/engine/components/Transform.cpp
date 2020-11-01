@@ -14,7 +14,7 @@ Creation Date:	2020-Oct-16
 *************************************************************************/
 #include "Transform.h"
 
-#include "engine/core/GameObject.h"
+#include "engine/systems/objects/GameObject.h"
 
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
