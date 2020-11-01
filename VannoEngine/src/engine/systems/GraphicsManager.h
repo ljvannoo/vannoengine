@@ -52,9 +52,6 @@ namespace VannoEngine {
 		void EndDraw();
 		void RenderText(std::string text, float x, float y, float scale, glm::vec3 color);
 
-		void AddSprite(Sprite* pSprite);
-		void SortSprites();
-
 		void Render(
 			Surface* pSurface,
 			glm::mat4* transformation,
@@ -80,7 +77,6 @@ namespace VannoEngine {
 		unsigned int VAO, VBO;
 		std::map<char, Character> Characters;
 
-		std::vector<Sprite*> mSprites;
 		SDL_GLContext mContext;
 
 		int mWindowWidth, mWindowHeight;

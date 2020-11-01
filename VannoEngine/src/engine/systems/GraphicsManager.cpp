@@ -381,17 +381,6 @@ namespace VannoEngine {
 		SDL_GL_SwapWindow(mpWindow);
 	}
 
-	void GraphicsManager::AddSprite(Sprite* pSprite) {
-		mSprites.push_back(pSprite);
-	}
-	bool CompareSprites(Sprite* lhs, Sprite* rhs) {
-		return lhs->GetZOrder() < rhs->GetZOrder();
-	}
-
-	void GraphicsManager::SortSprites() {
-		std::sort(mSprites.begin(), mSprites.end(), CompareSprites);
-	}
-
 	Surface* GraphicsManager::BuildSurface(GLTexture* pTexture, Vertex vertexData[4]) {
 		if (!pTexture) {
 			LOG_CORE_ERROR("Unable to build surface from null texture!");
