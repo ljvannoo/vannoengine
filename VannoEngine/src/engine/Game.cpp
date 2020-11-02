@@ -57,6 +57,7 @@ namespace VannoEngine {
 		mpObjectFactory->RegisterComponent(TRANSFORM_COMPONENT, new ComponentCreator<Transform>());
 		mpObjectFactory->RegisterComponent(CONTROLLER_COMPONENT, new ComponentCreator<Controller>());
 		mpObjectFactory->RegisterComponent(CAMERA_COMPONENT, new ComponentCreator<Camera>());
+		mpObjectFactory->RegisterComponent(PHYSICSBODY_COMPONENT, new ComponentCreator<PhysicsBody>());
 
 		mpGraphicsManager = GraphicsManager::GetInstance();
 		mpGraphicsManager->Init(windowWidth, windowHeight);

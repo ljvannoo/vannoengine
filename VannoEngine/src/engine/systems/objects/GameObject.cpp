@@ -51,12 +51,12 @@ namespace VannoEngine {
 		// Using a map to store components means that objects can only have one component of a given type.
 		// So, if the component already exists, delete it
 		if(pComponent) {
-		if (mComponents[pComponent->GetType()]) {
-			GameComponent* pComp = mComponents[pComponent->GetType()];
-			mComponents.erase(pComponent->GetType());
-			delete mComponents[pComponent->GetType()];
-		}
-		mComponents[pComponent->GetType()] = pComponent;
+			if (mComponents[pComponent->GetType()]) {
+				GameComponent* pComp = mComponents[pComponent->GetType()];
+				mComponents.erase(pComponent->GetType());
+				delete mComponents[pComponent->GetType()];
+			}
+			mComponents[pComponent->GetType()] = pComponent;
 		}
 		else {
 			LOG_CORE_ERROR("Unable to attach a null component to '{0}'", mName);
@@ -64,10 +64,15 @@ namespace VannoEngine {
 	}
 
 	GameComponent* GameObject::GetComponent(std::string componentName) {
-		return mComponents[componentName];
+		if(HasComponent(componentName)) {
+			return mComponents[componentName];
+		}
+		else {
+			return nullptr;
+		}
 	}
 
 	bool GameObject::HasComponent(std::string componentName) {
-		return (mComponents[componentName] != nullptr);
+		return (mComponents.find(componentName) != mComponents.end());
 	}
 }

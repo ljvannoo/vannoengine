@@ -82,13 +82,21 @@ namespace VannoEngine {
 
 			for (rapidjson::SizeType i = 0; i < components.Size(); i++) {
 				const rapidjson::Value& componentData = components[i];
+				LOG_CORE_INFO("Loading component {0} for object {1}", componentData["type"].GetString(), pObject->GetName());
 				ComponentCreatorInterface* pComponentCreator = mCreators[componentData["type"].GetString()];
 				GameComponent* pComponent = pObject->GetComponent(componentData["type"].GetString());
 				if (pComponent) {
-					pComponent->LoadData(&componentData["data"].GetObject());
+					if(componentData.HasMember("data")) {
+						pComponent->LoadData(&componentData["data"].GetObject());
+					}
 				}
 				else {
-					pComponent = pComponentCreator->Create(pObject, &componentData["data"].GetObject());
+					if (componentData.HasMember("data")) {
+						pComponent = pComponentCreator->Create(pObject, &componentData["data"].GetObject());
+					}
+					else {
+						pComponent = pComponentCreator->Create(pObject, nullptr);
+					}
 					pObject->AttachComponent(pComponent);
 				}
 

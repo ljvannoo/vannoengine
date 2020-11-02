@@ -21,6 +21,7 @@ Creation Date:	2020-Oct-31
 
 #include "engine/systems/objects/GameObject.h"
 #include "engine/components/Transform.h"
+#include "engine/components/PhysicsBody.h"
 #include "engine/components/Sprite.h"
 
 namespace VannoEngine {
@@ -76,27 +77,38 @@ namespace VannoEngine {
 				if (pGameObject) {
 					if (object.HasMember("name") && object["name"].IsString()) {
 						pGameObject->SetName(object["name"].GetString());
-						LOG_CORE_INFO("\tLoading object '{0}'", pGameObject->GetName());
 					}
-					if (pGameObject->HasComponent(TRANSFORM_COMPONENT)) {
-						Transform* pTransform = static_cast<Transform*>(pGameObject->GetComponent(TRANSFORM_COMPONENT));
-						if (pTransform) {
-							if (object.HasMember("x") && object["x"].IsNumber()) {
-								pTransform->SetPositionX(object["x"].GetFloat());
-							}
+					
+					Transform* pTransform = static_cast<Transform*>(pGameObject->GetComponent(TRANSFORM_COMPONENT));
+					if (pTransform) {
+						if (object.HasMember("x") && object["x"].IsNumber()) {
+							pTransform->SetPositionX(object["x"].GetFloat());
+						}
 
-							if (object.HasMember("y") && object["y"].IsNumber()) {
-								pTransform->SetPositionY(GetHeight() - object["y"].GetFloat());
-							}
-
-							Sprite* pSprite = static_cast<Sprite*>(pGameObject->GetComponent(SPRITE_COMPONENT));
-							if (pSprite) {
-								pTransform->SetPositionY(pTransform->GetPosition().y + pSprite->GetHeight()/2.0f);
-							}
+						if (object.HasMember("y") && object["y"].IsNumber()) {
+							pTransform->SetPositionY(GetHeight() - object["y"].GetFloat());
+						}
+						
+						Sprite* pSprite = static_cast<Sprite*>(pGameObject->GetComponent(SPRITE_COMPONENT));
+						if (pSprite) {
+							pTransform->SetPositionY(pTransform->GetPosition().y + pSprite->GetHeight()/2.0f);
 						}
 					}
 					else {
 						LOG_CORE_ERROR("Game object has no transform!");
+					}
+					PhysicsBody* pBody = static_cast<PhysicsBody*>(pGameObject->GetComponent(PHYSICSBODY_COMPONENT));
+					if (pBody) {
+						float width = 0.0f;
+						if (object.HasMember("width") && object["width"].IsNumber()) {
+							width = object["width"].GetFloat();
+						}
+
+						float height = 0.0f;
+						if (object.HasMember("height") && object["height"].IsNumber()) {
+							height = object["height"].GetFloat();
+						}
+						pBody->SetDimensions(width, height);
 					}
 					mObjects.push_back(pGameObject);
 				}

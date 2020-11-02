@@ -40,6 +40,8 @@ namespace VannoEngine {
 		GameComponent* GetComponent(std::string componentName);
 		bool HasComponent(std::string componentName);
 
+		size_t GetComponentCount() { return mComponents.size(); }
+
 		void SetParentObject(GameObject* pParentObject) { mpParentObject = pParentObject; }
 		GameObject* GetParentObject() { return mpParentObject; }
 

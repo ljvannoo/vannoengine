@@ -28,8 +28,10 @@
       }
     },
     {
-      "type": "controller",
-      "data": {}
+      "type": "controller"
+    },
+    {
+      "type": "physicsbody"
     }
   ]
 }

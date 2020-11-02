@@ -29,7 +29,9 @@ namespace VannoEngine {
 
 		GameComponent* Create(GameObject* owner, const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
 			GameComponent* pComponent = static_cast<GameComponent*>(new T(owner));
-			pComponent->LoadData(pData);
+			if(pData) {
+				pComponent->LoadData(pData);
+			}
 			return pComponent;
 		}
 	};

@@ -13,9 +13,10 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-13
 *************************************************************************/
 #include "EventManager.h"
-#include "TimeManager.h"
-#include "EventHandler.h"
 
+#include "engine/systems/events/EventHandler.h"
+
+#include "engine/systems/TimeManager.h"
 
 
 namespace VannoEngine {
