@@ -14,6 +14,9 @@ Creation Date:	2020-Oct-19
 *************************************************************************/
 
 #include "Controller.h"
+
+#include "engine/core/Log.h"
+
 #include "Transform.h"
 #include "Sprite.h"
 #include "engine/systems/objects/GameObject.h"
@@ -30,10 +33,11 @@ namespace VannoEngine {
 	void Controller::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
 		EventManager* pEventManager = EventManager::GetInstance();
 
-		pEventManager->Subscribe(EVT_MOVE, this);
+		pEventManager->Subscribe(EVT_INPUT, this);
 	}
 
 	void Controller::Update(double deltaTime) {
+		/*
 		InputManager* pInputManager = InputManager::GetInstance();
 
 		Sprite* pSprite = static_cast<Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
@@ -49,15 +53,18 @@ namespace VannoEngine {
 				pSprite->SetAnimationDuration(0.2);
 			}
 		}
+		*/
 	}
 
 	void Controller::HandleEvent(std::string eventName, std::string data) {
-		if (eventName == EVT_MOVE) {
+		if (eventName == EVT_INPUT) {
 			GameObject* pObject = GetOwner();
 			Transform* pTransform = static_cast<Transform*>(pObject->GetComponent(TRANSFORM_COMPONENT));
 			Sprite* pSprite = static_cast<Sprite*>(pObject->GetComponent(SPRITE_COMPONENT));
 			if (pTransform) {
 				FramerateController* pFramerateController = FramerateController::GetInstance();
+
+				LOG_CORE_DEBUG("Controller handling input action: {0}", data);
 				// TODO Handle input
 				/*if (data == "up") {
 					pTransform->SetPositionY(pTransform->GetPosition().y + pTransform->GetSpeed() * static_cast<float>(pFramerateController->GetDeltaTime()));

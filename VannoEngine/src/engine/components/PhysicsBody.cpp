@@ -19,6 +19,7 @@ Creation Date:	2020-Nov-01
 
 #include "engine/systems/objects/GameObject.h"
 
+#include "SDL_keyboard.h"
 #include <math.h>
 namespace VannoEngine {
 	AABB::AABB() :
@@ -72,7 +73,7 @@ namespace VannoEngine {
 
 			// Check to see if on the ground
 			if (position.y < 0.0f) {
-				position.y == 0.0f;
+				position.y = 0.0f;
 				mOnGround = true;
 			}
 			else {

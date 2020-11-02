@@ -17,8 +17,9 @@ Creation Date:	2020-Oct-05
 
 #include "engine/systems/events/EventManager.h"
 
-#include <memory.h>
+#include <SDL_keyboard.h>
 
+#include <memory.h>
 
 namespace VannoEngine {
 	InputManager* InputManager::mpInstance = nullptr;
@@ -40,8 +41,18 @@ namespace VannoEngine {
 	}
 
 	void InputManager::Init() {
-		memset(mCurrentState, 0, 512 * sizeof(Uint8));
-		memset(mPreviousState, 0, 512 * sizeof(Uint8));
+		memset(mCurrentState, 0, 512 * sizeof(unsigned int));
+		memset(mPreviousState, 0, 512 * sizeof(unsigned int));
+
+		mScanCodes[Key::W] = SDL_SCANCODE_W;
+		mScanCodes[Key::A] = SDL_SCANCODE_A;
+		mScanCodes[Key::S] = SDL_SCANCODE_S;
+		mScanCodes[Key::D] = SDL_SCANCODE_D;
+	}
+
+	void InputManager::RegisterKey(Key key, std::string action) {
+		SDL_Scancode scancode = (SDL_Scancode)mScanCodes[key];
+		mKeyRegistry[scancode] = action;
 	}
 
 	void InputManager::Update() {
@@ -57,23 +68,12 @@ namespace VannoEngine {
 
 	void InputManager::HandleInput() {
 		Update();
-		// TODO: Generalize this
-		if (IsKeyPressed(SDL_SCANCODE_W)) {
-			mpEventManager->Notify(EVT_MOVE, "up");
-		}
 
-		if (IsKeyPressed(SDL_SCANCODE_A)) {
-			mpEventManager->Notify(EVT_MOVE, "left");
+		for (auto pair : mKeyRegistry) {
+			if (IsKeyPressed(pair.first)) {
+				mpEventManager->Notify(EVT_INPUT, pair.second);
+			}
 		}
-
-		if (IsKeyPressed(SDL_SCANCODE_S)) {
-			mpEventManager->Notify(EVT_MOVE, "down");
-		}
-
-		if (IsKeyPressed(SDL_SCANCODE_D)) {
-			mpEventManager->Notify(EVT_MOVE, "right");
-		}
-
 	}
 
 	bool InputManager::IsKeyTriggered(unsigned int scancode) {

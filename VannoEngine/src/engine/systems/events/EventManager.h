@@ -21,7 +21,7 @@ Creation Date:	2020-Oct-13
 
 
 
-#define EVT_MOVE "move"
+#define EVT_INPUT "input"
 
 namespace VannoEngine {
 	class EventHandler;

@@ -14,11 +14,12 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-05
 *************************************************************************/
 
-#include <SDL_keyboard.h>
+#include <unordered_map>
 
 namespace VannoEngine {
 	class EventManager;
-
+	
+	enum class Key {W, A, S, D};
 	class InputManager
 	{
 	public:
@@ -26,6 +27,9 @@ namespace VannoEngine {
 		~InputManager();
 
 		void Init();
+		
+		void RegisterKey(Key key, std::string action);
+		
 		void Update();
 
 		void HandleInput();
@@ -39,9 +43,12 @@ namespace VannoEngine {
 	private:
 		static InputManager* mpInstance;
 
-		Uint8 mCurrentState[512];
-		Uint8 mPreviousState[512];
+		unsigned int mCurrentState[512];
+		unsigned int mPreviousState[512];
 
 		EventManager* mpEventManager;
+
+		std::unordered_map<unsigned int, std::string> mKeyRegistry;
+		std::unordered_map<Key, unsigned int> mScanCodes;
 	};
 }
