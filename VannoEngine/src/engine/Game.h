@@ -29,8 +29,6 @@ namespace VannoEngine {
 		void Init(int windowWidth, int windowHeight, int fpsCap);
 		void Run();
 	private:
-		void Update();
-		void Draw();
 
 		void HandleEvent(std::string eventName, std::string data);
 	private:

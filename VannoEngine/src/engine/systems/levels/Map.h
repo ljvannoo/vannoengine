@@ -32,6 +32,7 @@ namespace VannoEngine {
 
 		void LoadData(const rapidjson::Document* pData);
 
+		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);
 		void Draw();
 

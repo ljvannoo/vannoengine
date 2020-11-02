@@ -37,6 +37,7 @@ namespace VannoEngine {
 
 		void Init(rapidjson::Document* pLevelData);
 
+		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);
 
 		void Draw();

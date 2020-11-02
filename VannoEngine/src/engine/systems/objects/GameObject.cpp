@@ -16,6 +16,7 @@ Creation Date:	2020-Oct-24
 
 #include "GameObject.h"
 #include "engine/components/GameComponent.h"
+#include "engine/components/PhysicsBody.h"
 
 #include "engine/util/uuid.h"
 
@@ -32,13 +33,22 @@ namespace VannoEngine {
 		mComponents.clear();
 	}
 
-	void GameObject::Update(double deltaTime) {
+	void GameObject::UpdatePhysics(double deltaTime) {
 		for (auto pair : mComponents) {
-			if(pair.second) {
+			if (pair.first == PHYSICSBODY_COMPONENT) {
 				pair.second->Update(deltaTime);
 			}
-			else {
-				LOG_CORE_ERROR("Component '{0}' on object '{1}' is null!", pair.first, mName);
+		}
+
+		for (GameObject* pObject : mChildObjects) {
+			pObject->UpdatePhysics(deltaTime);
+		}
+	}
+
+	void GameObject::Update(double deltaTime) {
+		for (auto pair : mComponents) {
+			if(pair.first != PHYSICSBODY_COMPONENT) {
+				pair.second->Update(deltaTime);
 			}
 		}
 

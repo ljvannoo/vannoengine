@@ -35,6 +35,7 @@ namespace VannoEngine {
 
 		void LoadData(const rapidjson::Value* pData) override;
 		
+		void UpdatePhysics(double deltaTime) override;
 		void Update(double deltaTime) override;
 		void Draw() override;
 

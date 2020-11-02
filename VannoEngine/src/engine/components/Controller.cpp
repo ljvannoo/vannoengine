@@ -58,7 +58,8 @@ namespace VannoEngine {
 			Sprite* pSprite = static_cast<Sprite*>(pObject->GetComponent(SPRITE_COMPONENT));
 			if (pTransform) {
 				FramerateController* pFramerateController = FramerateController::GetInstance();
-				if (data == "up") {
+				// TODO Handle input
+				/*if (data == "up") {
 					pTransform->SetPositionY(pTransform->GetPosition().y + pTransform->GetSpeed() * static_cast<float>(pFramerateController->GetDeltaTime()));
 				}
 				else if (data == "down") {
@@ -75,7 +76,7 @@ namespace VannoEngine {
 						pSprite->FlipHorizontal();
 					}
 					pTransform->SetPositionX(pTransform->GetPosition().x - pTransform->GetSpeed() * static_cast<float>(pFramerateController->GetDeltaTime()));
-				}
+				}*/
 			}
 		}
 	}

@@ -34,6 +34,7 @@ namespace VannoEngine {
 
 		virtual ~MapLayer() {}
 
+		virtual void UpdatePhysics(double deltaTime) {};
 		virtual void Update(double deltaTime) = 0;
 		virtual void Draw() = 0;
 

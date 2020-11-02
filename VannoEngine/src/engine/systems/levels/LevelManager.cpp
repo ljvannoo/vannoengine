@@ -43,6 +43,11 @@ namespace VannoEngine {
 		}
 	}
 
+	void LevelManager::UpdatePhysics(double deltaTime) {
+		Level* pLevel = GetCurrentLevel();
+		pLevel->UpdatePhysics(deltaTime);
+	}
+
 	void LevelManager::Update(double deltaTime) {
 		Level* pLevel = GetCurrentLevel();
 		pLevel->Update(deltaTime);

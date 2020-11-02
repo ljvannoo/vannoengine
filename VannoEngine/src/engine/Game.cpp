@@ -90,21 +90,23 @@ namespace VannoEngine {
 					IsRunning = false;
 				}
 			}
-
+			// Input
 			mpInputManager->HandleInput();
-			Update();
 
+			// Physics
+			mpLevelManager->UpdatePhysics(mpFramerateManager->GetDeltaTime());
+
+			// Update
+			mpEventManager->Update();
+			mpLevelManager->Update(mpFramerateManager->GetDeltaTime());
+
+			// Draw
 			mpGraphicsManager->StartDraw();
 			LevelManager::GetInstance()->Draw();
 			mpGraphicsManager->EndDraw();
 
 			mpFramerateManager->EndFrame();
 		}
-	}
-
-	void Game::Update() {
-		mpEventManager->Update();
-		mpLevelManager->Update(mpFramerateManager->GetDeltaTime());
 	}
 
 	void Game::HandleEvent(std::string eventName, std::string data) {

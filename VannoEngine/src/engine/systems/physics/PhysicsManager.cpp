@@ -1,0 +1,35 @@
+/************************************************************************
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+
+File Name:		PhysicsManager.cpp
+Purpose:		Implementation of a physics manager
+Language:		C++
+Platform:		Windows 10, Microsoft Visual Studio 2019
+
+Project:		CS529 - Final Project
+Author:			Lukas VanNoord, lukas.vannoord, 60001020
+Creation Date:	2020-Nov-02
+*************************************************************************/
+#include "PhysicsManager.h"
+
+namespace VannoEngine {
+	PhysicsManager* PhysicsManager::mpInstance = nullptr;
+
+	PhysicsManager* PhysicsManager::GetInstance() {
+		if (!mpInstance) {
+			mpInstance = new PhysicsManager;
+		}
+
+		return mpInstance;
+	}
+
+	PhysicsManager::PhysicsManager() {
+
+	}
+
+	PhysicsManager::~PhysicsManager() {
+
+	}
+}

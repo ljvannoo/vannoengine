@@ -29,6 +29,7 @@ namespace VannoEngine {
 		GameObject();
 		~GameObject();
 
+		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);
 
 		void SetName(std::string name) { mName = name; }

@@ -49,7 +49,8 @@ namespace VannoEngine {
 		void SetPositionY(float y) { mPosition.y = y; }
 		void SetScale(float x, float y) { mScale = glm::vec2(x, y); }
 
-		float GetSpeed() { return mSpeed; }
+		void SetSpeed(float x, float y) { mSpeed = glm::vec2(x, y); }
+		glm::vec2 GetSpeed() { return mSpeed; }
 
 		glm::mat4 GetTranslationMatrix();
 		glm::mat4 GetRotationMatrix();
@@ -58,7 +59,7 @@ namespace VannoEngine {
 	private:
 		glm::vec2 mScale;
 		glm::vec2 mPosition;
+		glm::vec2 mSpeed;
 		float mRotation;
-		float mSpeed;
 	};
 }

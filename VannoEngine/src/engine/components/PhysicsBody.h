@@ -22,6 +22,20 @@ Creation Date:	2020-Nov-01
 #include <string>
 
 namespace VannoEngine {
+	class AABB {
+	public:
+		glm::vec2 center;
+		float halfWidth;
+		float halfHeight;
+
+		AABB();
+		AABB(float x, float y, float width, float height);
+
+		~AABB() {};
+
+		bool Collides(AABB const& other);
+	};
+
 	class PhysicsBody : public GameComponent
 	{
 	public: // Variables
@@ -35,13 +49,20 @@ namespace VannoEngine {
 
 		void Update(double deltaTime);
 
-		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); }
-		float GetWidth() { return mDimensions.x; }
-		float GetHeight() { return mDimensions.y; }
+		void SetWidth(float width) { mAabb.halfWidth = width / 2.0f; }
+		void SetHeight(float height) { mAabb.halfHeight = height / 2.0f; }
 
 	private: // Methods
 
 	private: // Variables
-		glm::vec2 mDimensions;
+		AABB mAabb;
+		glm::vec2 mAabbOffset;
+		
+		glm::vec2 mOldPosition;
+
+		glm::vec2 mOldSpeed;
+
+		bool mWasOnGround;
+		bool mOnGround;
 	};
 }

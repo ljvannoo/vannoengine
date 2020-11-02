@@ -56,6 +56,10 @@ namespace VannoEngine {
 		}
 	}
 
+	void Level::UpdatePhysics(double deltaTime) {
+		mpMap->UpdatePhysics(deltaTime);
+	}
+
 	void Level::Update(double deltaTime) {
 		mpCamera->Update(deltaTime);
 		mpMap->Update(deltaTime);

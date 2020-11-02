@@ -99,16 +99,14 @@ namespace VannoEngine {
 					}
 					PhysicsBody* pBody = static_cast<PhysicsBody*>(pGameObject->GetComponent(PHYSICSBODY_COMPONENT));
 					if (pBody) {
-						float width = 0.0f;
 						if (object.HasMember("width") && object["width"].IsNumber()) {
-							width = object["width"].GetFloat();
+							pBody->SetWidth(object["width"].GetFloat());
 						}
 
 						float height = 0.0f;
 						if (object.HasMember("height") && object["height"].IsNumber()) {
-							height = object["height"].GetFloat();
+							pBody->SetHeight(object["height"].GetFloat());
 						}
-						pBody->SetDimensions(width, height);
 					}
 					mObjects.push_back(pGameObject);
 				}
@@ -116,6 +114,12 @@ namespace VannoEngine {
 					LOG_CORE_ERROR("Failed to load game object");
 				}
 			}
+		}
+	}
+
+	void ObjectMapLayer::UpdatePhysics(double deltaTime) {
+		for (GameObject* pObject : mObjects) {
+			pObject->UpdatePhysics(deltaTime);
 		}
 	}
 

@@ -112,6 +112,12 @@ namespace VannoEngine {
 		}
 	}
 
+	void Map::UpdatePhysics(double deltaTime) {
+		for (auto it : mLayers) {
+			it->UpdatePhysics(deltaTime);
+		}
+	}
+
 	void Map::Update(double deltaTime) {
 		for (auto it : mLayers) {
 			it->Update(deltaTime);

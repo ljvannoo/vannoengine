@@ -32,6 +32,7 @@ namespace VannoEngine {
 		void LoadLevel(const std::string& relativePath);
 		void UnloadLevel();
 
+		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);
 		void Draw();
 
