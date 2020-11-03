@@ -13,11 +13,10 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-10
 *************************************************************************/
-#include <GL/glew.h>
 
 namespace VannoEngine {
 	struct GLTexture {
-		GLuint id;
+		unsigned int id;
 
 		int width;
 		int height;

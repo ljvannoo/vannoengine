@@ -50,6 +50,9 @@ namespace VannoEngine {
 		void SetScale(float x, float y) { mScale = glm::vec2(x, y); }
 
 		void SetSpeed(float x, float y) { mSpeed = glm::vec2(x, y); }
+		void SetSpeedX(float x) { mSpeed.x = x; }
+		void SetSpeedY(float y) { mSpeed.y = y; }
+		void IncreaseSpeed(glm::vec2 increment) { mSpeed.x += increment.x; mSpeed.y += increment.y; }
 		glm::vec2 GetSpeed() { return mSpeed; }
 
 		glm::mat4 GetTranslationMatrix();

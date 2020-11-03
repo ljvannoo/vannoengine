@@ -20,25 +20,30 @@ Creation Date:	2020-Oct-19
 #include <rapidjson/document.h>
 
 #include "engine/components/GameComponent.h"
-#include "engine/systems/events/EventHandler.h"
+#include "engine/systems/objects/GameObject.h"
 
-namespace VannoEngine {
-	class GameObject;
+enum State {
+	Stand,
+	Walk,
+	Jump
+};
 
-	class Controller : public GameComponent, public EventHandler
-	{
-	public:
-		Controller(GameObject* owner) : GameComponent(owner) {}
-		~Controller() override;
+class Controller : public VannoEngine::GameComponent
+{
+public:
+	Controller(VannoEngine::GameObject* owner);
+	~Controller() override;
 
-		void Update(double deltaTime);
+	void Update(double deltaTime);
 
-		void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
+	void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
 
-		std::string GetType() override {
-			return CONTROLLER_COMPONENT;
-		}
-
-		void HandleEvent(std::string eventName, std::string data) override;
-	};
-}
+	std::string GetType() override {
+		return CONTROLLER_COMPONENT;
+	}
+private:
+	State mCurrentState;
+	const float cWalkSpeed = 300.0f;
+	const float cJumpSpeed = 800.0f;
+	const float cMinJumpSpeed = 200.0f;
+};

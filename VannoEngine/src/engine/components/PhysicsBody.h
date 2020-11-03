@@ -52,6 +52,9 @@ namespace VannoEngine {
 		void SetWidth(float width) { mAabb.halfWidth = width / 2.0f; }
 		void SetHeight(float height) { mAabb.halfHeight = height / 2.0f; }
 
+		bool IsOnGround() { return mOnGround; }
+		void SetOnGround(bool state) { mOnGround = state; }
+
 	private: // Methods
 
 	private: // Variables

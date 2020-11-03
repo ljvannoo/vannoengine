@@ -28,6 +28,7 @@ Creation Date:	2020-Oct-14
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Vertex.h"
 #include "engine/systems/graphics/Surface.h"
+#include "engine/systems/graphics/ShaderProgram.h"
 
 #include "engine/core/Log.h"
 

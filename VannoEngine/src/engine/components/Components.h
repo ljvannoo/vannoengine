@@ -16,6 +16,5 @@ Creation Date:	2020-Oct-16
 
 #include "engine/components/Sprite.h"
 #include "engine/components/Transform.h"
-#include "engine/components/Controller.h"
 #include "engine/components/Camera.h"
 #include "engine/components/PhysicsBody.h"

@@ -15,12 +15,16 @@ Creation Date:	2020-Nov-01
 
 #include "PhysicsBody.h"
 
+#include "engine/core/Log.h"
+
 #include "Transform.h"
 
 #include "engine/systems/objects/GameObject.h"
 
-#include "SDL_keyboard.h"
+#include "engine/systems/physics/PhysicsManager.h"
+
 #include <math.h>
+#include <algorithm>
 namespace VannoEngine {
 	AABB::AABB() :
 		center(glm::vec2(0.0f, 0.0f)),
@@ -56,6 +60,8 @@ namespace VannoEngine {
 	}
 
 	void PhysicsBody::Update(double deltaTime) {
+		float dT = (float)deltaTime;
+		PhysicsManager* pPhysicsManager = PhysicsManager::GetInstance();
 		GameObject* pObject = GetOwner();
 		Transform* pTransform = static_cast<Transform*>(pObject->GetComponent(TRANSFORM_COMPONENT));
 
@@ -68,12 +74,19 @@ namespace VannoEngine {
 
 			mWasOnGround = mOnGround;
 
+			// Update Speed
+			speed.y += pPhysicsManager->GetGravity();
+			if (speed.x > -1.0f && speed.x < 1.0f) {
+				speed.x = 0.0f;
+			}
+
 			// Update position
-			position += speed * (float)deltaTime;
+			position += speed * dT;
 
 			// Check to see if on the ground
-			if (position.y < 0.0f) {
-				position.y = 0.0f;
+			if (position.y < 200.0f) {
+				position.y = 200.0f;
+				speed.y = 0.0f;
 				mOnGround = true;
 			}
 			else {
@@ -84,6 +97,7 @@ namespace VannoEngine {
 			mAabb.center = position + mAabbOffset;
 
 			pTransform->SetPosition(position.x, position.y);
+			pTransform->SetSpeed(speed.x, speed.y);
 		}
 	}
 }

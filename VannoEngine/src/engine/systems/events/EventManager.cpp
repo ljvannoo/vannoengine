@@ -14,6 +14,8 @@ Creation Date:	2020-Oct-13
 *************************************************************************/
 #include "EventManager.h"
 
+#include "engine/core/Log.h"
+
 #include "engine/systems/events/EventHandler.h"
 
 #include "engine/systems/TimeManager.h"

@@ -21,6 +21,8 @@ namespace VannoEngine {
 		static PhysicsManager* GetInstance();
 		~PhysicsManager();
 
+		float GetGravity() { return -50.0f; }
+		float GetMaxFallingSpeed() { return 20.0f; }
 	private:
 		PhysicsManager();
 

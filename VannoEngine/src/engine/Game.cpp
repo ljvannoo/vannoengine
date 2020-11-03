@@ -55,7 +55,6 @@ namespace VannoEngine {
 
 		mpObjectFactory->RegisterComponent(SPRITE_COMPONENT, new ComponentCreator<Sprite>());
 		mpObjectFactory->RegisterComponent(TRANSFORM_COMPONENT, new ComponentCreator<Transform>());
-		mpObjectFactory->RegisterComponent(CONTROLLER_COMPONENT, new ComponentCreator<Controller>());
 		mpObjectFactory->RegisterComponent(CAMERA_COMPONENT, new ComponentCreator<Camera>());
 		mpObjectFactory->RegisterComponent(PHYSICSBODY_COMPONENT, new ComponentCreator<PhysicsBody>());
 

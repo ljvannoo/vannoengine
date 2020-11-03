@@ -21,9 +21,6 @@ Creation Date:	2020-Oct-08
 #include <rapidjson/document.h>
 
 #include "engine/components/GameComponent.h"
-#include "engine/systems/ResourceManager.h"
-#include "engine/systems/graphics/GLTexture.h"
-#include "engine/systems/graphics/ShaderProgram.h"
 
 namespace VannoEngine {
 	class Surface;
@@ -43,9 +40,8 @@ namespace VannoEngine {
 		void Update(double deltaTime) override;
 		void Draw();
 
-		ShaderProgram* GetShaderProgram();
-
 		bool IsHorizontalFlipped() { return mFlipHorizontal; }
+		void SetFlipHorizontal(bool flip) { mFlipHorizontal = flip; }
 		void FlipHorizontal() {
 			mFlipHorizontal = !mFlipHorizontal;
 		}
