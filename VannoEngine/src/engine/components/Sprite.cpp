@@ -106,7 +106,7 @@ namespace VannoEngine {
 		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
 
 		float spriteSheetWidth = static_cast<float>(mpSurface->GetWidth());
-		float spriteSheetHeight = static_cast<float>(mpSurface->GetHeight()-2);
+		float spriteSheetHeight = static_cast<float>(mpSurface->GetHeight());
 		float spriteWidth = static_cast<float>(mpSurface->GetWidth() / mSheetCols);
 		float spriteHeight = static_cast<float>(mpSurface->GetHeight() / mSheetRows);
 		
