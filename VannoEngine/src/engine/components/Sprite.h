@@ -46,9 +46,6 @@ namespace VannoEngine {
 			mFlipHorizontal = !mFlipHorizontal;
 		}
 
-		void SetFrameOffset(int offset) { mFrameOffset = offset; }
-		void SetAnimationDuration(double duration) { mFrameTime = duration; }
-
 		float GetZOrder() const { return mZOrder; }
 
 		float GetHeight();
@@ -58,13 +55,6 @@ namespace VannoEngine {
 
 		int mSheetRows;
 		int mSheetCols;
-
-		int mFrameOffset;
-		int mAnimationLength;
-		int mFrameIndex;
-
-		double mFrameTime;
-		double mElapsedFrameTime;
 
 		bool mFlipHorizontal;
 

@@ -8,13 +8,51 @@
           "file": "sprites\\adventurer.png",
           "cols": 7,
           "rows": 16,
-          "flipHorizontal": false,
-          "defaultAnimation": {
+          "flipHorizontal": false
+        }
+      }
+    },
+    {
+      "type": "animator",
+      "defaultAnimation": "idle",
+      "data": {
+        "animations": [
+          {
+            "name": "idle",
             "frameOffset": 0,
             "frameCount": 4,
-            "frameDuration": 0.2
+            "frameDuration": 0.2,
+            "loop": true
+          },
+          {
+            "name": "crouch_walk",
+            "frameOffset": 4,
+            "frameCount": 4,
+            "frameDuration": 0.2,
+            "loop": true
+          },
+          {
+            "name": "walk",
+            "frameOffset": 8,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": true
+          },
+          {
+            "name": "jump",
+            "frameOffset": 14,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "falling",
+            "frameOffset": 22,
+            "frameCount": 2,
+            "frameDuration": 0.1,
+            "loop": false
           }
-        }
+        ]
       }
     },
     {

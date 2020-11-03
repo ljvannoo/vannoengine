@@ -17,18 +17,18 @@ Creation Date:	2020-Oct-08
 #include "engine/core/Log.h"
 
 #include "engine/components/Transform.h"
+#include "engine/components/Animator.h"
+
 #include "engine/systems/objects/GameObject.h"
 
-
-#include <cstddef>
-
 #include "engine/systems/graphics/Vertex.h"
-
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Surface.h"
 
 #include "engine/systems/ResourceManager.h"
 #include "engine/systems/graphics/GraphicsManager.h"
+
+#include <cstddef>
 
 namespace VannoEngine {
 	Sprite::Sprite(GameObject* owner) :
@@ -36,11 +36,6 @@ namespace VannoEngine {
 		mpSurface(nullptr),
 		mSheetRows(1),
 		mSheetCols(1),
-		mFrameOffset(0),
-		mAnimationLength(1),
-		mFrameIndex(0),
-		mElapsedFrameTime(0.0f),
-		mFrameTime(0.1f),
 		mFlipHorizontal(false),
 		mZOrder(0.0f)
 	{}
@@ -100,42 +95,26 @@ namespace VannoEngine {
 			if (textureData.HasMember("flipHorizontal") && textureData["flipHorizontal"].IsBool()) {
 				mFlipHorizontal = textureData["flipHorizontal"].GetBool();
 			}
-
-			if (textureData.HasMember("defaultAnimation")) {
-				const rapidjson::Value& animationData = textureData["defaultAnimation"];
-
-				if (animationData.HasMember("frameOffset") && animationData["frameOffset"].IsInt()) {
-					mFrameOffset = animationData["frameOffset"].GetInt();
-				}
-
-				if (animationData.HasMember("frameCount") && animationData["frameCount"].IsInt()) {
-					mAnimationLength = animationData["frameCount"].GetInt();
-				}
-
-				if (animationData.HasMember("frameDuration") && animationData["frameDuration"].IsFloat()) {
-					mFrameTime = animationData["frameDuration"].GetFloat();
-				}
-			}
 		}
 	}
 
 	void Sprite::Update(double deltaTime) {
-		mElapsedFrameTime += deltaTime;
-
-		if (mElapsedFrameTime >= mFrameTime) {
-			mFrameIndex = (mFrameIndex + 1) % mAnimationLength;
-			mElapsedFrameTime = 0.0f;
-		}
+		
 	}
 
 	void Sprite::Draw() {
 		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
 
 		float spriteSheetWidth = static_cast<float>(mpSurface->GetWidth());
-		float spriteSheetHeight = static_cast<float>(mpSurface->GetHeight());
+		float spriteSheetHeight = static_cast<float>(mpSurface->GetHeight()-2);
 		float spriteWidth = static_cast<float>(mpSurface->GetWidth() / mSheetCols);
 		float spriteHeight = static_cast<float>(mpSurface->GetHeight() / mSheetRows);
-		int spriteIndex = mFrameOffset + mFrameIndex;
+		
+		int spriteIndex = 0;
+		Animator* pAnimator = static_cast<Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
+		if(pAnimator) {
+			spriteIndex = pAnimator->GetFrameIndex();
+		}
 
 		glm::mat4 model(1.0f);
 		
