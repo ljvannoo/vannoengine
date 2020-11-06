@@ -14,8 +14,11 @@ Creation Date:	2020-Oct-14
 *************************************************************************/
 #pragma once
 
+#define PI           3.14159265358979323846
+
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Vertex.h"
+#include "engine/systems/graphics/Surface.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H  
@@ -33,7 +36,6 @@ namespace VannoEngine {
 	class ShaderProgram;
 	class Camera;
 	class Sprite;
-	class Surface;
 
 	class GraphicsManager
 	{
@@ -60,11 +62,20 @@ namespace VannoEngine {
 			float spriteWidth,
 			float spriteHeight,
 			int spriteIndex,
-			bool flipHorizontal);
+			bool flipHorizontal,
+			int debugMode = 0);
+		void RenderSquare(glm::vec2 center, float width, float height, glm::vec4 color, bool fill);
+		void RenderCircle(glm::vec2 center, float radius, glm::vec4 color, bool fill);
+		void RenderLine(glm::vec2 start, float length, float angleDeg, glm::vec4 color);
+		void RenderLine(glm::vec2 start, glm::vec2 end, glm::vec4 color);
 		static Surface* BuildSurface(GLTexture* pTexture, Vertex vertexData[4]);
 
 	private:
 		GraphicsManager();
+
+		void BuildPrimitiveSquare();
+		void BuildPrimitiveCircle();
+		void BuildPrimitiveLine();
 
 	private:
 		static GraphicsManager* mpInstance;
@@ -73,6 +84,11 @@ namespace VannoEngine {
 
 		ShaderProgram* mpFontShader;
 		ShaderProgram* mpGeneralShader;
+		ShaderProgram* mpPrimitiveShader;
+
+		Surface mPrimitiveSquare;
+		Surface mPrimitiveCircle;
+		Surface mPrimitiveLine;
 
 		unsigned int VAO, VBO;
 		std::map<char, Character> Characters;
@@ -80,6 +96,6 @@ namespace VannoEngine {
 		SDL_GLContext mContext;
 
 		int mWindowWidth, mWindowHeight;
-
+		const int cCircleSegments = 16;
 	};
 }

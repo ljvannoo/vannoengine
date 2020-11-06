@@ -16,7 +16,7 @@ namespace VannoEngine {
 	class TestSystem;
 
 
-	class Game : EventHandler
+	class Game
 	{
 	public: 
 		bool IsRunning;
@@ -28,9 +28,6 @@ namespace VannoEngine {
 		virtual void Init() = 0;
 		void Init(int windowWidth, int windowHeight, int fpsCap);
 		void Run();
-	private:
-
-		void HandleEvent(std::string eventName, std::string data);
 	private:
 		InputManager* mpInputManager;
 		FramerateController* mpFramerateManager;

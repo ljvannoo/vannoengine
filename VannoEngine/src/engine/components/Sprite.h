@@ -38,7 +38,7 @@ namespace VannoEngine {
 		void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
 
 		void Update(double deltaTime) override;
-		void Draw();
+		void Draw() override;
 
 		bool IsHorizontalFlipped() { return mFlipHorizontal; }
 		void SetFlipHorizontal(bool flip) { mFlipHorizontal = flip; }

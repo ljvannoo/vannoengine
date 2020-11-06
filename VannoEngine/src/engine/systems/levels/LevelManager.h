@@ -37,10 +37,10 @@ namespace VannoEngine {
 		void Draw();
 
 		Camera* GetCamera();
+		Level* GetCurrentLevel();
 
 	private:
 		LevelManager();
-		Level* GetCurrentLevel();
 
 	private:
 		static LevelManager* mpInstance;

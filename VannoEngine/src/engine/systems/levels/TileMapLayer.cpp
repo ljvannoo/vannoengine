@@ -21,12 +21,18 @@ Creation Date:	2020-Oct-29
 #include "engine/systems/graphics/ShaderProgram.h"
 #include "engine/systems/graphics/Vertex.h"
 
+#include "engine/systems/physics/Aabb.h"
+#include "engine/systems/physics/Collision.h"
+
 #include "engine/core/Log.h"
+
+#include "engine/util/bitmask.h"
 
 #include "glm/mat4x4.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <cmath>
 #include <math.h>
 
 namespace VannoEngine {
@@ -34,7 +40,9 @@ namespace VannoEngine {
 		MapLayer(),
 		mTileWidth(tileWidth),
 		mTileHeight(tileHeight),
-		mpTilesets(nullptr)
+		mpTilesets(nullptr),
+		mSolid(false),
+		mCols(0)
 	{ }
 
 	TileMapLayer::~TileMapLayer() {
@@ -74,9 +82,24 @@ namespace VannoEngine {
 			mData.reserve((size_t)GetWidth() * (size_t)GetHeight());
 			for (rapidjson::SizeType i = 0; i < cells.Size(); i++) {
 				const rapidjson::Value& cell = cells[i];
+
 				mData.push_back(cell.GetInt());
 			}
 		}
+
+		if (pData->HasMember("properties") && (*pData)["properties"].IsArray()) {
+			const rapidjson::Value& properties = (*pData)["properties"];
+
+			for (rapidjson::SizeType i = 0; i < properties.Size(); i++) {
+				const rapidjson::Value& property = properties[i];
+
+				if (property.HasMember("name") && property["name"].IsString() && std::string(property["name"].GetString()) == "solid" &&
+					property.HasMember("value") && property["value"].IsBool()) {
+					mSolid = property["value"].GetBool();
+				}
+			}
+		}
+		mCols = mDimensions.x / mTileWidth;
 	}
 
 	void TileMapLayer::Update(double deltaTime) {
@@ -129,5 +152,92 @@ namespace VannoEngine {
 				}
 			}
 		}
+	}
+	Collision const&  TileMapLayer::Collides(AABB const& aabb) {
+		Collision result;
+		if (mSolid) {
+			float tH = (float)mTileHeight;
+			float tW = (float)mTileWidth;
+			glm::vec2 min(aabb.center.x - aabb.halfWidth, aabb.center.y - aabb.halfHeight); // Bottom left
+			glm::vec2 max(aabb.center.x + aabb.halfWidth, aabb.center.y + aabb.halfHeight); // Top right
+
+			int topRow = (int)round((GetUpperLeft().y - max.y) / tH);
+			int bottomRow = (int)round((GetUpperLeft().y - min.y) / tH);
+			int leftCol = (int)round((GetUpperLeft().x + min.x) / tW);
+			int rightCol = (int)round((GetUpperLeft().x + max.x) / tW);
+
+			int testCol, testRow, index;
+			float test;
+			
+			// Test top and bottom
+			test = min.x;
+			while (test <= max.x) {
+				testCol = (int)round((GetUpperLeft().x + test) / tW);
+
+				index = topRow * mCols + testCol;
+				if (index < mData.size() && mData[index] != 0) {
+					SetBit(result.bits, BIT_COLLISION_TOP);
+				}
+
+				index = bottomRow * mCols + testCol;
+				if (index < mData.size() && mData[index] != 0) {
+					SetBit(result.bits, BIT_COLLISION_BOTTOM);
+					mCollisionIndex = index;
+				}
+
+				test += tW;
+			}
+
+			// Test left and right
+			test = min.y;
+			while (test <= max.y) {
+				testRow = (GetUpperLeft().y - test) / tH;
+
+				index = testRow * mCols + leftCol;
+				if (index < mData.size() && mData[index] != 0) {
+					SetBit(result.bits, BIT_COLLISION_LEFT);
+				}
+
+				index = testRow * mCols + rightCol;
+				if (index < mData.size() && mData[index] != 0) {
+					SetBit(result.bits, BIT_COLLISION_RIGHT);
+				}
+
+				test += tH;
+			}
+
+			/*
+			// Test Right
+			testPoint = glm::vec2(bottomRight.x, bottomRight.y);
+			col = (GetUpperLeft().x + testPoint.x) / mTileWidth;
+			while (testPoint.y <= topLeft.y) {
+				row = (GetUpperLeft().y - testPoint.y) / mTileHeight;
+
+				int index = row * mCols + col;
+				if (index < mData.size() && mData[index] != 0) {
+					result = SetBit(result, BIT_COLLISION_BOTTOM);
+					break;
+				}
+				testPoint.x += mTileWidth;
+			}
+
+			// Test Bottom
+			testPoint = glm::vec2(topLeft.x, bottomRight.y);
+			row = (GetUpperLeft().y - testPoint.y) / mTileHeight;
+			while(testPoint.x <= bottomRight.x) {
+				col = (GetUpperLeft().x + testPoint.x) / mTileWidth;
+
+				int index = row * mCols + col;
+				if (index < mData.size() && mData[index] != 0) {
+					result = SetBit(result, BIT_COLLISION_BOTTOM);
+					break;
+				}
+				testPoint.x += mTileWidth;
+			}
+			*/
+
+		}
+		//LOG_CORE_DEBUG("No collision!");
+		return result;
 	}
 }

@@ -69,8 +69,6 @@ namespace VannoEngine {
 		mpFramerateManager->SetMaxFramerate(fpsCap);
 
 		mpEventManager = EventManager::GetInstance();
-		mpEventManager->Subscribe("showFps", this);
-		mpEventManager->DelayedNotify(1.0, "showFps", "");
 
 		mpLevelManager = LevelManager::GetInstance();
 
@@ -94,25 +92,24 @@ namespace VannoEngine {
 			mpInputManager->HandleInput();
 
 			// Physics
+			mpTimeManager->StartTimer("physics");
 			mpLevelManager->UpdatePhysics(mpFramerateManager->GetDeltaTime());
+			mpTimeManager->StopTimer("physics");
 
 			// Update
+			mpTimeManager->StartTimer("update");
 			mpEventManager->Update();
 			mpLevelManager->Update(mpFramerateManager->GetDeltaTime());
+			mpTimeManager->StopTimer("update");
 
 			// Draw
+			mpTimeManager->StartTimer("draw");
 			mpGraphicsManager->StartDraw();
 			LevelManager::GetInstance()->Draw();
 			mpGraphicsManager->EndDraw();
+			mpTimeManager->StopTimer("draw");
 
 			mpFramerateManager->EndFrame();
 		}
-	}
-
-	void Game::HandleEvent(std::string eventName, std::string data) {
-		// Print the current frame rate to the console once every second
-		mpEventManager->DelayedNotify(1.0, "showFps", "");
-
-		LOG_CORE_DEBUG("FPS: {:.2f}  Delta: {:.4f}", mpFramerateManager->GetFPS(), mpFramerateManager->GetDeltaTime());
 	}
 }

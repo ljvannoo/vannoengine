@@ -31,6 +31,7 @@ namespace VannoEngine {
 		virtual void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) = 0;
 
 		virtual void Update(double deltaTime) {}
+		virtual void Draw() {}
 
 		GameObject* GetOwner() { return mpOwner; }
 	private:

@@ -23,6 +23,7 @@ Creation Date:	2020-Oct-29
 #include "engine/components/Camera.h"
 
 #include "engine/systems/graphics/ShaderProgram.h"
+#include "engine/systems/physics/Aabb.h"
 
 #include "engine/core/Log.h"
 
@@ -128,5 +129,16 @@ namespace VannoEngine {
 		for (auto it : mLayers) {
 			it->Draw();
 		}
+	}
+
+	Collision const& Map::Collides(AABB const& aabb) {
+		Collision result;
+		for (MapLayer* pLayer : mLayers) {
+			result = pLayer->Collides(aabb);
+			if (result.bits != 0) {
+				break;
+			}
+		}
+		return result;
 	}
 }

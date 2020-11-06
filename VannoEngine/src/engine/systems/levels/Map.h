@@ -21,6 +21,8 @@ namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
 	class MapLayer;
+	class AABB;
+	struct Collision;
 
 	class Map 
 	{
@@ -36,6 +38,7 @@ namespace VannoEngine {
 		void Update(double deltaTime);
 		void Draw();
 
+		Collision const& Collides(AABB const& aabb);
 	private: // Methods
 
 	private: // Variables

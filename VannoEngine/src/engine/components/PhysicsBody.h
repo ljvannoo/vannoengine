@@ -17,25 +17,13 @@ Creation Date:	2020-Nov-01
 
 #include "GameComponent.h"
 
+#include "engine/systems/physics/Aabb.h"
+
 #include <glm/vec2.hpp>
 
 #include <string>
 
 namespace VannoEngine {
-	class AABB {
-	public:
-		glm::vec2 center;
-		float halfWidth;
-		float halfHeight;
-
-		AABB();
-		AABB(float x, float y, float width, float height);
-
-		~AABB() {};
-
-		bool Collides(AABB const& other);
-	};
-
 	class PhysicsBody : public GameComponent
 	{
 	public: // Variables
@@ -48,12 +36,13 @@ namespace VannoEngine {
 		void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData);
 
 		void Update(double deltaTime);
+		void Draw() override;
 
 		void SetWidth(float width) { mAabb.halfWidth = width / 2.0f; }
 		void SetHeight(float height) { mAabb.halfHeight = height / 2.0f; }
 
-		bool IsOnGround() { return mOnGround; }
-		void SetOnGround(bool state) { mOnGround = state; }
+		bool IsOnGround() { return mHitDown; }
+		//void SetOnGround(bool state) { mOnGround = state; }
 
 	private: // Methods
 
@@ -65,7 +54,9 @@ namespace VannoEngine {
 
 		glm::vec2 mOldSpeed;
 
-		bool mWasOnGround;
-		bool mOnGround;
+		bool mHitUp;
+		bool mHitRight;
+		bool mHitDown;
+		bool mHitLeft;
 	};
 }

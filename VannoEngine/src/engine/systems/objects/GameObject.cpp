@@ -85,4 +85,14 @@ namespace VannoEngine {
 	bool GameObject::HasComponent(std::string componentName) {
 		return (mComponents.find(componentName) != mComponents.end());
 	}
+
+	void GameObject::Draw() {
+		for (auto pair : mComponents) {
+			pair.second->Draw();
+		}
+
+		for (GameObject* pObject : mChildObjects) {
+			pObject->Draw();
+		}
+	}
 }

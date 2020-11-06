@@ -80,7 +80,14 @@ namespace VannoEngine {
 					float hW = w / 2.0f;
 					float h = static_cast<float>(pTexture->height) / static_cast<float>(mSheetRows);
 					float hH = h / 2.0f;
-
+					/*
+					Vertex vertexData[4] = {
+						-hW,  hH,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
+						-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
+						 hW, -hH,   0, 255,   0, 255, 1.0f, 0.0f, // Bottom right
+						 hW,  hH, 255,   0, 255, 255, 1.0f, 1.0f  // Upper Right
+					};
+					*/
 					Vertex vertexData[4] = {
 						-hW,  hH,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
 						-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
@@ -124,8 +131,9 @@ namespace VannoEngine {
 			glm::mat4 r = pTransform->GetRotationMatrix();
 			glm::mat4 s = pTransform->GetScaleMatrix();
 			model = t * r * s;
+
+			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal);
 		}
-		pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal);
 	}
 
 	float Sprite::GetHeight() {

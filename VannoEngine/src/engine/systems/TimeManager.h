@@ -16,7 +16,8 @@ Creation Date:	2020-Oct-13
 
 #include <chrono>
 
-
+#include <string>
+#include <unordered_map>
 
 namespace VannoEngine {
 	class TimeManager
@@ -27,13 +28,26 @@ namespace VannoEngine {
 
 		double Now();
 
-		long GetElapsedMillis();
+		unsigned long GetElapsedMillis();
+
+		void StartTimer(std::string name);
+		void StopTimer(std::string name);
+		double GetTimerSeconds(std::string name);
+		unsigned long GetTimerMillis(std::string name);
+
+		void DeleteTimer(std::string name);
 
 	private:
 		TimeManager();
 
+		bool HasStartTime(std::string name);
+		bool HasEndTime(std::string name);
+
 	private:
 		static TimeManager* mpInstance;
 		std::chrono::steady_clock::time_point mGameStartTime;
+
+		std::unordered_map<std::string, double> mStartTimes;
+		std::unordered_map<std::string, double> mEndTimes;
 	};
 }

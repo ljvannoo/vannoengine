@@ -27,7 +27,6 @@ Creation Date:	2020-Oct-14
 
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Vertex.h"
-#include "engine/systems/graphics/Surface.h"
 #include "engine/systems/graphics/ShaderProgram.h"
 
 #include "engine/core/Log.h"
@@ -98,14 +97,17 @@ namespace VannoEngine {
 
 		return mpInstance;
 	}
-	GraphicsManager::GraphicsManager() : \
+	GraphicsManager::GraphicsManager() : 
 		mpWindow(nullptr), 
 		VAO(0), 
 		VBO(0), 
 		mpFontShader(nullptr), 
 		mContext(nullptr),
 		mWindowHeight(800),
-		mWindowWidth(600)
+		mWindowWidth(600),
+		mPrimitiveSquare(nullptr, 0, 0, 0),
+		mPrimitiveCircle(nullptr, 0, 0, 0),
+		mPrimitiveLine(nullptr, 0, 0, 0)
 	{}
 
 	GraphicsManager::~GraphicsManager() {
@@ -163,6 +165,7 @@ namespace VannoEngine {
 		}
 
 		mpGeneralShader = ResourceManager::GetInstance()->LoadShaderProgram("shaders/sprite.shader");
+		mpPrimitiveShader = ResourceManager::GetInstance()->LoadShaderProgram("shaders/primitive.shader");
 
 		glViewport(0, 0, mWindowWidth, mWindowHeight);
 		glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
@@ -189,7 +192,7 @@ namespace VannoEngine {
 			LOG_CORE_CRITICAL("Failed to initialize font");
 		}
 
-		FT_Set_Pixel_Sizes(face, 0, 12);
+		FT_Set_Pixel_Sizes(face, 0, 24);
 
 		if (FT_Load_Char(face, 'X', FT_LOAD_RENDER)) {
 			LOG_CORE_CRITICAL("Failed to initialize freetype glyph");
@@ -252,6 +255,11 @@ namespace VannoEngine {
 		glBindVertexArray(0);
 
 		mpFontShader = ResourceManager::GetInstance()->LoadShaderProgram("shaders/font.shader");
+
+		// Build Primitives
+		BuildPrimitiveSquare();
+		BuildPrimitiveCircle();
+		BuildPrimitiveLine();
 	}
 
 	void GraphicsManager::RenderText(std::string text, float x, float y, float scale, glm::vec3 color)
@@ -308,7 +316,7 @@ namespace VannoEngine {
 		mpFontShader->Unuse();
 	}
 
-	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int spriteIndex, bool flipHorizontal) {
+	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int spriteIndex, bool flipHorizontal, int debugMode) {
 		mpGeneralShader->Use();
 
 		GLuint loc = 0;
@@ -339,6 +347,9 @@ namespace VannoEngine {
 		loc = mpGeneralShader->GetUniformLocation("flipHorizontal");
 		glUniform1i(loc, flipHorizontal ? 1 : 0);
 
+		loc = mpGeneralShader->GetUniformLocation("debugMode");
+		glUniform1i(loc, debugMode);
+
 		glBindVertexArray(pSurface->GetVertexArrayId());
 		glBindBuffer(GL_ARRAY_BUFFER, pSurface->GetVertexBufferId());
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pSurface->GetIndexBufferId());
@@ -356,8 +367,15 @@ namespace VannoEngine {
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 
+		if(debugMode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
+		if (debugMode) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
@@ -371,14 +389,205 @@ namespace VannoEngine {
 		mpGeneralShader->Unuse();
 	}
 
+	void GraphicsManager::RenderSquare(glm::vec2 center, float width, float height, glm::vec4 color, bool fill) {
+		mpPrimitiveShader->Use();
+
+		GLuint loc = 0;
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+		model = glm::scale(model, glm::vec3(width, height, 1.0f));
+		
+
+		loc = mpPrimitiveShader->GetUniformLocation("model");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
+
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		loc = mpPrimitiveShader->GetUniformLocation("projection");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		loc = mpPrimitiveShader->GetUniformLocation("color");
+		glUniform4fv(loc, 1, glm::value_ptr(color));
+
+		glBindVertexArray(mPrimitiveSquare.GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, mPrimitiveSquare.GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mPrimitiveSquare.GetIndexBufferId());
+
+		glEnableVertexAttribArray(0);
+
+		// Position
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*sizeof(float), nullptr);
+
+		if (fill) {
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		} else {
+			glDrawElements(GL_LINE_STRIP, 6, GL_UNSIGNED_INT, nullptr);
+		}
+
+		glDisableVertexAttribArray(0);
+		
+		// Unbind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		mpPrimitiveShader->Unuse();
+	}
+
+	void GraphicsManager::RenderCircle(glm::vec2 center, float radius, glm::vec4 color, bool fill) {
+		mpPrimitiveShader->Use();
+
+		GLuint loc = 0;
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(center.x, center.y, 0.0f));
+		model = glm::scale(model, glm::vec3(radius, radius, 1.0f));
+
+
+		loc = mpPrimitiveShader->GetUniformLocation("model");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
+
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		loc = mpPrimitiveShader->GetUniformLocation("projection");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		loc = mpPrimitiveShader->GetUniformLocation("color");
+		glUniform4fv(loc, 1, glm::value_ptr(color));
+
+		glBindVertexArray(mPrimitiveCircle.GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, mPrimitiveCircle.GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mPrimitiveCircle.GetIndexBufferId());
+
+		glEnableVertexAttribArray(0);
+
+		// Position
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+
+		if (fill) {
+			glDrawElements(GL_TRIANGLE_FAN, cCircleSegments * 2, GL_UNSIGNED_INT, nullptr);
+		}
+		else {
+			glDrawElements(GL_LINE_STRIP, cCircleSegments * 2, GL_UNSIGNED_INT, nullptr);
+		}
+
+		glDisableVertexAttribArray(0);
+
+		// Unbind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		mpPrimitiveShader->Unuse();
+	}
+
+	void GraphicsManager::RenderLine(glm::vec2 start, float length, float angleDeg, glm::vec4 color) {
+		mpPrimitiveShader->Use();
+
+		GLuint loc = 0;
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(start.x, start.y, 0.0f));
+		model = glm::rotate(model, glm::radians(angleDeg), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(length, 1.0f, 1.0f));
+
+		loc = mpPrimitiveShader->GetUniformLocation("model");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
+
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		loc = mpPrimitiveShader->GetUniformLocation("projection");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		loc = mpPrimitiveShader->GetUniformLocation("color");
+		glUniform4fv(loc, 1, glm::value_ptr(color));
+
+		glBindVertexArray(mPrimitiveLine.GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, mPrimitiveLine.GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mPrimitiveLine.GetIndexBufferId());
+
+		glEnableVertexAttribArray(0);
+
+		// Position
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+
+		glDrawElements(GL_LINE_STRIP, 6, GL_UNSIGNED_INT, nullptr);
+
+		glDisableVertexAttribArray(0);
+
+		// Unbind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		mpPrimitiveShader->Unuse();
+	}
+
+	void GraphicsManager::RenderLine(glm::vec2 start, glm::vec2 end, glm::vec4 color) {
+		mpPrimitiveShader->Use();
+
+		float length = sqrtf(powf(end.x - start.x, 2) + powf(end.y - start.y, 2));
+		glm::vec2 v = glm::normalize(end - start);
+
+		GLuint loc = 0;
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(start.x, start.y, 0.0f));
+		model = glm::rotate(model, atan2f(v.y, v.x), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(length, 1.0f, 1.0f));
+
+		loc = mpPrimitiveShader->GetUniformLocation("model");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(model));
+
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		loc = mpPrimitiveShader->GetUniformLocation("projection");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		loc = mpPrimitiveShader->GetUniformLocation("color");
+		glUniform4fv(loc, 1, glm::value_ptr(color));
+
+		glBindVertexArray(mPrimitiveLine.GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, mPrimitiveLine.GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mPrimitiveLine.GetIndexBufferId());
+
+		glEnableVertexAttribArray(0);
+
+		// Position
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+
+		glDrawElements(GL_LINE_STRIP, 6, GL_UNSIGNED_INT, nullptr);
+
+		glDisableVertexAttribArray(0);
+
+		// Unbind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		mpPrimitiveShader->Unuse();
+	}
+
 	void GraphicsManager::StartDraw() {
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 	
 	void GraphicsManager::EndDraw() {
-		char buff[20];
+		TimeManager* pTimeManager = TimeManager::GetInstance();
+		glm::vec3 color(0.0f, 0.0f, 1.0f);
+
+		char buff[30];
 		snprintf(buff, sizeof(buff), "%.2f fps", FramerateController::GetInstance()->GetFPS());
-		RenderText(buff, static_cast<float>(mWindowWidth) - 60.0f, static_cast<float>(mWindowHeight) - 45.0f, 1.0f, glm::vec3(1.0, 0.0f, 0.0f));
+		RenderText(buff, static_cast<float>(mWindowWidth) - 80.0f, static_cast<float>(mWindowHeight) - 25.0f, 0.75f, color);
+
+		snprintf(buff, sizeof(buff), "Physics: %lims", pTimeManager->GetTimerMillis("physics"));
+		RenderText(buff, static_cast<float>(mWindowWidth) - 77.0f, static_cast<float>(mWindowHeight) - 40.0f, 0.5f, color);
+
+		snprintf(buff, sizeof(buff), "Update: %lims", pTimeManager->GetTimerMillis("update"));
+		RenderText(buff, static_cast<float>(mWindowWidth) - 74.0f, static_cast<float>(mWindowHeight) - 55.0f, 0.5f, color);
+
+		snprintf(buff, sizeof(buff), "Draw: %lims", pTimeManager->GetTimerMillis("draw"));
+		RenderText(buff, static_cast<float>(mWindowWidth) - 70.0f, static_cast<float>(mWindowHeight) - 70.0f, 0.5f, color);
+
+		snprintf(buff, sizeof(buff), "Waste: %lims", pTimeManager->GetTimerMillis("framewaste"));
+		RenderText(buff, static_cast<float>(mWindowWidth) - 70.0f, static_cast<float>(mWindowHeight) - 85.0f, 0.5f, color);
 
 		SDL_GL_SwapWindow(mpWindow);
 	}
@@ -412,5 +621,105 @@ namespace VannoEngine {
 		glBindVertexArray(0);
 
 		return new Surface(pTexture, vboId, vaoId, iboId);
+	}
+
+	void GraphicsManager::BuildPrimitiveSquare() {
+		float vertexData[] = {
+			-0.5f,  0.5f, // Upper left
+			-0.5f, -0.5f, // Bottom Left
+			 0.5f, -0.5f, // Bottom right
+			 0.5f,  0.5f // Upper Right
+		};
+		unsigned int indices[] = {
+			0, 1, 2,
+			2, 3, 0
+		};
+
+		unsigned int vaoId, vboId, iboId;
+		glGenVertexArrays(1, &vaoId);
+		glBindVertexArray(vaoId);
+
+		glGenBuffers(1, &vboId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboId);
+		glBufferData(GL_ARRAY_BUFFER, 2 * 4 * sizeof(float), vertexData, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+		glGenBuffers(1, &iboId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+
+		mPrimitiveSquare = Surface(nullptr, vboId, vaoId, iboId);
+	}
+
+	void GraphicsManager::BuildPrimitiveCircle() {
+		std::vector<float> vertexData;
+		vertexData.push_back(0.0f);	
+		vertexData.push_back(0.0f);
+
+		float angle = (2.0f * PI) / (float)cCircleSegments;
+		for (int i = 0; i < cCircleSegments; i++) {
+			vertexData.push_back(cosf((float)i * angle));
+			vertexData.push_back(sinf((float)i * angle));
+		}
+
+		std::vector<int> indices;
+		for (int i = 1; i < cCircleSegments; i++) {
+			indices.push_back(i);			
+			indices.push_back(i + 1 );
+		}
+		indices.push_back(cCircleSegments);
+		indices.push_back(1);
+
+		unsigned int vaoId, vboId, iboId;
+		glGenVertexArrays(1, &vaoId);
+		glBindVertexArray(vaoId);
+
+		glGenBuffers(1, &vboId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboId);
+		glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(float), vertexData.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+		glGenBuffers(1, &iboId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+
+		mPrimitiveCircle = Surface(nullptr, vboId, vaoId, iboId);
+	}
+
+	void GraphicsManager::BuildPrimitiveLine() {
+		float vertexData[] = {
+			 0.0f, 0.0f, 
+			 1.0f, 0.0f, 
+		};
+		unsigned int indices[] = {
+			0, 1
+		};
+
+		unsigned int vaoId, vboId, iboId;
+		glGenVertexArrays(1, &vaoId);
+		glBindVertexArray(vaoId);
+
+		glGenBuffers(1, &vboId);
+		glBindBuffer(GL_ARRAY_BUFFER, vboId);
+		glBufferData(GL_ARRAY_BUFFER, 2 * 2 * sizeof(float), vertexData, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+		glGenBuffers(1, &iboId);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboId);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+		glBindVertexArray(0);
+
+		mPrimitiveLine = Surface(nullptr, vboId, vaoId, iboId);
 	}
 }

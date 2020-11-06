@@ -35,13 +35,68 @@ namespace VannoEngine {
 		mGameStartTime = std::chrono::high_resolution_clock::now();
 	}
 
+	bool TimeManager::HasStartTime(std::string name) {
+		if (mStartTimes.find(name) == mStartTimes.end()) {
+			return false;
+		}
+		return true;
+	}
+
+	bool TimeManager::HasEndTime(std::string name) {
+		if (mEndTimes.find(name) == mEndTimes.end()) {
+			return false;
+		}
+		return true;
+	}
+
 	double TimeManager::Now() {
 		auto now = std::chrono::high_resolution_clock::now();
 		return std::chrono::duration_cast<std::chrono::microseconds>(now - mGameStartTime).count() / 1000000.0;
 	}
 
 
-	long TimeManager::GetElapsedMillis() {
+	unsigned long TimeManager::GetElapsedMillis() {
 		return static_cast<long>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - mGameStartTime).count());
+	}
+
+	void TimeManager::StartTimer(std::string name) {
+		mStartTimes[name] = Now();
+		if (HasEndTime(name)) {
+			mEndTimes.erase(name);
+		}
+	}
+
+	void TimeManager::StopTimer(std::string name) {
+		if (HasStartTime(name)) {
+			mEndTimes[name] = Now();
+		}
+	}
+
+	void TimeManager::DeleteTimer(std::string name) {
+		if (HasStartTime(name)) {
+			mStartTimes.erase(name);
+		}
+
+		if (HasEndTime(name)) {
+			mEndTimes.erase(name);
+		}
+	}
+
+	double TimeManager::GetTimerSeconds(std::string name) {
+		if (HasStartTime(name)) {
+			double startTime = mStartTimes[name];
+
+			double endTime = Now();
+			if (HasEndTime(name)) {
+				endTime = mEndTimes[name];
+			}
+
+			return endTime - startTime;
+		}
+
+		return 0.0;
+	}
+	unsigned long TimeManager::GetTimerMillis(std::string name) {
+		return (long)(GetTimerSeconds(name) * 1000.0);
 	}
 }

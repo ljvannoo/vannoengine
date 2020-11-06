@@ -28,6 +28,9 @@ Creation Date:	2020-Oct-29
 namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
+	class AABB;
+	struct Collision;
+
 	class TileMapLayer : public MapLayer
 	{
 	public: // Variables
@@ -44,13 +47,21 @@ namespace VannoEngine {
 
 		void Update(double deltaTime) override;
 		void Draw() override;
+
+		Collision const& Collides(AABB const& aabb) override;
 	private: // Methods
 
 	private: // Variables
 		int mTileWidth;
 		int mTileHeight;
+
+		int mCols;
 		
 		std::vector<int> mData;
 		std::vector<Tileset*>* mpTilesets;
+		bool mSolid;
+
+
+		int mCollisionIndex = -1;
 	};
 }

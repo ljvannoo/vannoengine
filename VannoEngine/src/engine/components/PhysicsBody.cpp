@@ -22,41 +22,46 @@ Creation Date:	2020-Nov-01
 #include "engine/systems/objects/GameObject.h"
 
 #include "engine/systems/physics/PhysicsManager.h"
+#include "engine/systems/physics/Collision.h"
+
+#include "engine/systems/graphics/GraphicsManager.h"
+
+#include "engine/util/bitmask.h"
 
 #include <math.h>
 #include <algorithm>
 namespace VannoEngine {
-	AABB::AABB() :
-		center(glm::vec2(0.0f, 0.0f)),
-		halfWidth(0.0f),
-		halfHeight(0.0f)
-	{}
-
-	AABB::AABB(float x, float y, float width, float height) :
-		center(glm::vec2(x, y)),
-		halfWidth(width / 2.0f),
-		halfHeight(height / 2.0f)
-	{}
-
-	bool AABB::Collides(AABB const& other) {
-		if (fabsf(center.x - other.center.x) > halfWidth + other.halfWidth) {
-			return false;
-		}
-		if (fabsf(center.y - other.center.y) > halfHeight + other.halfHeight) {
-			return false;
-		}
-
-		return true;
-	}
-
-	PhysicsBody::PhysicsBody(GameObject* owner) : GameComponent(owner) {
-
-	}
+	PhysicsBody::PhysicsBody(GameObject* owner) :
+		GameComponent(owner),
+		mAabbOffset(glm::vec2(0.0f, 0.0f)),
+		mHitUp(false),
+		mHitDown(false),
+		mHitRight(false),
+		mHitLeft(false)
+	{ }
 
 	PhysicsBody::~PhysicsBody() {
 
 	}
 	void PhysicsBody::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
+		float x = 0.0f;
+		if (pData->HasMember("offsetX") && (*pData)["offsetX"].IsFloat()) {
+			x = (*pData)["offsetX"].GetFloat();
+		}
+
+		float y = 0.0f;
+		if (pData->HasMember("offsetY") && (*pData)["offsetY"].IsFloat()) {
+			y = (*pData)["offsetY"].GetFloat();
+		}
+		mAabbOffset = glm::vec2(x, y);
+
+		if (pData->HasMember("width") && (*pData)["width"].IsFloat()) {
+			mAabb.halfWidth = (*pData)["width"].GetFloat() / 2.0f;
+		}
+
+		if (pData->HasMember("height") && (*pData)["height"].IsFloat()) {
+			mAabb.halfHeight = (*pData)["height"].GetFloat() / 2.0f;
+		}
 	}
 
 	void PhysicsBody::Update(double deltaTime) {
@@ -72,7 +77,8 @@ namespace VannoEngine {
 			glm::vec2 speed = pTransform->GetSpeed();
 			mOldSpeed = speed;
 
-			mWasOnGround = mOnGround;
+			// Update AABB
+			mAabb.center = position + mAabbOffset;
 
 			// Update Speed
 			speed.y += pPhysicsManager->GetGravity();
@@ -84,20 +90,83 @@ namespace VannoEngine {
 			position += speed * dT;
 
 			// Check to see if on the ground
-			if (position.y < 200.0f) {
-				position.y = 200.0f;
-				speed.y = 0.0f;
-				mOnGround = true;
+			Collision collisionData = pPhysicsManager->CollidesWithMap(mAabb);
+			/*
+			LOG_CORE_DEBUG("Collision detected ({0}): {1} {2} {3} {4} {5}",
+				collisionMask,
+				(collisionMask == 0 ? "NONE" : ""),
+				(IsSet(collisionMask, BIT_COLLISION_TOP) ? "TOP" : ""),
+				(IsSet(collisionMask, BIT_COLLISION_RIGHT) ? "RIGHT" : ""), 
+				(IsSet(collisionMask, BIT_COLLISION_BOTTOM) ? "BOTTOM" : ""), 
+				(IsSet(collisionMask, BIT_COLLISION_LEFT) ? "LEFT" : ""));
+			*/
+
+			if (IsSet(collisionData.bits, BIT_COLLISION_TOP)) {
+				mHitUp = true;
 			}
 			else {
-				mOnGround = false;
+				mHitUp = false;
+			}
+			
+			if (IsSet(collisionData.bits, BIT_COLLISION_BOTTOM) && speed.y < 0.0f) {
+				position.y = mOldPosition.y;
+				mHitDown = true;
+			}
+			else {
+				mHitDown = false;
 			}
 
-			// Update AABB
-			mAabb.center = position + mAabbOffset;
+			if (IsSet(collisionData.bits, BIT_COLLISION_LEFT)) {
+				mHitLeft = true;
+			}
+			else {
+				mHitLeft = false;
+			}
+
+			if (IsSet(collisionData.bits, BIT_COLLISION_RIGHT)) {
+				mHitRight = true;
+			}
+			else {
+				mHitRight = false;
+			}
+			//LOG_CORE_DEBUG("On ground? {0}", mOnGround);
 
 			pTransform->SetPosition(position.x, position.y);
 			pTransform->SetSpeed(speed.x, speed.y);
+		}
+	}
+
+	void PhysicsBody::Draw() {
+		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+		glm::vec4 yellow(1.0f, 1.0f, 0.0f, 1.0f);
+		pGraphicsManager->RenderSquare(mAabb.center, mAabb.halfWidth * 2.0f, mAabb.halfHeight * 2.0f, glm::vec4(1.0, 0.0f, 0.0f, 1.0f), false);
+		
+		if (mHitUp) {
+			glm::vec2 start(mAabb.center.x - mAabb.halfWidth, mAabb.center.y + mAabb.halfHeight);
+			glm::vec2 end(mAabb.center.x + mAabb.halfWidth, mAabb.center.y + mAabb.halfHeight);
+
+			pGraphicsManager->RenderLine(start, end, yellow);
+		}
+
+		if(mHitDown) {
+			glm::vec2 start(mAabb.center.x - mAabb.halfWidth, mAabb.center.y - mAabb.halfHeight);
+			glm::vec2 end(mAabb.center.x + mAabb.halfWidth, mAabb.center.y - mAabb.halfHeight);
+
+			pGraphicsManager->RenderLine(start, end, yellow);
+		}
+
+		if (mHitLeft) {
+			glm::vec2 start(mAabb.center.x - mAabb.halfWidth, mAabb.center.y + mAabb.halfHeight);
+			glm::vec2 end(mAabb.center.x - mAabb.halfWidth, mAabb.center.y - mAabb.halfHeight);
+
+			pGraphicsManager->RenderLine(start, end, yellow);
+		}
+
+		if (mHitRight) {
+			glm::vec2 start(mAabb.center.x + mAabb.halfWidth, mAabb.center.y + mAabb.halfHeight);
+			glm::vec2 end(mAabb.center.x + mAabb.halfWidth, mAabb.center.y - mAabb.halfHeight);
+
+			pGraphicsManager->RenderLine(start, end, yellow);
 		}
 	}
 }

@@ -78,35 +78,40 @@ namespace VannoEngine {
 					if (object.HasMember("name") && object["name"].IsString()) {
 						pGameObject->SetName(object["name"].GetString());
 					}
+
+					float width = 0.0f;
+					if (object.HasMember("width") && object["width"].IsNumber()) {
+						width = object["width"].GetFloat();
+					}
+
+					float height = 0.0f;
+					if (object.HasMember("height") && object["height"].IsNumber()) {
+						height = object["height"].GetFloat();
+					}
 					
 					Transform* pTransform = static_cast<Transform*>(pGameObject->GetComponent(TRANSFORM_COMPONENT));
 					if (pTransform) {
+						float x = 0.0f;
 						if (object.HasMember("x") && object["x"].IsNumber()) {
-							pTransform->SetPositionX(object["x"].GetFloat());
+							x = object["x"].GetFloat();
 						}
 
+						float y = 0.0f;
 						if (object.HasMember("y") && object["y"].IsNumber()) {
-							pTransform->SetPositionY(GetHeight() - object["y"].GetFloat());
+							y = object["y"].GetFloat();
 						}
-						
-						Sprite* pSprite = static_cast<Sprite*>(pGameObject->GetComponent(SPRITE_COMPONENT));
-						if (pSprite) {
-							pTransform->SetPositionY(pTransform->GetPosition().y + pSprite->GetHeight()/2.0f);
-						}
+						pTransform->SetPositionY(GetUpperLeft().y - (y + height / 2.0f));
+						pTransform->SetPositionX(GetUpperLeft().x + (x + width / 2.0f));
+						LOG_CORE_DEBUG("Upper left: ({0}, {1})", GetUpperLeft().x, GetUpperLeft().y);
+						LOG_CORE_DEBUG("{0} is at ({1}, {2})", pGameObject->GetName(), pTransform->GetPosition().x, pTransform->GetPosition().y);
 					}
 					else {
 						LOG_CORE_ERROR("Game object has no transform!");
 					}
 					PhysicsBody* pBody = static_cast<PhysicsBody*>(pGameObject->GetComponent(PHYSICSBODY_COMPONENT));
 					if (pBody) {
-						if (object.HasMember("width") && object["width"].IsNumber()) {
-							pBody->SetWidth(object["width"].GetFloat());
-						}
-
-						float height = 0.0f;
-						if (object.HasMember("height") && object["height"].IsNumber()) {
-							pBody->SetHeight(object["height"].GetFloat());
-						}
+						pBody->SetWidth(width);
+						pBody->SetHeight(height);
 					}
 					mObjects.push_back(pGameObject);
 				}
@@ -131,10 +136,7 @@ namespace VannoEngine {
 
 	void ObjectMapLayer::Draw() {
 		for (GameObject* pObject : mObjects) {
-			if (pObject->HasComponent(SPRITE_COMPONENT)) {
-				Sprite* pSprite = static_cast<Sprite*>(pObject->GetComponent(SPRITE_COMPONENT));
-				pSprite->Draw();
-			}
+			pObject->Draw();
 		}
 	}
 }

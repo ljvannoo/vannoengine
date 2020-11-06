@@ -13,6 +13,7 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-29
 *************************************************************************/
+#include "engine/systems/physics/Collision.h"
 #include <rapidjson/document.h>
 #include <glm/vec2.hpp>
 
@@ -20,6 +21,7 @@ Creation Date:	2020-Oct-29
 namespace VannoEngine {
 	// Forward declarations
 	class ShaderProgram;
+	class AABB;
 
 	class MapLayer
 	{
@@ -42,13 +44,17 @@ namespace VannoEngine {
 
 		virtual void LoadData(const rapidjson::Value* pData) = 0;
 
-		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); }
-		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); }
+		virtual Collision const& Collides(AABB const& aabb) { Collision empty; return empty; }
+
+		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); mUpperLeft = glm::vec2(mPosition.x, mPosition.y + mDimensions.y); }
+		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); mUpperLeft = glm::vec2(mPosition.x, mPosition.y + mDimensions.y); }
 		float GetWidth() { return mDimensions.x; }
 		float GetHeight() { return mDimensions.y; }
+		glm::vec2 GetUpperLeft() { return mUpperLeft; }
 	protected:
 		glm::vec2 mPosition;
 		glm::vec2 mDimensions;
+		glm::vec2 mUpperLeft;
 		std::string mName;
 
 	private: // Methods

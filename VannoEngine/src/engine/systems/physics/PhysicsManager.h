@@ -13,8 +13,11 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Nov-02
 *************************************************************************/
+#include "engine/systems/physics/Aabb.h"
 
 namespace VannoEngine {
+	struct Collision;
+
 	class PhysicsManager
 	{
 	public:
@@ -23,6 +26,8 @@ namespace VannoEngine {
 
 		float GetGravity() { return -50.0f; }
 		float GetMaxFallingSpeed() { return 20.0f; }
+
+		Collision const& CollidesWithMap(AABB const& aabb);
 	private:
 		PhysicsManager();
 

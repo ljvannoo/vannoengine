@@ -32,6 +32,8 @@ namespace VannoEngine {
 		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);
 
+		void Draw();
+
 		void SetName(std::string name) { mName = name; }
 		std::string GetName() { return mName; }
 
