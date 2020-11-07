@@ -22,12 +22,16 @@ Creation Date:	2020-Oct-19
 #include "engine/components/Sprite.h"
 #include "engine/components/PhysicsBody.h"
 #include "engine/components/Animator.h"
+#include "engine/components/Camera.h"
 
 #include "engine/systems/objects/GameObject.h"
 #include "engine/systems/events/EventManager.h"
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/InputManager.h"
 #include "engine/systems/physics/PhysicsManager.h"
+
+#include "engine/systems/levels/LevelManager.h"
+#include "engine/systems/levels/Level.h"
 
 #include <algorithm>
 
@@ -47,10 +51,10 @@ void Controller::Update(double deltaTime) {
 	VannoEngine::InputManager* pInputManager = VannoEngine::InputManager::GetInstance();
 	VannoEngine::PhysicsManager* pPhysicsManager = VannoEngine::PhysicsManager::GetInstance();
 
-	VannoEngine::Sprite* pSprite = static_cast<VannoEngine::Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
-	VannoEngine::Transform* pTransform = static_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
-	VannoEngine::PhysicsBody* pBody = static_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
-	VannoEngine::Animator* pAnimator = static_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
+	VannoEngine::Sprite* pSprite = dynamic_cast<VannoEngine::Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
+	VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+	VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
 	switch (mCurrentState) {
 	case State::Stand:
@@ -125,4 +129,28 @@ void Controller::Update(double deltaTime) {
 		}*/
 		break;
 	}
+
+	VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+	VannoEngine::Camera* pCamera = pLevelManager->GetCamera();
+	VannoEngine::Level* pLevel = pLevelManager->GetCurrentLevel();
+	float levelWidth = pLevel->GetWidth();
+	float levelHeight = pLevel->GetHeight();
+	float hW = pCamera->GetScreenWidth() / 2.0f;
+	float hH = pCamera->GetScreenHeight() / 2.0f;
+	
+	glm::vec2 cameraPosition = pTransform->GetPosition();
+	if (cameraPosition.x - hW < 0.0f) {
+		cameraPosition.x = hW;
+	} else if (cameraPosition.x + hW > levelWidth) {
+		cameraPosition.x = levelWidth - hW;
+	}
+
+	if (cameraPosition.y - hH < 0.0f) {
+		cameraPosition.y = hH;
+	}
+	else if (cameraPosition.y + hH > levelHeight) {
+		cameraPosition.y = levelHeight - hH;
+	}
+
+	pCamera->SetPosition(cameraPosition);
 }

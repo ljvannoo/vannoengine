@@ -42,6 +42,9 @@ namespace VannoEngine {
 		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);
 
+		float GetWidth();
+		float GetHeight();
+
 		void Draw();
 
 		Camera* GetCamera() { return static_cast<Camera*>(mpCamera->GetComponent(CAMERA_COMPONENT)); }

@@ -38,6 +38,9 @@ namespace VannoEngine {
 		void Update(double deltaTime);
 		void Draw();
 
+		float GetWidth() { return (float)(mWidth * mTileWidth); }
+		float GetHeight() { return (float)(mHeight * mTileHeight); }
+
 		Collision const& Collides(AABB const& aabb);
 	private: // Methods
 

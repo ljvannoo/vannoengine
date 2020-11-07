@@ -58,6 +58,14 @@ namespace VannoEngine {
 	}
 
 	void Camera::SetPosition(float x, float y) {
+		mPosition.x = x;
+		mPosition.y = y;
+		RecalculateProjection();
+	}
+
+	void Camera::SetPosition(glm::vec2 const& position) {
+		mPosition.x = position.x;
+		mPosition.y = position.y;
 		RecalculateProjection();
 	}
 

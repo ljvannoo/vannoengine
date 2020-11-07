@@ -40,6 +40,7 @@ namespace VannoEngine {
 		void Update(double deltaTime) override;
 
 		void SetPosition(float x, float y);
+		void SetPosition(glm::vec2 const& position);
 		void SetScale(float s);
 
 		void SetScreenDimensions(float width, float height);
