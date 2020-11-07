@@ -357,7 +357,7 @@ namespace VannoEngine {
 
 		// Texture coordinates
 		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));		
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 	}
 
 	void GraphicsManager::BatchRender(glm::mat4 const& transformation, int spriteIndex) {
@@ -369,6 +369,7 @@ namespace VannoEngine {
 		glUniform1f(loc, static_cast<GLfloat>(spriteIndex));
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		mBatchRenderCalls++;
 	}
 
 	void GraphicsManager::EndSpriteBatch() {
@@ -456,6 +457,7 @@ namespace VannoEngine {
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 		mpGeneralShader->Unuse();
+		mRenderCalls++;
 	}
 
 	void GraphicsManager::RenderSquare(glm::vec2 center, float width, float height, glm::vec4 color, bool fill) {
@@ -636,27 +638,35 @@ namespace VannoEngine {
 
 	void GraphicsManager::StartDraw() {
 		glClear(GL_COLOR_BUFFER_BIT);
+		mRenderCalls = 0;
+		mBatchRenderCalls = 0;
 	}
 	
 	void GraphicsManager::EndDraw() {
 		TimeManager* pTimeManager = TimeManager::GetInstance();
-		glm::vec3 color(0.0f, 0.0f, 1.0f);
+		glm::vec3 color(1.0f, 1.0f, 1.0f);
 
 		char buff[30];
 		snprintf(buff, sizeof(buff), "%.2f fps", FramerateController::GetInstance()->GetFPS());
-		RenderText(buff, static_cast<float>(mWindowWidth) - 80.0f, static_cast<float>(mWindowHeight) - 25.0f, 0.75f, color);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 25.0f, 0.75f, color);
 
 		snprintf(buff, sizeof(buff), "Physics: %lims", pTimeManager->GetTimerMillis("physics"));
-		RenderText(buff, static_cast<float>(mWindowWidth) - 77.0f, static_cast<float>(mWindowHeight) - 40.0f, 0.5f, color);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 40.0f, 0.5f, color);
 
 		snprintf(buff, sizeof(buff), "Update: %lims", pTimeManager->GetTimerMillis("update"));
-		RenderText(buff, static_cast<float>(mWindowWidth) - 74.0f, static_cast<float>(mWindowHeight) - 55.0f, 0.5f, color);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 55.0f, 0.5f, color);
 
 		snprintf(buff, sizeof(buff), "Draw: %lims", pTimeManager->GetTimerMillis("draw"));
-		RenderText(buff, static_cast<float>(mWindowWidth) - 70.0f, static_cast<float>(mWindowHeight) - 70.0f, 0.5f, color);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 70.0f, 0.5f, color);
 
 		snprintf(buff, sizeof(buff), "Waste: %lims", pTimeManager->GetTimerMillis("framewaste"));
-		RenderText(buff, static_cast<float>(mWindowWidth) - 70.0f, static_cast<float>(mWindowHeight) - 85.0f, 0.5f, color);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 85.0f, 0.5f, color);
+
+		snprintf(buff, sizeof(buff), "Renders: %i", mRenderCalls);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 100.0f, 0.5f, color);
+		
+		snprintf(buff, sizeof(buff), "Batch Renders: %i", mBatchRenderCalls);
+		RenderText(buff, 10.0f, static_cast<float>(mWindowHeight) - 115.0f, 0.5f, color);
 
 		SDL_GL_SwapWindow(mpWindow);
 	}

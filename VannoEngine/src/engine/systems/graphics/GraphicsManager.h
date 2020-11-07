@@ -101,5 +101,8 @@ namespace VannoEngine {
 
 		int mWindowWidth, mWindowHeight;
 		const int cCircleSegments = 16;
+
+		int mBatchRenderCalls = 0;
+		int mRenderCalls = 0;
 	};
 }

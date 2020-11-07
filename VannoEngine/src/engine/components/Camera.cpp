@@ -78,4 +78,22 @@ namespace VannoEngine {
 		mProjectionMatrix = glm::scale(mProjectionMatrix, glm::vec3(mScale, mScale, 1.0f));
 		mProjectionMatrix = glm::translate(mProjectionMatrix, glm::vec3(-mPosition.x, -mPosition.y, 0.0f));
 	}
+
+	bool Camera::InView(glm::vec2 const& min, glm::vec2 const& max) {
+		float hW = mScreenWidth / 2.0f;
+		float hH = mScreenHeight / 2.0f;
+		
+		/*if (x > mPosition.x - hW && x < mPosition.x + hW && y > mPosition.y - hH && y < mPosition.y + hH) {
+			return true;
+		}*/
+
+		if (min.x < mPosition.x - hW || max.x > mPosition.x + hW) {
+			return false;
+		}
+
+		if (min.y < mPosition.y - hH || max.y > mPosition.y + hH) {
+			return false;
+		}
+		return true;
+	}
 }

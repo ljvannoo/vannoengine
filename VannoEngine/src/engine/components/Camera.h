@@ -47,6 +47,8 @@ namespace VannoEngine {
 		float GetScreenWidth() { return mScreenWidth; }
 		float GetScreenHeight() { return mScreenHeight; }
 
+		bool InView(glm::vec2 const& min, glm::vec2 const& max);
+
 		glm::mat4 GetProjectionMatrix() { return mProjectionMatrix; }
 
 	private: // Methods
