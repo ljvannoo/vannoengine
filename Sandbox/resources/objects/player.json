@@ -8,28 +8,72 @@
           "file": "sprites\\adventurer.png",
           "cols": 7,
           "rows": 16,
-          "flipHorizontal": false,
-          "defaultAnimation": {
+          "flipHorizontal": false
+        }
+      }
+    },
+    {
+      "type": "animator",
+      "defaultAnimation": "idle",
+      "data": {
+        "animations": [
+          {
+            "name": "idle",
             "frameOffset": 0,
             "frameCount": 4,
-            "frameDuration": 0.2
+            "frameDuration": 0.2,
+            "loop": true
+          },
+          {
+            "name": "crouch_walk",
+            "frameOffset": 4,
+            "frameCount": 4,
+            "frameDuration": 0.2,
+            "loop": true
+          },
+          {
+            "name": "walk",
+            "frameOffset": 8,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": true
+          },
+          {
+            "name": "jump",
+            "frameOffset": 14,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "falling",
+            "frameOffset": 22,
+            "frameCount": 2,
+            "frameDuration": 0.1,
+            "loop": false
           }
-        }
+        ]
       }
     },
     {
       "type": "transform",
       "data": {
-        "scaleX": 1.5,
-        "scaleY": 1.5,
+        "scaleX": 1.0,
+        "scaleY": 1.0,
         "speed": 200.0,
         "posX": -25.0,
         "posY": -25.0
       }
     },
     {
-      "type": "controller",
-      "data": {}
+      "type": "controller"
+    },
+    {
+      "type": "physicsbody",
+      "data": {
+        "offsetX": 0.0,
+        "offsetY": -8.0
+      }
     }
   ]
 }

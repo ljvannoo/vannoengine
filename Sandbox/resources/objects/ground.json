@@ -1,0 +1,15 @@
+{
+  "name": "ground",
+  "components": [
+    {
+      "type": "transform",
+      "data": {
+      	"posX": 0.0,
+      	"posY": 0.0
+      }
+    },
+    {
+      "type": "physicsbody"
+    }
+  ]
+}

@@ -1,7 +1,5 @@
 {
 	"name": "TiledMap Demo",
-	"camera": {
-		"objectFile": "objects\\camera.json"
-	},
+	"camera": "objects\\camera.json",
 	"map": "maps\\testmap1.json"
 }

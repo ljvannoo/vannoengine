@@ -13,9 +13,11 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-06
 *************************************************************************/
 #include "FramerateController.h"
+#include "TimeManager.h"
 
+#include "engine/core/Log.h"
 
-
+#include <thread>
 namespace VannoEngine {
 	FramerateController* FramerateController::mpInstance = nullptr;
 
@@ -42,18 +44,26 @@ namespace VannoEngine {
 	}
 
 	void FramerateController::EndFrame() {
+		TimeManager::GetInstance()->StartTimer("framewaste");
+		/*
+		// If we have a lot of time left in the frame, try sleeping for a millisecond.  Sleeping is not
+		// very precise because there is no guarantee when the CPU will give back control, but if we
+		// leave a large enough margin, framerate is mostly maintained and the load on the CPU is
+		// reduced by half or more when compared to spin-locking only.
+		mFrameEndTime = mpTime->Now();
+		mDeltaTime = mFrameEndTime - mFrameStartTime;
+		long timeLeft = (long)((1.0 / (double)mFrameRateCap - mDeltaTime) * 1000);
+		if (timeLeft >= 3) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		}
+		*/
 
+		// spin lock for the remainder of the time
 		do {
 			mFrameEndTime = mpTime->Now();
-			mDeltaTime = mFrameEndTime - mFrameStartTime;
-
-			// I tried to use sleep here rather than spin-locking in an attempt to give some CPU time back to the OS. In practice,
-			// 500 nanoseconds doesn't change much, and anything greater caused the OS to schedule tasks that had too much affect
-			// on the consistency of the framerate.  So, for now, I'm just going to spin-lock.  This may be an optimization for the future.
-
-			// std::this_thread::sleep_for(std::chrono::nanoseconds(500));
+			mDeltaTime = mFrameEndTime - mFrameStartTime;	
 		} while (mFrameRateCap != 0 && mDeltaTime < (1.0 / mFrameRateCap));
-
+		TimeManager::GetInstance()->StopTimer("framewaste");
 	}
 
 	double FramerateController::GetDeltaTime() {

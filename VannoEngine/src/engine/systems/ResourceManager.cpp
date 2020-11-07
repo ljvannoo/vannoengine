@@ -18,7 +18,7 @@ Creation Date:	2020-Oct-10
 #include "ResourceManager.h"
 #include "graphics/ShaderProgram.h"
 
-#include "engine/Log.h"
+#include "engine/core/Log.h"
 
 #include <fstream>
 
