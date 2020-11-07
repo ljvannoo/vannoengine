@@ -21,7 +21,10 @@ Creation Date:	2020-Nov-01
 
 #include <glm/vec2.hpp>
 
+#include "engine/systems/physics/Collision.h"
+
 #include <string>
+
 
 namespace VannoEngine {
 	class PhysicsBody : public GameComponent
@@ -41,22 +44,16 @@ namespace VannoEngine {
 		void SetWidth(float width) { mAabb.halfWidth = width / 2.0f; }
 		void SetHeight(float height) { mAabb.halfHeight = height / 2.0f; }
 
-		bool IsOnGround() { return mHitDown; }
-		//void SetOnGround(bool state) { mOnGround = state; }
-
+		bool IsOnGround();
+		bool IsAtCieling();
+		bool IsPushingLeftWall();
+		bool IsPushingRightWall();
 	private: // Methods
 
 	private: // Variables
 		AABB mAabb;
 		glm::vec2 mAabbOffset;
-		
-		glm::vec2 mOldPosition;
 
-		glm::vec2 mOldSpeed;
-
-		bool mHitUp;
-		bool mHitRight;
-		bool mHitDown;
-		bool mHitLeft;
+		Collision mCollision;
 	};
 }

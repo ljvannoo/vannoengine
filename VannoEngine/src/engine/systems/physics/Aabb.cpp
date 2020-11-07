@@ -4,7 +4,8 @@ namespace VannoEngine {
 	AABB::AABB() :
 		center(glm::vec2(0.0f, 0.0f)),
 		halfWidth(0.0f),
-		halfHeight(0.0f)
+		halfHeight(0.0f),
+		margin(5.0f)
 	{}
 
 	AABB::AABB(float x, float y, float width, float height) :

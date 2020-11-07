@@ -7,6 +7,7 @@ namespace VannoEngine {
 		glm::vec2 center;
 		float halfWidth;
 		float halfHeight;
+		float margin;
 
 		AABB();
 		AABB(float x, float y, float width, float height);

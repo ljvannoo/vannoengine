@@ -14,6 +14,8 @@ Creation Date:	2020-Oct-16
 *************************************************************************/
 #include "Transform.h"
 
+#include "engine/systems/graphics/GraphicsManager.h"
+
 #include "engine/systems/objects/GameObject.h"
 
 #include <glm/vec3.hpp>
@@ -33,6 +35,15 @@ namespace VannoEngine {
 
 	void Transform::Update(double deltaTime) {
 
+	}
+
+	void Transform::Draw()
+	{
+		/*
+		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+
+		pGraphicsManager->RenderCircle(mPosition, 2.0f, glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), true);
+		*/
 	}
 
 	void Transform::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {

@@ -34,6 +34,8 @@ namespace VannoEngine {
 
 		void Update(double deltaTime);
 
+		void Draw() override;
+
 		void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
 
 		std::string GetType() override {

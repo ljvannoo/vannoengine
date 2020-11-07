@@ -24,7 +24,8 @@ namespace VannoEngine {
 		static PhysicsManager* GetInstance();
 		~PhysicsManager();
 
-		float GetGravity() { return -50.0f; }
+		float GetGravity() { return mGravity; }
+		void FlipGravity() { mGravity *= -1.0f;  }
 		float GetMaxFallingSpeed() { return 20.0f; }
 
 		Collision const& CollidesWithMap(AABB const& aabb);
@@ -33,5 +34,7 @@ namespace VannoEngine {
 
 	private:
 		static PhysicsManager* mpInstance;
+
+		float mGravity = -50.0f;
 	};
 }

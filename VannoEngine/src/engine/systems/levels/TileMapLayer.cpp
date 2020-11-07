@@ -148,7 +148,6 @@ namespace VannoEngine {
 						static_cast<float>(pTileset->GetTileHeight()),
 						tileId,
 						false);
-
 				}
 			}
 		}
@@ -163,81 +162,52 @@ namespace VannoEngine {
 
 			int topRow = (int)round((GetUpperLeft().y - max.y) / tH);
 			int bottomRow = (int)round((GetUpperLeft().y - min.y) / tH);
-			int leftCol = (int)round((GetUpperLeft().x + min.x) / tW);
-			int rightCol = (int)round((GetUpperLeft().x + max.x) / tW);
+			int leftCol = (int)floor((GetUpperLeft().x + min.x) / tW);
+			int rightCol = (int)floor((GetUpperLeft().x + max.x) / tW);
 
 			int testCol, testRow, index;
 			float test;
 			
 			// Test top and bottom
-			test = min.x;
-			while (test <= max.x) {
+			test = min.x + tW / 2.0f;
+			while (test <= max.x - tW / 2.0f) {
 				testCol = (int)round((GetUpperLeft().x + test) / tW);
-
+				
 				index = topRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
 					SetBit(result.bits, BIT_COLLISION_TOP);
+					result.top = GetUpperLeft().y - ((index / mCols) * tH) - tH;
 				}
-
+				
 				index = bottomRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
 					SetBit(result.bits, BIT_COLLISION_BOTTOM);
-					mCollisionIndex = index;
+					result.bottom = GetUpperLeft().y - ((index / mCols) * tH);
 				}
 
 				test += tW;
 			}
 
 			// Test left and right
-			test = min.y;
-			while (test <= max.y) {
-				testRow = (GetUpperLeft().y - test) / tH;
+			test = min.y + tH / 2.0f;
+			while (test <= max.y - tH / 2.0f) {
+				testRow = (int)floor((GetUpperLeft().y - test) / tH);
 
 				index = testRow * mCols + leftCol;
 				if (index < mData.size() && mData[index] != 0) {
 					SetBit(result.bits, BIT_COLLISION_LEFT);
+					result.left = mPosition.x + ((index % mCols) * tW) + tW;
 				}
 
 				index = testRow * mCols + rightCol;
 				if (index < mData.size() && mData[index] != 0) {
 					SetBit(result.bits, BIT_COLLISION_RIGHT);
+					result.right = mPosition.x + ((index % mCols) * tW);
 				}
-
 				test += tH;
 			}
-
-			/*
-			// Test Right
-			testPoint = glm::vec2(bottomRight.x, bottomRight.y);
-			col = (GetUpperLeft().x + testPoint.x) / mTileWidth;
-			while (testPoint.y <= topLeft.y) {
-				row = (GetUpperLeft().y - testPoint.y) / mTileHeight;
-
-				int index = row * mCols + col;
-				if (index < mData.size() && mData[index] != 0) {
-					result = SetBit(result, BIT_COLLISION_BOTTOM);
-					break;
-				}
-				testPoint.x += mTileWidth;
-			}
-
-			// Test Bottom
-			testPoint = glm::vec2(topLeft.x, bottomRight.y);
-			row = (GetUpperLeft().y - testPoint.y) / mTileHeight;
-			while(testPoint.x <= bottomRight.x) {
-				col = (GetUpperLeft().x + testPoint.x) / mTileWidth;
-
-				int index = row * mCols + col;
-				if (index < mData.size() && mData[index] != 0) {
-					result = SetBit(result, BIT_COLLISION_BOTTOM);
-					break;
-				}
-				testPoint.x += mTileWidth;
-			}
-			*/
-
 		}
-		//LOG_CORE_DEBUG("No collision!");
+
 		return result;
 	}
 }
