@@ -316,6 +316,75 @@ namespace VannoEngine {
 		mpFontShader->Unuse();
 	}
 
+	void GraphicsManager::StartSpriteBatch(Surface* pSurface, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight) {
+		mpGeneralShader->Use();
+
+		GLuint loc = 0;
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		loc = mpGeneralShader->GetUniformLocation("projection");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, pSurface->GetTextureId());
+		loc = mpGeneralShader->GetUniformLocation("spriteSheet");
+		glUniform1i(loc, 0);
+
+		loc = mpGeneralShader->GetUniformLocation("spriteSheetSize");
+		glUniform2f(loc, spriteSheetWidth, spriteSheetHeight);
+
+		loc = mpGeneralShader->GetUniformLocation("spriteSize");
+		glUniform2f(loc, spriteWidth, spriteHeight);
+
+		loc = mpGeneralShader->GetUniformLocation("flipHorizontal");
+		glUniform1i(loc, 0);
+
+		loc = mpGeneralShader->GetUniformLocation("debugMode");
+		glUniform1i(loc, 0);
+
+		glBindVertexArray(pSurface->GetVertexArrayId());
+		glBindBuffer(GL_ARRAY_BUFFER, pSurface->GetVertexBufferId());
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pSurface->GetIndexBufferId());
+
+		glEnableVertexAttribArray(0);
+
+		// Position
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
+
+		// Color
+		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), (void*)offsetof(Vertex, color));
+
+		// Texture coordinates
+		glEnableVertexAttribArray(2);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));		
+	}
+
+	void GraphicsManager::BatchRender(glm::mat4 const& transformation, int spriteIndex) {
+		GLuint loc = 0;
+		loc = mpGeneralShader->GetUniformLocation("model");
+		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(transformation));
+
+		loc = mpGeneralShader->GetUniformLocation("index");
+		glUniform1f(loc, static_cast<GLfloat>(spriteIndex));
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	}
+
+	void GraphicsManager::EndSpriteBatch() {
+		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
+
+		// Unbind the buffer
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		mpGeneralShader->Unuse();
+	}
+
 	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int spriteIndex, bool flipHorizontal, int debugMode) {
 		mpGeneralShader->Use();
 

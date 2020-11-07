@@ -99,7 +99,7 @@ namespace VannoEngine {
 				}
 			}
 		}
-		mCols = mDimensions.x / mTileWidth;
+		mCols = (int)(mDimensions.x / mTileWidth);
 	}
 
 	void TileMapLayer::Update(double deltaTime) {
@@ -107,51 +107,71 @@ namespace VannoEngine {
 	}
 
 	void TileMapLayer::Draw() {
+		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+		glm::vec2 topLeft = GetUpperLeft();
+		glm::vec3 position(0.0f);
+
 		if (!mpTilesets) {
 			LOG_CORE_ERROR("No tilesets available");
 			return;
 		}
+
+		Tileset* pTileset = nullptr;
 		for (int i = 0; i < mData.size(); ++i) {
 			int tileId = mData[i]-1;
 			if(tileId >= 0) {
-				Tileset* pTileset = nullptr;
-				for (Tileset* it : *mpTilesets) {
-					if (!pTileset) {
-						pTileset = it;
+
+				if(!pTileset || tileId > pTileset->GetEndIndex()) {
+					for (Tileset* it : *mpTilesets) {
+						if (!pTileset) {
+							pTileset = it;
+						}
+						else if (tileId > it->GetStartIndex()) {
+							pTileset = it;
+						}
+						else {
+							break;
+						}
 					}
-					else if (tileId > it->GetStartIndex()) {
-						pTileset = it;
-					}
-					else {
-						break;
+					// When choosing a new tileset, start a new batch
+					if (pTileset) {
+						pGraphicsManager->StartSpriteBatch(
+							pTileset->GetSurface(),
+							pTileset->GetWidth(),
+							pTileset->GetHeight(),
+							(float)pTileset->GetTileWidth(),
+							(float)pTileset->GetTileHeight());
 					}
 				}
-
 				if(pTileset) {
-					GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
-
-					glm::vec2 topLeft(0.0f, GetHeight());
-					int col = i % ((int)GetWidth() / mTileWidth);
-					int row = i / ((int)GetWidth() / mTileWidth);
-					float x = topLeft.x + static_cast<float>(col * pTileset->GetTileWidth());
-					float y = topLeft.y - static_cast<float>((row+1) * pTileset->GetTileHeight());
+					int col = i % mCols;
+					int row = i / mCols;
+					float x = topLeft.x + (float)(col * pTileset->GetTileWidth());
+					float y = topLeft.y - (float)((row+1) * pTileset->GetTileHeight());
 					glm::mat4 t(1.0f);
-					t = glm::translate(t, glm::vec3(0.0f, static_cast<float>(pTileset->GetTileWidth()), 0.0f));
-					t = glm::translate(t, glm::vec3(x, y, 0.0f));
+					position.x = x;
+					position.y = y + (float)pTileset->GetTileHeight();
+					t = glm::translate(t, position);
 
+					pGraphicsManager->BatchRender(t, tileId);
+					/*
 					pGraphicsManager->Render(
 						pTileset->GetSurface(), 
 						&t, 
-						static_cast<float>(pTileset->GetWidth()),
-						static_cast<float>(pTileset->GetHeight()),
-						static_cast<float>(pTileset->GetTileWidth()), 
-						static_cast<float>(pTileset->GetTileHeight()),
+						pTileset->GetWidth(),
+						pTileset->GetHeight(),
+						(float)pTileset->GetTileWidth(), 
+						(float)pTileset->GetTileHeight(),
 						tileId,
 						false);
+					*/
 				}
 			}
 		}
+
+		pGraphicsManager->EndSpriteBatch();
 	}
+
 	Collision const&  TileMapLayer::Collides(AABB const& aabb) {
 		Collision result;
 		if (mSolid) {

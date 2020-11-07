@@ -14,7 +14,7 @@ Creation Date:	2020-Oct-14
 *************************************************************************/
 #pragma once
 
-#define PI           3.14159265358979323846
+#define PI           3.14159265358979323846f
 
 #include "engine/systems/graphics/GLTexture.h"
 #include "engine/systems/graphics/Vertex.h"
@@ -53,6 +53,10 @@ namespace VannoEngine {
 		void StartDraw();
 		void EndDraw();
 		void RenderText(std::string text, float x, float y, float scale, glm::vec3 color);
+
+		void StartSpriteBatch(Surface* pSurface, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight);
+		void BatchRender(glm::mat4 const& transformation, int spriteIndex);
+		void EndSpriteBatch();
 
 		void Render(
 			Surface* pSurface,

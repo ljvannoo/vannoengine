@@ -29,6 +29,7 @@ namespace VannoEngine {
 	Tileset::Tileset(int tileWidth, int tileHeight) :
 		mpSurface(nullptr),
 		mStartIndex(1),
+		mEndIndex(-1),
 		mTileWidth(tileWidth),
 		mTileHeight(tileHeight)
 	{ }

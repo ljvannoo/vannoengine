@@ -31,6 +31,8 @@ namespace VannoEngine {
 		void LoadData(const rapidjson::Value* pData);
 
 		int GetStartIndex() { return mStartIndex; }
+		int GetEndIndex() { return mEndIndex; }
+		void SetEndIndex(int index) { mEndIndex = index; }
 
 		unsigned int Tileset::GetTextureId();
 
@@ -54,5 +56,6 @@ namespace VannoEngine {
 		int mTileHeight;
 
 		int mStartIndex;
+		int mEndIndex;
 	};
 }
