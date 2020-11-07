@@ -75,9 +75,6 @@ namespace VannoEngine {
 
 				Tileset* pTileset = new Tileset(mTileWidth, mTileHeight);
 				pTileset->LoadData(&tilesetData);
-				if(mTilesets.size() > 0) {
-					mTilesets.back()->SetEndIndex(pTileset->GetStartIndex() - 1);
-				}
 				mTilesets.push_back(pTileset);
 			}
 		}

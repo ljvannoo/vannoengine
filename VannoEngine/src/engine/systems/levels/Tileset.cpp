@@ -31,7 +31,8 @@ namespace VannoEngine {
 		mStartIndex(1),
 		mEndIndex(-1),
 		mTileWidth(tileWidth),
-		mTileHeight(tileHeight)
+		mTileHeight(tileHeight),
+		mName("NO NAME")
 	{ }
 
 	Tileset::~Tileset() {
@@ -46,6 +47,7 @@ namespace VannoEngine {
 			filepath.replace(filepath.end() - 3, filepath.end(), "png");
 
 			LOG_CORE_INFO("Loading tileset from '{0}'", filepath);
+			mName = filepath;
 			GLTexture* pTexture = pResourceManager->LoadTexture(filepath);
 
 			if (pTexture) {
@@ -63,6 +65,9 @@ namespace VannoEngine {
 
 			if (pData->HasMember("firstgid") && (*pData)["firstgid"].IsInt()) {
 				mStartIndex = (*pData)["firstgid"].GetInt();
+				int cols = (int)GetWidth() / mTileWidth;
+				int rows = (int)GetHeight() / mTileHeight;
+				mEndIndex = mStartIndex + (cols * rows) - 1;
 			}
 		}
 	}

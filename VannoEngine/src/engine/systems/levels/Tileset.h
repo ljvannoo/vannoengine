@@ -16,6 +16,7 @@ Creation Date:	2020-Oct-29
 
 #include <rapidjson/document.h>
 
+#include <string>
 namespace VannoEngine {
 	struct GLTexture;
 	class Surface;
@@ -32,7 +33,6 @@ namespace VannoEngine {
 
 		int GetStartIndex() { return mStartIndex; }
 		int GetEndIndex() { return mEndIndex; }
-		void SetEndIndex(int index) { mEndIndex = index; }
 
 		unsigned int Tileset::GetTextureId();
 
@@ -47,6 +47,8 @@ namespace VannoEngine {
 		unsigned int GetIndexBufferId();
 
 		Surface* GetSurface() { return mpSurface; }
+
+		std::string GetName() { return mName; }
 	private: // Methods
 
 	private: // Variables
@@ -57,5 +59,7 @@ namespace VannoEngine {
 
 		int mStartIndex;
 		int mEndIndex;
+
+		std::string mName;
 	};
 }

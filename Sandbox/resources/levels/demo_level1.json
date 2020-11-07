@@ -1,5 +1,5 @@
 {
 	"name": "TiledMap Demo",
 	"camera": "objects\\camera.json",
-	"map": "maps\\testmap1.json"
+	"map": "maps\\longmap1.json"
 }

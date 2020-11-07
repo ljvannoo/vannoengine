@@ -118,23 +118,21 @@ namespace VannoEngine {
 
 		Tileset* pTileset = nullptr;
 		for (int i = 0; i < mData.size(); ++i) {
-			int tileId = mData[i]-1;
-			if(tileId >= 0) {
-
-				if(!pTileset || tileId > pTileset->GetEndIndex()) {
+			int tileId = mData[i];
+			if(tileId > 0) {
+				if(!pTileset || tileId > pTileset->GetEndIndex() || tileId < pTileset->GetStartIndex()) {
+					Tileset* pNewTileset = nullptr;
 					for (Tileset* it : *mpTilesets) {
-						if (!pTileset) {
-							pTileset = it;
-						}
-						else if (tileId > it->GetStartIndex()) {
-							pTileset = it;
-						}
-						else {
+						if (tileId >= it->GetStartIndex() && tileId <= it->GetEndIndex()) {
+							pNewTileset = it;
 							break;
 						}
 					}
-					// When choosing a new tileset, start a new batch
-					if (pTileset) {
+
+					if (pNewTileset && (!pTileset || pNewTileset->GetName() != pTileset->GetName())) {
+						pTileset = pNewTileset;
+
+						// When choosing a new tileset, start a new batch
 						pGraphicsManager->StartSpriteBatch(
 							pTileset->GetSurface(),
 							pTileset->GetWidth(),
@@ -153,18 +151,7 @@ namespace VannoEngine {
 					position.y = y + (float)pTileset->GetTileHeight();
 					t = glm::translate(t, position);
 
-					pGraphicsManager->BatchRender(t, tileId);
-					/*
-					pGraphicsManager->Render(
-						pTileset->GetSurface(), 
-						&t, 
-						pTileset->GetWidth(),
-						pTileset->GetHeight(),
-						(float)pTileset->GetTileWidth(), 
-						(float)pTileset->GetTileHeight(),
-						tileId,
-						false);
-					*/
+					pGraphicsManager->BatchRender(t, tileId - pTileset->GetStartIndex());
 				}
 			}
 		}
