@@ -39,6 +39,7 @@ namespace VannoEngine {
 
 		void Update(double deltaTime) override;
 
+		glm::vec2 const& GetPosition() { return mPosition; }
 		void SetPosition(float x, float y);
 		void SetPosition(glm::vec2 const& position);
 		void SetScale(float s);
@@ -48,6 +49,7 @@ namespace VannoEngine {
 		float GetScreenHeight() { return mScreenHeight; }
 
 		bool InView(glm::vec2 const& min, glm::vec2 const& max);
+		bool InViewX(float x);
 
 		glm::mat4 GetProjectionMatrix() { return mProjectionMatrix; }
 

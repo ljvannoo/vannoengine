@@ -16,6 +16,11 @@ Creation Date:	2020-Oct-29
 
 #include "engine/systems/ResourceManager.h"
 
+#include "engine/systems/levels/LevelManager.h"
+#include "engine/systems/levels/Level.h"
+
+#include "engine/components/Camera.h"
+
 #include "engine/systems/graphics/GraphicsManager.h"
 #include "engine/systems/graphics/Vertex.h"
 #include "engine/systems/graphics/GLTexture.h"
@@ -28,7 +33,8 @@ Creation Date:	2020-Oct-29
 
 namespace VannoEngine {
 	ImageMapLayer::ImageMapLayer() :
-		mpSurface(nullptr)
+		mpSurface{ nullptr },
+		mSpeed{ 0.0f }
 	{ }
 
 	ImageMapLayer::~ImageMapLayer() {
@@ -59,7 +65,7 @@ namespace VannoEngine {
 			GLTexture* pTexture = pResourceManager->LoadTexture(filepath);
 			
 			if (pTexture) {
-				SetDimensions(static_cast<float>(pTexture->width), static_cast<float>(pTexture->height));
+				SetDimensions((float)pTexture->width, (float)pTexture->height);
 				float w = GetWidth();
 				float h = GetHeight();
 
@@ -73,6 +79,19 @@ namespace VannoEngine {
 				mpSurface = GraphicsManager::BuildSurface(pTexture, vertexData);
 			}
 		}
+
+		if (pData->HasMember("properties") && (*pData)["properties"].IsArray()) {
+			const rapidjson::Value& properties = (*pData)["properties"];
+
+			for (rapidjson::SizeType i = 0; i < properties.Size(); i++) {
+				const rapidjson::Value& property = properties[i];
+
+				if (property.HasMember("name") && property["name"].IsString() && std::string(property["name"].GetString()) == "speed" &&
+					property.HasMember("value") && property["value"].IsNumber()) {
+					mSpeed = property["value"].GetFloat();
+				}
+			}
+		}
 	}
 
 	void ImageMapLayer::Update(double deltaTime) {
@@ -81,13 +100,20 @@ namespace VannoEngine {
 
 	void ImageMapLayer::Draw() {
 		GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+		Level* pLevel = LevelManager::GetInstance()->GetCurrentLevel();
+		Camera* pCamera = LevelManager::GetInstance()->GetCamera();
 
-		float imageWidth = static_cast<float>(mpSurface->GetWidth());
-		float imageHeight = static_cast<float>(mpSurface->GetHeight());
+		float imageWidth = (float)mpSurface->GetWidth();
+		float imageHeight = (float)mpSurface->GetHeight();
 
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(0, imageHeight, 0.0f));
+		float offset = 0.0f;
+		offset = pCamera->GetPosition().x * mSpeed;
+		for (float x = offset-imageWidth; x < pLevel->GetWidth(); x += imageWidth) {
+			glm::mat4 model(1.0f);
+			model = glm::translate(model, glm::vec3(x, imageHeight, 0.0f));
 
-		pGraphicsManager->Render(mpSurface, &model, imageWidth, imageHeight, imageWidth, imageHeight, 0, false);
+			// TODO Only render if image is on the screen
+			pGraphicsManager->Render(mpSurface, &model, imageWidth, imageHeight, imageWidth, imageHeight, 0, false);
+		}
 	}
 }

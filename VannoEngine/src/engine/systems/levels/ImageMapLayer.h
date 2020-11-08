@@ -41,5 +41,7 @@ namespace VannoEngine {
 
 	private: // Variables
 		Surface* mpSurface;
+
+		float mSpeed;
 	};
 }

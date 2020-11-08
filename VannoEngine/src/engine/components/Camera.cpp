@@ -83,10 +83,6 @@ namespace VannoEngine {
 		float hW = mScreenWidth / 2.0f;
 		float hH = mScreenHeight / 2.0f;
 		
-		/*if (x > mPosition.x - hW && x < mPosition.x + hW && y > mPosition.y - hH && y < mPosition.y + hH) {
-			return true;
-		}*/
-
 		if (min.x < mPosition.x - hW || max.x > mPosition.x + hW) {
 			return false;
 		}
@@ -94,6 +90,17 @@ namespace VannoEngine {
 		if (min.y < mPosition.y - hH || max.y > mPosition.y + hH) {
 			return false;
 		}
+		return true;
+	}
+
+	bool Camera::InViewX(float x) {
+		float hW = mScreenWidth / 2.0f;
+		float hH = mScreenHeight / 2.0f;
+
+		if (x < mPosition.x - hW || x > mPosition.x + hW) {
+			return false;
+		}
+
 		return true;
 	}
 }
