@@ -1,0 +1,15 @@
+{
+  "initialLevel": "levels/demo_level1.json",
+  "maxFrameRate": 60,
+  "window": {
+    "width": 800,
+    "height": 600
+  },
+  "keyMapping": {
+    "moveUp": "w",
+    "moveDown": "s",
+    "moveLeft": "a",
+    "moveRight": "d",
+    "jump": "space"
+  }
+}
