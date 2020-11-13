@@ -63,7 +63,7 @@ namespace VannoEngine {
 		return 0;
 	}
 
-	int ConfigurationManager::GetFloat(std::string key) {
+	float ConfigurationManager::GetFloat(std::string key) {
 		rapidjson::Value* value = GetValue(key);
 
 		if (value && value->IsNumber()) {
@@ -72,22 +72,42 @@ namespace VannoEngine {
 		return 0.0f;
 	}
 
+	void ConfigurationManager::SetBool(std::string key, bool value) {
+		rapidjson::Pointer(key.c_str()).Set(*mpConfigData, value);
+		if (HasValue(key)) {
+			mValueCache.erase(key);
+		}
+	}
+
+	bool ConfigurationManager::GetBool(std::string key) {
+		rapidjson::Value* value = GetValue(key);
+
+		if (value && value->IsBool()) {
+			return value->GetBool();
+		}
+		return false;
+	}
+
+	void ConfigurationManager::ToggleBool(std::string key) {
+		SetBool(key, !GetBool(key));
+	}
+
 	rapidjson::Value* ConfigurationManager::GetValue(std::string key) {
 		rapidjson::Value* value = nullptr;
 		if (HasValue(key)) {
-			value = mpValueCache[key];
+			value = mValueCache[key];
 		}
 		else {
 			rapidjson::Pointer ptr = rapidjson::Pointer(key.c_str());
 			if (ptr.IsValid()) {
 				value = ptr.Get(*mpConfigData);
-				mpValueCache[key] = value;
+				mValueCache[key] = value;
 			}
 		}
 		return value;
 	}
 
 	bool ConfigurationManager::HasValue(std::string key) {
-		return mpValueCache.find(key) != mpValueCache.end();
+		return mValueCache.find(key) != mValueCache.end();
 	}
 }

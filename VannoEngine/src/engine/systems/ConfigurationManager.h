@@ -29,17 +29,24 @@ namespace VannoEngine {
 
 		std::string GetString(std::string key);
 		int GetInt(std::string key);
-		int GetFloat(std::string key);
+		float GetFloat(std::string key);
+
+		void SetBool(std::string key, bool value);
+		bool GetBool(std::string key);
+		void ToggleBool(std::string key);
+
 	private:
 		ConfigurationManager();
 
 		bool HasValue(std::string key);
 		rapidjson::Value* GetValue(std::string key);
+
+
 	private:
 		static ConfigurationManager* mpInstance;
 
 		rapidjson::Document* mpConfigData;
 
-		std::unordered_map<std::string, rapidjson::Value*> mpValueCache;
+		std::unordered_map<std::string, rapidjson::Value*> mValueCache;
 	};
 }

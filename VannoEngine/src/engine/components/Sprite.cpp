@@ -28,6 +28,8 @@ Creation Date:	2020-Oct-08
 #include "engine/systems/ResourceManager.h"
 #include "engine/systems/graphics/GraphicsManager.h"
 
+#include "engine/systems/ConfigurationManager.h"
+
 #include <cstddef>
 
 namespace VannoEngine {
@@ -80,19 +82,12 @@ namespace VannoEngine {
 					float hW = w / 2.0f;
 					float h = static_cast<float>(pTexture->height) / static_cast<float>(mSheetRows);
 					float hH = h / 2.0f;
-					/*
+
 					Vertex vertexData[4] = {
-						-hW,  hH,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
+						-hW,  hH, 255,   0, 255, 255, 0.0f, 1.0f, // Upper left
 						-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
 						 hW, -hH,   0, 255,   0, 255, 1.0f, 0.0f, // Bottom right
-						 hW,  hH, 255,   0, 255, 255, 1.0f, 1.0f  // Upper Right
-					};
-					*/
-					Vertex vertexData[4] = {
-						-hW,  hH,   0,   0, 255, 255, 0.0f, 1.0f, // Upper left
-						-hW, -hH, 255,   0,   0, 255, 0.0f, 0.0f, // Bottom Left
-						 hW, -hH,   0, 255,   0, 255, 1.0f, 0.0f, // Bottom right
-						 hW,  hH, 255,   0, 255, 255, 1.0f, 1.0f  // Upper Right
+						 hW,  hH,   0,   0, 255, 255, 1.0f, 1.0f  // Upper Right
 					};
 
 					mpSurface = GraphicsManager::BuildSurface(pTexture, vertexData);
@@ -133,6 +128,9 @@ namespace VannoEngine {
 			model = t * r * s;
 
 			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal);
+			if (ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
+				pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal, true);
+			}
 		}
 	}
 

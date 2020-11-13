@@ -87,12 +87,12 @@ namespace VannoEngine {
 	}
 
 	void GameObject::Draw() {
-		//for (auto pair : mComponents) {
-		//	pair.second->Draw();
-		//}
-		if (HasComponent("sprite")) {
-			GetComponent("sprite")->Draw();
+		for (auto pair : mComponents) {
+			pair.second->Draw();
 		}
+		/*if (HasComponent("sprite")) {
+			GetComponent("sprite")->Draw();
+		}*/
 		/*
 		for (GameObject* pObject : mChildObjects) {
 			pObject->Draw();

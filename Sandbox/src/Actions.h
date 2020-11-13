@@ -4,4 +4,5 @@
 #define ACTION_MOVE_DOWN	"moveDown"
 #define ACTION_MOVE_LEFT	"moveLeft"
 #define ACTION_MOVE_RIGHT	"moveRight"
-#define ACTION_JUMP		"jump"
+#define ACTION_JUMP			"jump"
+#define ACTION_DEBUG		"debug"

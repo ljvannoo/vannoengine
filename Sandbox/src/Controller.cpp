@@ -28,6 +28,7 @@ Creation Date:	2020-Oct-19
 #include "engine/systems/events/EventManager.h"
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/InputManager.h"
+#include "engine/systems/ConfigurationManager.h"
 #include "engine/systems/physics/PhysicsManager.h"
 
 #include "engine/systems/levels/LevelManager.h"
@@ -57,6 +58,13 @@ void Controller::Update(double deltaTime) {
 	VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 	VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
+
+	VannoEngine::ConfigurationManager* pConfigManager = VannoEngine::ConfigurationManager::GetInstance();
+	
+	if (pInputManager->IsKeyTriggered(ACTION_DEBUG)) {
+		pConfigManager->ToggleBool("/debugMode");
+		LOG_CORE_DEBUG("Debug Mode is now: {0}", pConfigManager->GetBool("/debugMode"));
+	}
 
 	switch (mCurrentState) {
 	case State::Stand:

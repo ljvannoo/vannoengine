@@ -10,6 +10,7 @@
     "moveDown": "s",
     "moveLeft": "a",
     "moveRight": "d",
-    "jump": "space"
+    "jump": "space",
+    "debug":  "f1"
   }
 }
