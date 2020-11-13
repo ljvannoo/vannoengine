@@ -154,10 +154,8 @@ namespace VannoEngine {
 					position.x = x;
 					position.y = y + (float)pTileset->GetTileHeight();
 
-					float w2 = mTileWidth;
-					float h2 = mTileHeight;
 
-					if(pCamera->InView(glm::vec2(position.x+w2, position.y+h2), glm::vec2(position.x - w2, position.y - h2))) {
+					if (pCamera->InView(glm::vec2(position.x + (float)mTileWidth, position.y + (float)mTileHeight), glm::vec2(position.x - (float)mTileWidth, position.y - (float)mTileHeight))) {
 						t = glm::translate(t, position);
 
 						pGraphicsManager->BatchRender(t, tileId - pTileset->GetStartIndex());
