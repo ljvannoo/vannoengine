@@ -43,6 +43,7 @@ namespace VannoEngine {
 		void SetPosition(float x, float y);
 		void SetPosition(glm::vec2 const& position);
 		void SetScale(float s);
+		float GetScale() { return mScale; }
 
 		void SetScreenDimensions(float width, float height);
 		float GetScreenWidth() { return mScreenWidth; }

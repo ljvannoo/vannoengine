@@ -70,6 +70,7 @@ namespace VannoEngine {
 	}
 
 	void Camera::SetScale(float s) {
+		mScale = s;
 		RecalculateProjection();
 	}
 

@@ -33,6 +33,8 @@ Creation Date:	2020-Oct-19
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"
 
+#include "Actions.h"
+
 #include <algorithm>
 
 Controller::Controller(VannoEngine::GameObject* owner) :
@@ -63,29 +65,29 @@ void Controller::Update(double deltaTime) {
 		if (!pBody->IsOnGround()) {
 			mCurrentState = State::Jump;
 		}
-		if (pInputManager->IsKeyPressed(VannoEngine::Action::JUMP)) {
+		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
 			pTransform->SetSpeedY(cJumpSpeed);
 			mCurrentState = State::Jump;
-		} else if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_LEFT) != pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_RIGHT)) {
+		} else if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) != pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
 			mCurrentState = State::Walk;
 		}
 		break;
 	case State::Walk:
 		pAnimator->Play("walk");
-		if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_LEFT) == pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_RIGHT)) {
+		if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) == pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
 			mCurrentState = State::Stand;
 			pTransform->SetSpeed(0.0f, 0.0f);
 		}
-		else if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_LEFT)) {
+		else if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT)) {
 			pTransform->SetSpeedX(-cWalkSpeed);
 			pSprite->SetFlipHorizontal(true);
 		}
-		else if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_RIGHT)) {
+		else if (pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
 			pTransform->SetSpeedX(cWalkSpeed);
 			pSprite->SetFlipHorizontal(false);
 		}
 
-		if (pInputManager->IsKeyPressed(VannoEngine::Action::JUMP)) {
+		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
 			pTransform->SetSpeedY(cJumpSpeed);
 			mCurrentState = State::Jump;
 		}
@@ -103,20 +105,20 @@ void Controller::Update(double deltaTime) {
 		if (pBody->IsOnGround()) {
 			mCurrentState = State::Stand;
 		}
-		/*if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_LEFT) == pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_RIGHT)) {
+		/*if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) == pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
 			mCurrentState = State::Stand;
 			pTransform->SetSpeed(0.0f, 0.0f);
 		}
-		else if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_LEFT)) {
+		else if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT)) {
 			pTransform->SetSpeedX(-cWalkSpeed);
 			pSprite->SetFlipHorizontal(true);
 		}
-		else if (pInputManager->IsKeyPressed(VannoEngine::Action::MOVE_RIGHT)) {
+		else if (pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
 			pTransform->SetSpeedX(cWalkSpeed);
 			pSprite->SetFlipHorizontal(false);
 		}
 
-		if (pInputManager->IsKeyPressed(VannoEngine::Action::JUMP)) {
+		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
 			pTransform->SetSpeedY(cJumpSpeed);
 			mCurrentState = State::Jump;
 		}
@@ -124,7 +126,7 @@ void Controller::Update(double deltaTime) {
 			mCurrentState = State::Jump;
 		}
 
-		if (!pInputManager->IsKeyPressed(VannoEngine::Action::JUMP) && pTransform->GetSpeed().y > 0.0f) {
+		if (!pInputManager->IsKeyPressed(ACTION_JUMP) && pTransform->GetSpeed().y > 0.0f) {
 			pTransform->SetSpeedY(std::min(pTransform->GetSpeed().y, cMinJumpSpeed));
 		}*/
 		break;

@@ -18,16 +18,8 @@ Creation Date:	2020-Oct-05
 
 namespace VannoEngine {
 	class EventManager;
+	class ConfigurationManager;
 	
-	enum class Key {W, A, S, D, SPACE};
-	enum class Action {
-		MOVE_UP,
-		MOVE_DOWN,
-		MOVE_LEFT,
-		MOVE_RIGHT,
-		JUMP,
-		FIRE
-	};
 	class InputManager
 	{
 	public:
@@ -35,17 +27,14 @@ namespace VannoEngine {
 		~InputManager();
 
 		void Init();
-		
-		void RegisterAction(Action action, Key key);
-		bool IsActionRegistered(Action action);
-		
+
 		void Update();
 
 		void HandleInput();
 
-		bool IsKeyTriggered(Action action);
-		bool IsKeyPressed(Action action);
-		bool IsKeyReleased(Action action);
+		bool IsKeyTriggered(std::string action);
+		bool IsKeyPressed(std::string action);
+		bool IsKeyReleased(std::string action);
 	private:
 		InputManager();
 
@@ -56,8 +45,8 @@ namespace VannoEngine {
 		unsigned char mPreviousState[512];
 
 		EventManager* mpEventManager;
+		ConfigurationManager* mpConfigurationManager;
 
-		std::unordered_map<Action, Key> mActionRegistry;
-		std::unordered_map<Key, unsigned char> mScanCodes;
+		std::unordered_map<std::string, unsigned char> mScanCodes;
 	};
 }

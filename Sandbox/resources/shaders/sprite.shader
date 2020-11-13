@@ -75,6 +75,6 @@ void main() {
 	if(debugMode == 0) {
 		gl_FragColor = texture2D(spriteSheet, uv);
 	} else {
-		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+		gl_FragColor = fragmentColor;
 	}
 }
