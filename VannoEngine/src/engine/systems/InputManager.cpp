@@ -18,6 +18,7 @@ Creation Date:	2020-Oct-05
 #include "engine/core/Log.h"
 
 #include "engine/systems/events/EventManager.h"
+#include "engine/systems/ConfigurationManager.h"
 
 #include <SDL_keyboard.h>
 
@@ -43,22 +44,63 @@ namespace VannoEngine {
 	}
 
 	void InputManager::Init() {
+		mpConfigurationManager = ConfigurationManager::GetInstance();
+
 		memset(mCurrentState, 0, 512 * sizeof(Uint8));
 		memset(mPreviousState, 0, 512 * sizeof(Uint8));
 
-		mScanCodes[Key::W] = SDL_SCANCODE_W;
-		mScanCodes[Key::A] = SDL_SCANCODE_A;
-		mScanCodes[Key::S] = SDL_SCANCODE_S;
-		mScanCodes[Key::D] = SDL_SCANCODE_D;
-		mScanCodes[Key::SPACE] = SDL_SCANCODE_SPACE;
-	}
-
-	void InputManager::RegisterAction(Action action, Key key) {
-		mActionRegistry[action] = key;
-	}
-
-	bool InputManager::IsActionRegistered(Action action) {
-		return mActionRegistry.find(action) != mActionRegistry.end();
+		mScanCodes["0"] = SDL_SCANCODE_0;
+		mScanCodes["1"] = SDL_SCANCODE_1;
+		mScanCodes["2"] = SDL_SCANCODE_2;
+		mScanCodes["3"] = SDL_SCANCODE_3;
+		mScanCodes["4"] = SDL_SCANCODE_4;
+		mScanCodes["5"] = SDL_SCANCODE_5;
+		mScanCodes["6"] = SDL_SCANCODE_6;
+		mScanCodes["7"] = SDL_SCANCODE_7;
+		mScanCodes["8"] = SDL_SCANCODE_8;
+		mScanCodes["9"] = SDL_SCANCODE_9;
+		mScanCodes["a"] = SDL_SCANCODE_A;
+		mScanCodes["b"] = SDL_SCANCODE_B;
+		mScanCodes["c"] = SDL_SCANCODE_C;
+		mScanCodes["d"] = SDL_SCANCODE_D;
+		mScanCodes["e"] = SDL_SCANCODE_E;
+		mScanCodes["f"] = SDL_SCANCODE_F;
+		mScanCodes["g"] = SDL_SCANCODE_G;
+		mScanCodes["h"] = SDL_SCANCODE_H;
+		mScanCodes["i"] = SDL_SCANCODE_I;
+		mScanCodes["j"] = SDL_SCANCODE_J;
+		mScanCodes["k"] = SDL_SCANCODE_K;
+		mScanCodes["l"] = SDL_SCANCODE_L;
+		mScanCodes["m"] = SDL_SCANCODE_M;
+		mScanCodes["n"] = SDL_SCANCODE_N;
+		mScanCodes["o"] = SDL_SCANCODE_O;
+		mScanCodes["p"] = SDL_SCANCODE_P;
+		mScanCodes["q"] = SDL_SCANCODE_Q;
+		mScanCodes["r"] = SDL_SCANCODE_R;
+		mScanCodes["s"] = SDL_SCANCODE_S;
+		mScanCodes["t"] = SDL_SCANCODE_T;
+		mScanCodes["u"] = SDL_SCANCODE_U;
+		mScanCodes["v"] = SDL_SCANCODE_V;
+		mScanCodes["w"] = SDL_SCANCODE_W;
+		mScanCodes["x"] = SDL_SCANCODE_X;
+		mScanCodes["y"] = SDL_SCANCODE_Y;
+		mScanCodes["z"] = SDL_SCANCODE_Z;
+		mScanCodes["f1"] = SDL_SCANCODE_F1;
+		mScanCodes["f2"] = SDL_SCANCODE_F2;
+		mScanCodes["f3"] = SDL_SCANCODE_F3;
+		mScanCodes["f4"] = SDL_SCANCODE_F4;
+		mScanCodes["f5"] = SDL_SCANCODE_F5;
+		mScanCodes["f6"] = SDL_SCANCODE_F6;
+		mScanCodes["f7"] = SDL_SCANCODE_F7;
+		mScanCodes["f8"] = SDL_SCANCODE_F8;
+		mScanCodes["f9"] = SDL_SCANCODE_F9;
+		mScanCodes["f10"] = SDL_SCANCODE_F10;
+		mScanCodes["f11"] = SDL_SCANCODE_F11;
+		mScanCodes["f12"] = SDL_SCANCODE_F12;
+		mScanCodes["space"] = SDL_SCANCODE_SPACE;
+		mScanCodes["esc"] = SDL_SCANCODE_ESCAPE;
+		mScanCodes["enter"] = SDL_SCANCODE_RETURN;
+		mScanCodes["tab"] = SDL_SCANCODE_TAB;
 	}
 
 	void InputManager::Update() {
@@ -74,21 +116,14 @@ namespace VannoEngine {
 
 	void InputManager::HandleInput() {
 		Update();
-		/*
-		LOG_CORE_DEBUG("There are {0} registered keys", mKeyRegistry.size());
-		for (auto pair : mKeyRegistry) {
-			if (IsKeyPressed(pair.first)) {
-				mpEventManager->Notify(EVT_INPUT, pair.second);
-			}
-		}
-		*/
 	}
 
-	bool InputManager::IsKeyTriggered(Action action) {
-		if(IsActionRegistered(action)) {
-			Key key = mActionRegistry[action];
+	bool InputManager::IsKeyTriggered(std::string action) {
+		std::string key = mpConfigurationManager->GetString("/keyMapping/" + action);
+
+		if (key != "") {
 			unsigned int scancode = mScanCodes[key];
-			
+
 			if (scancode < 512 && mCurrentState[scancode] && !mPreviousState[scancode]) {
 				return true;
 			}
@@ -96,9 +131,10 @@ namespace VannoEngine {
 		return false;
 	}
 
-	bool InputManager::IsKeyPressed(Action action) {
-		if (IsActionRegistered(action)) {
-			Key key = mActionRegistry[action];
+	bool InputManager::IsKeyPressed(std::string action) {
+		std::string key = mpConfigurationManager->GetString("/keyMapping/" + action);
+
+		if (key != "") {
 			unsigned int scancode = mScanCodes[key];
 			if (scancode < 512 && mCurrentState[scancode]) {
 				return true;
@@ -107,9 +143,10 @@ namespace VannoEngine {
 		return false;
 	}
 
-	bool InputManager::IsKeyReleased(Action action) {
-		if (IsActionRegistered(action)) {
-			Key key = mActionRegistry[action];
+	bool InputManager::IsKeyReleased(std::string action) {
+		std::string key = mpConfigurationManager->GetString("/keyMapping/" + action);
+
+		if (key != "") {
 			unsigned int scancode = mScanCodes[key];
 			if (scancode < 512 && !mCurrentState[scancode] && mPreviousState[scancode]) {
 				return true;

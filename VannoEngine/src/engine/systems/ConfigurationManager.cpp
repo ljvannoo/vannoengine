@@ -88,9 +88,6 @@ namespace VannoEngine {
 	}
 
 	bool ConfigurationManager::HasValue(std::string key) {
-		if (mpValueCache.find(key) != mpValueCache.end()) {
-			return true;
-		}
-		return false;
+		return mpValueCache.find(key) != mpValueCache.end();
 	}
 }
