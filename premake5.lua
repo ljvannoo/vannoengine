@@ -32,14 +32,16 @@ project "VannoEngine"
 		"%{prj.name}/vendor/sdl/include",
 		"%{prj.name}/vendor/stb_image/include",
 		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/fmod/inc",
 		"%{prj.name}/../vendor/rapidjson/include",
-		"%{prj.name}/..//vendor/glm/include"
+		"%{prj.name}/../vendor/glm/include"
 	}
 
 	libdirs {
 		"%{prj.name}/vendor/freetype/win64",
 		"%{prj.name}/vendor/sdl/lib/x64",
-		"%{prj.name}/vendor/glew/lib/Release/x64"
+		"%{prj.name}/vendor/glew/lib/Release/x64",
+		"%{prj.name}/vendor/fmod/lib/x64"
 	}
 
 	links {
@@ -49,7 +51,9 @@ project "VannoEngine"
 		"gdi32",
 		"shell32",
 		"glew32s",
-		"freetype"
+		"freetype",
+		"fmodstudioL_vc.lib",
+		"fmodL_vc.lib"
 	}
 
 	filter "system:windows"
@@ -64,6 +68,8 @@ project "VannoEngine"
 		postbuildcommands {
 			("xcopy /y \"%{wks.location}\\%{prj.name}\\vendor\\sdl\\lib\\x64\\SDL2.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
 			("xcopy /y \"%{wks.location}\\%{prj.name}\\vendor\\freetype\\win64\\freetype.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
+			("xcopy /y \"%{wks.location}\\%{prj.name}\\vendor\\fmod\\lib\\x64\\fmodstudioL.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
+			("xcopy /y \"%{wks.location}\\%{prj.name}\\vendor\\fmod\\lib\\x64\\fmodL.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
 		}
 
 

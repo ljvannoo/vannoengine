@@ -20,6 +20,7 @@ Creation Date:	2020-Oct-05
 #include "engine/systems/objects/GameObjectFactory.h"
 #include "engine/systems/graphics/GraphicsManager.h"
 #include "engine/systems/levels/LevelManager.h"
+#include "engine/systems/audio/AudioManager.h"
 
 #include "engine/systems/objects/GameObject.h"
 #include "engine/components/Components.h"
@@ -61,6 +62,8 @@ namespace VannoEngine {
 
 		mpGraphicsManager = GraphicsManager::GetInstance();
 		mpGraphicsManager->Init(windowWidth, windowHeight);
+
+		AudioManager::GetInstance()->Init();
 
 		mpInputManager = InputManager::GetInstance();
 		mpInputManager->Init();
