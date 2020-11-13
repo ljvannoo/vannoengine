@@ -155,12 +155,14 @@ void Controller::Update(double deltaTime) {
 		cameraPosition.x = levelWidth - hW;
 	}
 
-	if (cameraPosition.y - hH < 0.0f) {
+	/*if (cameraPosition.y - hH < 0.0f) {
 		cameraPosition.y = hH;
 	}
 	else if (cameraPosition.y + hH > levelHeight) {
 		cameraPosition.y = levelHeight - hH;
-	}
+	}*/
+	cameraPosition.y = hH;
+
 
 	pCamera->SetPosition(cameraPosition);
 }

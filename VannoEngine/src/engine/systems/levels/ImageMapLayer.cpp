@@ -106,11 +106,15 @@ namespace VannoEngine {
 		float imageWidth = (float)mpSurface->GetWidth();
 		float imageHeight = (float)mpSurface->GetHeight();
 
-		float offset = 0.0f;
-		offset = pCamera->GetPosition().x * mSpeed;
-		for (float x = offset-imageWidth; x < pLevel->GetWidth(); x += imageWidth) {
+		float screenHalfHeight = pCamera->GetScreenHeight() / 2.0f;
+		float cameraY = pCamera->GetPosition().y;
+
+		float offsetX = 0.0f;
+		offsetX = pCamera->GetPosition().x * mSpeed;
+		for (float x = offsetX-imageWidth; x < pLevel->GetWidth(); x += imageWidth) {
 			glm::mat4 model(1.0f);
-			model = glm::translate(model, glm::vec3(x, imageHeight, 0.0f));
+			glm::vec3 position = glm::vec3(x, cameraY - screenHalfHeight + imageHeight, 0.0f);
+			model = glm::translate(model, position);
 
 			// TODO Only render if image is on the screen
 			pGraphicsManager->Render(mpSurface, &model, imageWidth, imageHeight, imageWidth, imageHeight, 0, false);
