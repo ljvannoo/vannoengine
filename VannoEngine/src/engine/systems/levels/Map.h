@@ -22,7 +22,7 @@ namespace VannoEngine {
 	class Tileset;
 	class MapLayer;
 	class AABB;
-	struct Collision;
+	class Collision;
 
 	class Map 
 	{
@@ -41,7 +41,7 @@ namespace VannoEngine {
 		float GetWidth() { return (float)(mWidth * mTileWidth); }
 		float GetHeight() { return (float)(mHeight * mTileHeight); }
 
-		Collision const& Collides(AABB const& aabb);
+		Collision Collides(AABB const& aabb);
 	private: // Methods
 
 	private: // Variables

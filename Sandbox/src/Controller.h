@@ -22,12 +22,16 @@ Creation Date:	2020-Oct-19
 #include "engine/components/GameComponent.h"
 #include "engine/systems/objects/GameObject.h"
 
-enum State {
+enum class State {
 	Stand,
 	Walk,
 	Jump
 };
 
+namespace VannoEngine {
+	class Transform;
+	class PhysicsBody;
+}
 class Controller : public VannoEngine::GameComponent
 {
 public:
@@ -41,6 +45,8 @@ public:
 	std::string GetType() override {
 		return CONTROLLER_COMPONENT;
 	}
+private:
+	void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);
 private:
 	State mCurrentState;
 	const float cWalkSpeed = 300.0f;

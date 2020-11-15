@@ -167,7 +167,7 @@ namespace VannoEngine {
 		pGraphicsManager->EndSpriteBatch();
 	}
 
-	Collision const&  TileMapLayer::Collides(AABB const& aabb) {
+	Collision TileMapLayer::Collides(AABB const& aabb) {
 		Collision result;
 		if (mSolid) {
 			float tH = (float)mTileHeight;
@@ -190,14 +190,12 @@ namespace VannoEngine {
 				
 				index = topRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
-					SetBit(result.bits, BIT_COLLISION_TOP);
-					result.top = GetUpperLeft().y - ((index / mCols) * tH) - tH;
+					result.SetCollision(Direction::TOP, CollisionType::HARD, GetUpperLeft().y - ((index / mCols) * tH) - tH);
 				}
 				
 				index = bottomRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
-					SetBit(result.bits, BIT_COLLISION_BOTTOM);
-					result.bottom = GetUpperLeft().y - ((index / mCols) * tH);
+					result.SetCollision(Direction::BOTTOM, CollisionType::HARD, GetUpperLeft().y - ((index / mCols) * tH));
 				}
 
 				test += tW;
@@ -210,14 +208,12 @@ namespace VannoEngine {
 
 				index = testRow * mCols + leftCol;
 				if (index < mData.size() && mData[index] != 0) {
-					SetBit(result.bits, BIT_COLLISION_LEFT);
-					result.left = mPosition.x + ((index % mCols) * tW) + tW;
+					result.SetCollision(Direction::LEFT, CollisionType::HARD, mPosition.x + ((index % mCols) * tW) + tW);
 				}
 
 				index = testRow * mCols + rightCol;
 				if (index < mData.size() && mData[index] != 0) {
-					SetBit(result.bits, BIT_COLLISION_RIGHT);
-					result.right = mPosition.x + ((index % mCols) * tW);
+					result.SetCollision(Direction::RIGHT, CollisionType::HARD, mPosition.x + ((index % mCols) * tW));
 				}
 				test += tH;
 			}

@@ -23,10 +23,10 @@ public:
 		VannoEngine::ConfigurationManager* pConfigurationManager = VannoEngine::ConfigurationManager::GetInstance();
 		pConfigurationManager->Init("config.json");
 
-		int windowWidth = pConfigurationManager->GetInt("/window/width");
-		int windowHeight = pConfigurationManager->GetInt("/window/height");
+		float windowWidth = pConfigurationManager->GetFloat("/window/width");
+		float windowHeight = pConfigurationManager->GetFloat("/window/height");
 
-		VannoEngine::Game::Init(windowWidth, windowHeight, pConfigurationManager->GetInt("/maxFrameRate"));
+		VannoEngine::Game::Init((int)windowWidth, (int)windowHeight, pConfigurationManager->GetInt("/maxFrameRate"));
 		
 		// Add custom components
 		VannoEngine::GameObjectFactory* pObjectFactory = VannoEngine::GameObjectFactory::GetInstance();

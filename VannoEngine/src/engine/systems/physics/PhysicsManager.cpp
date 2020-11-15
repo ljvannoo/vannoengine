@@ -17,6 +17,8 @@ Creation Date:	2020-Nov-02
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"
 
+#include "engine/systems/physics/Collision.h"
+
 namespace VannoEngine {
 	PhysicsManager* PhysicsManager::mpInstance = nullptr;
 
@@ -36,7 +38,7 @@ namespace VannoEngine {
 
 	}
 
-	Collision const& PhysicsManager::CollidesWithMap(AABB const& aabb) {
+	Collision PhysicsManager::CollidesWithMap(AABB const& aabb) {
 		LevelManager* pLevelManager = LevelManager::GetInstance();
 		Level* pLevel = pLevelManager->GetCurrentLevel();
 		return pLevel->Collides(aabb);

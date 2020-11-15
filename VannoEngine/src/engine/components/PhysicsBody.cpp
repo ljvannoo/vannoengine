@@ -24,6 +24,7 @@ Creation Date:	2020-Nov-01
 #include "engine/systems/physics/PhysicsManager.h"
 
 #include "engine/systems/graphics/GraphicsManager.h"
+#include "engine/systems/graphics/Colors.h"
 
 #include "engine/systems/ConfigurationManager.h"
 
@@ -85,22 +86,6 @@ namespace VannoEngine {
 			mAabb.center = position + mAabbOffset;
 
 			mCollision = pPhysicsManager->CollidesWithMap(mAabb);
-			if (IsSet(mCollision.bits, BIT_COLLISION_BOTTOM) && speed.y < 0.0f) {
-				position.y = mCollision.bottom + mAabb.halfHeight - mAabbOffset.y;
-				speed.y = 0;
-			} else if (IsSet(mCollision.bits, BIT_COLLISION_TOP) && speed.y > 0.0f) {
-				position.y = mCollision.top - mAabb.halfHeight - mAabbOffset.y;
-				speed.y = 0;
-			}
-
-			if (IsSet(mCollision.bits, BIT_COLLISION_RIGHT) && speed.x > 0.0f) {
-				position.x = mCollision.right - mAabb.halfWidth - mAabbOffset.x;
-				speed.x = 0;
-			}
-			if (IsSet(mCollision.bits, BIT_COLLISION_LEFT)) {
-				position.x = mCollision.left + mAabb.halfWidth - mAabbOffset.x;
-				speed.x = 0;
-			}
 
 			pTransform->SetPosition(position.x, position.y);
 			pTransform->SetSpeed(speed.x, speed.y);
@@ -110,62 +95,41 @@ namespace VannoEngine {
 	void PhysicsBody::Draw() {
 		if(ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
 			GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
-			glm::vec4 yellow(1.0f, 1.0f, 0.0f, 1.0f);
-			glm::vec4 purple(1.0f, 0.0f, 1.0f, 1.0f);
-			glm::vec4 red(1.0f, 0.0f, 0.0f, 1.0f);
-			glm::vec4 green(0.0f, 1.0f, 0.0f, 1.0f);
-			glm::vec4 blue(0.0f, 0.0f, 1.0f, 1.0f);
 		
 			//pGraphicsManager->RenderSquare(mAabb.center, mAabb.halfWidth * 2.0f, mAabb.halfHeight * 2.0f, glm::vec4(1.0, 0.0f, 0.0f, 1.0f), false);
 			//pGraphicsManager->RenderCircle(mAabb.center, 3.0f, glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), true);
 		
-			if (IsSet(mCollision.bits, BIT_COLLISION_TOP)) {
+			if (mCollision.GetType(Direction::TOP) == CollisionType::HARD) {
 				glm::vec2 start(mAabb.center.x - mAabb.halfWidth + mAabb.margin, mAabb.center.y + mAabb.halfHeight);
 				glm::vec2 end(mAabb.center.x + mAabb.halfWidth - mAabb.margin, mAabb.center.y + mAabb.halfHeight);
 
-				pGraphicsManager->RenderLine(start, end, yellow);
-				pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.top), glm::vec2(end.x+100.0f, mCollision.top), purple);
+				pGraphicsManager->RenderLine(start, end, YELLOW);
+				pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.GetEdge(Direction::TOP)), glm::vec2(end.x + 100.0f, mCollision.GetEdge(Direction::TOP)), PURPLE);
 			}
 
-			if(IsSet(mCollision.bits, BIT_COLLISION_BOTTOM)) {
+			if(mCollision.GetType(Direction::BOTTOM) == CollisionType::HARD) {
 				glm::vec2 start(mAabb.center.x - mAabb.halfWidth + mAabb.margin, mAabb.center.y - mAabb.halfHeight);
 				glm::vec2 end(mAabb.center.x + mAabb.halfWidth - mAabb.margin, mAabb.center.y - mAabb.halfHeight);
 
-				pGraphicsManager->RenderLine(start, end, yellow);
-				pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.bottom), glm::vec2(end.x+100.0f, mCollision.bottom), green);
+				pGraphicsManager->RenderLine(start, end, YELLOW);
+				pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.GetEdge(Direction::BOTTOM)), glm::vec2(end.x + 100.0f, mCollision.GetEdge(Direction::BOTTOM)), GREEN);
 			}
 
-			if (IsSet(mCollision.bits, BIT_COLLISION_LEFT)) {
+			if (mCollision.GetType(Direction::LEFT) == CollisionType::HARD) {
 				glm::vec2 start(mAabb.center.x - mAabb.halfWidth, mAabb.center.y + mAabb.halfHeight - mAabb.margin);
 				glm::vec2 end(mAabb.center.x - mAabb.halfWidth, mAabb.center.y - mAabb.halfHeight + mAabb.margin);
 
-				pGraphicsManager->RenderLine(start, end, red);
-				pGraphicsManager->RenderLine(glm::vec2(mCollision.left, start.y - 100.0f), glm::vec2(mCollision.left, end.y + 100.0f), red);
+				pGraphicsManager->RenderLine(start, end, RED);
+				pGraphicsManager->RenderLine(glm::vec2(mCollision.GetEdge(Direction::LEFT), start.y - 100.0f), glm::vec2(mCollision.GetEdge(Direction::LEFT), end.y + 100.0f), RED);
 			}
 
-			if (IsSet(mCollision.bits, BIT_COLLISION_RIGHT)) {
+			if (mCollision.GetType(Direction::RIGHT) == CollisionType::HARD) {
 				glm::vec2 start(mAabb.center.x + mAabb.halfWidth, mAabb.center.y + mAabb.halfHeight - mAabb.margin);
 				glm::vec2 end(mAabb.center.x + mAabb.halfWidth, mAabb.center.y - mAabb.halfHeight + mAabb.margin);
 
-				pGraphicsManager->RenderLine(start, end, blue);
-				pGraphicsManager->RenderLine(glm::vec2(mCollision.right, start.y - 100.0f), glm::vec2(mCollision.right, end.y + 100.0f), blue);
+				pGraphicsManager->RenderLine(start, end, BLUE);
+				pGraphicsManager->RenderLine(glm::vec2(mCollision.GetEdge(Direction::RIGHT), start.y - 100.0f), glm::vec2(mCollision.GetEdge(Direction::RIGHT), end.y + 100.0f), BLUE);
 			}
 		}
 	}
-	bool PhysicsBody::IsOnGround() {
-		return IsSet(mCollision.bits, BIT_COLLISION_BOTTOM);
-	}
-
-	bool PhysicsBody::IsAtCieling() {
-		return IsSet(mCollision.bits, BIT_COLLISION_TOP);
-	}
-
-	bool PhysicsBody::IsPushingLeftWall() {
-		return IsSet(mCollision.bits, BIT_COLLISION_LEFT);
-	}
-
-	bool PhysicsBody::IsPushingRightWall() {
-		return IsSet(mCollision.bits, BIT_COLLISION_RIGHT);
-	}
-
 }

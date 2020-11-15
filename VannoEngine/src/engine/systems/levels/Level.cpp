@@ -17,6 +17,7 @@ Creation Date:	2020-Oct-21
 #include "engine/core/Log.h"
 
 #include "engine/systems/physics/Aabb.h"
+#include "engine/systems/physics/Collision.h"
 
 #include "engine/systems/objects/GameObjectFactory.h"
 #include "engine/systems/ResourceManager.h"
@@ -71,7 +72,7 @@ namespace VannoEngine {
 		mpMap->Draw();
 	}
 
-	Collision const& Level::Collides(AABB const& aabb) {
+	Collision Level::Collides(AABB const& aabb) {
 		return mpMap->Collides(aabb);
 	}
 

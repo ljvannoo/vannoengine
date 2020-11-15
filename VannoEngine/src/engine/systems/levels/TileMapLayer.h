@@ -29,7 +29,7 @@ namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
 	class AABB;
-	struct Collision;
+	class Collision;
 
 	class TileMapLayer : public MapLayer
 	{
@@ -48,7 +48,7 @@ namespace VannoEngine {
 		void Update(double deltaTime) override;
 		void Draw() override;
 
-		Collision const& Collides(AABB const& aabb) override;
+		Collision Collides(AABB const& aabb) override;
 	private: // Methods
 
 	private: // Variables

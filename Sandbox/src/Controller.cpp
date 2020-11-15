@@ -29,7 +29,10 @@ Creation Date:	2020-Oct-19
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/InputManager.h"
 #include "engine/systems/ConfigurationManager.h"
+
 #include "engine/systems/physics/PhysicsManager.h"
+#include "engine/systems/physics/Collision.h"
+#include "engine/systems/physics/Aabb.h"
 
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"
@@ -60,17 +63,20 @@ void Controller::Update(double deltaTime) {
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
 	VannoEngine::ConfigurationManager* pConfigManager = VannoEngine::ConfigurationManager::GetInstance();
-	
+
+	HandleCollisions(pTransform, pBody);
+
 	if (pInputManager->IsKeyTriggered(ACTION_DEBUG)) {
 		pConfigManager->ToggleBool("/debugMode");
 		LOG_CORE_DEBUG("Debug Mode is now: {0}", pConfigManager->GetBool("/debugMode"));
 	}
 
+	VannoEngine::Collision collision = pBody->GetCollision();
 	switch (mCurrentState) {
 	case State::Stand:
 		pTransform->SetSpeed(0.0f, 0.0f);
 		pAnimator->Play("idle");
-		if (!pBody->IsOnGround()) {
+		if (!collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
 			mCurrentState = State::Jump;
 		}
 		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
@@ -99,7 +105,7 @@ void Controller::Update(double deltaTime) {
 			pTransform->SetSpeedY(cJumpSpeed);
 			mCurrentState = State::Jump;
 		}
-		else if (!pBody->IsOnGround()) {
+		else if (!collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
 			mCurrentState = State::Jump;
 		}
 		break;
@@ -110,7 +116,7 @@ void Controller::Update(double deltaTime) {
 		else {
 			pAnimator->Play("falling");
 		}
-		if (pBody->IsOnGround()) {
+		if (collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
 			mCurrentState = State::Stand;
 		}
 		/*if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) == pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
@@ -130,7 +136,7 @@ void Controller::Update(double deltaTime) {
 			pTransform->SetSpeedY(cJumpSpeed);
 			mCurrentState = State::Jump;
 		}
-		else if (!pBody->IsOnGround()) {
+		else if (!collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
 			mCurrentState = State::Jump;
 		}
 
@@ -165,4 +171,31 @@ void Controller::Update(double deltaTime) {
 
 
 	pCamera->SetPosition(cameraPosition);
+}
+
+void Controller::HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody) {
+	VannoEngine::Collision collision = pBody->GetCollision();
+	VannoEngine::AABB aabb = pBody->GetAabb();
+	glm::vec2 aabbOffset = pBody->GetAabbOffset();
+
+	glm::vec2 newPosition = pTransform->GetPosition();
+	glm::vec2 newSpeed = pTransform->GetSpeed();
+	if (collision.CollisionDetected(VannoEngine::Direction::BOTTOM) && pTransform->GetSpeed().y < 0.0f) {
+		newPosition.y = collision.GetEdge(VannoEngine::Direction::BOTTOM) + aabb.halfHeight - aabbOffset.y;
+		newSpeed.y = 0.0f;
+	} else if (collision.CollisionDetected(VannoEngine::Direction::TOP) && pTransform->GetSpeed().y > 0.0f) {
+		newPosition.y = collision.GetEdge(VannoEngine::Direction::TOP) - aabb.halfHeight - aabbOffset.y;
+		newSpeed.y = 0.0f;
+	}
+
+	if (collision.CollisionDetected(VannoEngine::Direction::LEFT) && pTransform->GetSpeed().x < 0.0f) {
+		newPosition.x = collision.GetEdge(VannoEngine::Direction::LEFT) + aabb.halfWidth - aabbOffset.x;
+		newSpeed.x = 0.0f;
+	} else if (collision.CollisionDetected(VannoEngine::Direction::RIGHT) && pTransform->GetSpeed().x > 0.0f) {
+		newPosition.x = collision.GetEdge(VannoEngine::Direction::RIGHT) - aabb.halfWidth - aabbOffset.x;
+		newSpeed.x = 0.0f;
+	}
+
+	pTransform->SetPosition(newPosition.x, newPosition.y);
+	pTransform->SetSpeed(newSpeed.x, newSpeed.y);
 }

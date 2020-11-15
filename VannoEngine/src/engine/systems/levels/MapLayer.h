@@ -44,7 +44,7 @@ namespace VannoEngine {
 
 		virtual void LoadData(const rapidjson::Value* pData) = 0;
 
-		virtual Collision const& Collides(AABB const& aabb) { Collision empty; return empty; }
+		virtual Collision Collides(AABB const& aabb) { return Collision(); }
 
 		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); mUpperLeft = glm::vec2(mPosition.x, mPosition.y + mDimensions.y); }
 		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); mUpperLeft = glm::vec2(mPosition.x, mPosition.y + mDimensions.y); }

@@ -44,10 +44,11 @@ namespace VannoEngine {
 		void SetWidth(float width) { mAabb.halfWidth = width / 2.0f; }
 		void SetHeight(float height) { mAabb.halfHeight = height / 2.0f; }
 
-		bool IsOnGround();
-		bool IsAtCieling();
-		bool IsPushingLeftWall();
-		bool IsPushingRightWall();
+		Collision const& GetCollision() { return mCollision; }
+
+		AABB const& GetAabb() { return mAabb; }
+
+		glm::vec2 const& GetAabbOffset() { return mAabbOffset; }
 	private: // Methods
 
 	private: // Variables

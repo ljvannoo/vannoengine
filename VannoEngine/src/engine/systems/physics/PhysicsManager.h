@@ -16,7 +16,7 @@ Creation Date:	2020-Nov-02
 #include "engine/systems/physics/Aabb.h"
 
 namespace VannoEngine {
-	struct Collision;
+	class Collision;
 
 	class PhysicsManager
 	{
@@ -28,7 +28,7 @@ namespace VannoEngine {
 		void FlipGravity() { mGravity *= -1.0f;  }
 		float GetMaxFallingSpeed() { return 20.0f; }
 
-		Collision const& CollidesWithMap(AABB const& aabb);
+		Collision CollidesWithMap(AABB const& aabb);
 	private:
 		PhysicsManager();
 
