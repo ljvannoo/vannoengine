@@ -1,3 +1,3 @@
 # VannoEngine
 
-My first attempt at making a fully featured game engine.  Some of the concepts I use came from Yan Chernikov's excellent [Game Engine series on YouTube](https://www.youtube.com/watch?v=JxIZbV_XjAs&list=PLlrATfBNZ98dC-V-N3m0Go4deliWHPFwT&ab_channel=TheCherno).
+This project represents my first attempt at creating a 2D game engine from scratch.  It was created as part of the CS529 - Fundamentals of Game Development class at DigiPen Institute of Technology.  I learned a lot while working on this project and there are quite a few things that I would do differently had I more time to work on it, so I wouldn't recommend using this project as an example.  It is also a work in progress as I continue to modify it outside the scope of the class.
