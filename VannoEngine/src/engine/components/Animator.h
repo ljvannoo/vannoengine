@@ -27,13 +27,21 @@ namespace VannoEngine {
 		int frameCount;
 		float frameDuration;
 		bool loop;
+		bool aabbDefined;
+		float aabbOffsetX, aabbOffsetY;
+		float aabbWidth, aabbHeight;
 	public:
 		Animation() :
-			name(""),
-			frameOffset(0),
-			frameCount(0),
-			frameDuration(0.1f),
-			loop(true)
+			name{ "" },
+			frameOffset{ 0 },
+			frameCount{ 0 },
+			frameDuration{ 0.1f },
+			loop{ true },
+			aabbDefined{ false },
+			aabbOffsetX{ 0.0f },
+			aabbOffsetY{ 0.0f },
+			aabbWidth{ 0.0f },
+			aabbHeight{ 0.0f }
 		{}
 		~Animation() {}
 	};
@@ -53,6 +61,7 @@ namespace VannoEngine {
 		void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
 
 		void Update(double deltaTime) override;
+		virtual void Draw() override;
 
 		void Play(std::string animationName);
 		std::string GetCurrentAnimation();
@@ -68,5 +77,6 @@ namespace VannoEngine {
 
 		double mElapsedFrameTime;
 		int mFrameIndex;
+
 	};
 }

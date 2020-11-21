@@ -26,7 +26,7 @@ Creation Date:	2020-Oct-21
 
 namespace VannoEngine {
 	class Map;
-	class AABB;
+	class PhysicsBody;
 	class Collision;
 
 	class Level
@@ -49,7 +49,7 @@ namespace VannoEngine {
 
 		Camera* GetCamera() { return static_cast<Camera*>(mpCamera->GetComponent(CAMERA_COMPONENT)); }
 
-		Collision Collides(AABB const& aabb);
+		Collision Collides(PhysicsBody* pBody);
 	private: // Methods
 
 	private: // Variables

@@ -14,7 +14,20 @@ Creation Date:	2020-Nov-03
 *************************************************************************/
 #include "Animator.h"
 
+#include "engine/systems/graphics/GraphicsManager.h"
+#include "engine/systems/graphics/Colors.h"
+
+#include "engine/systems/ConfigurationManager.h"
+
+#include "engine/systems/objects/GameObject.h"
+#include "engine/components/Transform.h"
+#include "engine/components/PhysicsBody.h"
+
 #include "engine/core/Log.h"
+
+#include <glm/vec2.hpp>
+
+#include <sstream>
 
 namespace VannoEngine {
 	Animator::Animator(GameObject* owner) :
@@ -59,6 +72,28 @@ namespace VannoEngine {
 					pAnimation->loop = animationData["loop"].GetBool();
 				}
 
+				if (animationData.HasMember("aabb") && animationData["aabb"].IsObject()) {
+					const rapidjson::Value& aabbData = animationData["aabb"];
+
+					pAnimation->aabbDefined = true;
+
+					if (aabbData.HasMember("offsetX") && aabbData["offsetX"].IsNumber()) {
+						pAnimation->aabbOffsetX = aabbData["offsetX"].GetFloat();
+					}
+
+					if (aabbData.HasMember("offsetY") && aabbData["offsetY"].IsNumber()) {
+						pAnimation->aabbOffsetY = aabbData["offsetY"].GetFloat();
+					}
+
+					if (aabbData.HasMember("width") && aabbData["width"].IsNumber()) {
+						pAnimation->aabbWidth = aabbData["width"].GetFloat();
+					}
+
+					if (aabbData.HasMember("height") && aabbData["height"].IsNumber()) {
+						pAnimation->aabbHeight = aabbData["height"].GetFloat();
+					}
+				}
+
 				AddAnimation(pAnimation);
 				if (!mpCurrentAnimation) {
 					Play(pAnimation->name);
@@ -75,12 +110,26 @@ namespace VannoEngine {
 		if(mpCurrentAnimation) {
 			mElapsedFrameTime += deltaTime;
 
+			//LOG_CORE_DEBUG("Animation: {}, Frame: {}, Loop: {}", mpCurrentAnimation->name, mpCurrentAnimation->frameOffset + mFrameIndex, mpCurrentAnimation->loop);
 			if (mElapsedFrameTime >= mpCurrentAnimation->frameDuration) {
-				if(mFrameIndex < mpCurrentAnimation->frameCount || mpCurrentAnimation->loop) {
+				if(mFrameIndex < mpCurrentAnimation->frameCount-1 || mpCurrentAnimation->loop) {
 					mFrameIndex = (mFrameIndex + 1) % mpCurrentAnimation->frameCount;
 					mElapsedFrameTime = 0.0f;
 				}
 			}
+		}
+	}
+
+	void Animator::Draw() {
+		if (ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
+			GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+			Transform* pTransform = dynamic_cast<Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+
+			std::stringstream ss;
+			ss << (mpCurrentAnimation->frameOffset + mFrameIndex);
+
+			glm::vec2 position = pTransform->GetPosition();
+			pGraphicsManager->RenderText(ss.str(), position.x+16.0f, position.y - 5.0f, 0.5f, RED);
 		}
 	}
 
@@ -90,6 +139,13 @@ namespace VannoEngine {
 				mpCurrentAnimation = mAnimations[animationName];
 				mFrameIndex = 0;
 				mElapsedFrameTime = 0.0f;
+
+				if (mpCurrentAnimation->aabbDefined && GetOwner()->HasComponent(PHYSICSBODY_COMPONENT)) {
+					PhysicsBody* pBody = dynamic_cast<PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+
+					pBody->SetAabbDimensions(mpCurrentAnimation->aabbWidth, mpCurrentAnimation->aabbHeight);
+					pBody->SetAabbOffset(mpCurrentAnimation->aabbOffsetX, mpCurrentAnimation->aabbOffsetY);
+				}
 			}
 		}
 	}

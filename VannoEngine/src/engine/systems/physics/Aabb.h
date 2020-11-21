@@ -4,16 +4,16 @@
 namespace VannoEngine {
 	class AABB {
 	public:
-		glm::vec2 center;
+		//glm::vec2 center;
 		float halfWidth;
 		float halfHeight;
 		float margin;
 
 		AABB();
-		AABB(float x, float y, float width, float height);
+		AABB(float width, float height);
 
 		~AABB() {};
 
-		bool Collides(AABB const& other);
+		//bool Collides(AABB const& other);
 	};
 }

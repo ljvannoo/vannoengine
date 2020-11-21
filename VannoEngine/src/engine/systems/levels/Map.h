@@ -21,7 +21,7 @@ namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
 	class MapLayer;
-	class AABB;
+	class PhysicsBody;
 	class Collision;
 
 	class Map 
@@ -41,7 +41,7 @@ namespace VannoEngine {
 		float GetWidth() { return (float)(mWidth * mTileWidth); }
 		float GetHeight() { return (float)(mHeight * mTileHeight); }
 
-		Collision Collides(AABB const& aabb);
+		Collision Collides(PhysicsBody* pBody);
 	private: // Methods
 
 	private: // Variables

@@ -366,7 +366,7 @@ namespace VannoEngine {
 		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(transformation));
 
 		loc = mpGeneralShader->GetUniformLocation("index");
-		glUniform1f(loc, static_cast<GLfloat>(spriteIndex));
+		glUniform1i(loc, spriteIndex);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 		mBatchRenderCalls++;
@@ -406,13 +406,15 @@ namespace VannoEngine {
 		glUniform1i(loc, 0);
 
 		loc = mpGeneralShader->GetUniformLocation("spriteSheetSize");
+		//LOG_CORE_DEBUG("SpritesheetSize: ({},{})", spriteSheetWidth, spriteSheetHeight);
 		glUniform2f(loc, spriteSheetWidth, spriteSheetHeight);
 
+		//LOG_CORE_DEBUG("SpriteSize: ({},{})", spriteWidth, spriteHeight);
 		loc = mpGeneralShader->GetUniformLocation("spriteSize");
 		glUniform2f(loc, spriteWidth, spriteHeight);
 
 		loc = mpGeneralShader->GetUniformLocation("index");
-		glUniform1f(loc, static_cast<GLfloat>(spriteIndex));
+		glUniform1i(loc, spriteIndex);
 
 		loc = mpGeneralShader->GetUniformLocation("flipHorizontal");
 		glUniform1i(loc, flipHorizontal ? 1 : 0);

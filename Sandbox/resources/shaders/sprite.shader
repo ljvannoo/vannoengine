@@ -53,7 +53,7 @@ layout(location = 0) out vec4 color;
 uniform sampler2D spriteSheet;
 uniform vec2 spriteSheetSize;
 uniform vec2 spriteSize;
-uniform float index;
+uniform int index;
 uniform int debugMode = 0;
 
 void main() {
@@ -65,11 +65,11 @@ void main() {
 	float dy = spriteSize.y / h;
 
 	// Figure out number of tile cols of sprite sheet
-	float cols = w / spriteSize.x;
+	int cols = int(w / spriteSize.x);
 
 	// From linear index to row/col pair
-	float col = mod(index, cols);
-	float row = floor(index / cols);
+	int col = index % cols;
+	int row = index / cols;
 
 	vec2 uv = vec2(dx * fragmentUV.x + col * dx, 1.0 - dy - row * dy + dy * fragmentUV.y);
 	if(debugMode == 0) {

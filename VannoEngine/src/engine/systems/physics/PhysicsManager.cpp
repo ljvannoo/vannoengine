@@ -38,9 +38,9 @@ namespace VannoEngine {
 
 	}
 
-	Collision PhysicsManager::CollidesWithMap(AABB const& aabb) {
+	Collision PhysicsManager::CollidesWithMap(PhysicsBody* pBody) {
 		LevelManager* pLevelManager = LevelManager::GetInstance();
 		Level* pLevel = pLevelManager->GetCurrentLevel();
-		return pLevel->Collides(aabb);
+		return pLevel->Collides(pBody);
 	}
 }

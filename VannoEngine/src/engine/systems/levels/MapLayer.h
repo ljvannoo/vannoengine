@@ -21,7 +21,7 @@ Creation Date:	2020-Oct-29
 namespace VannoEngine {
 	// Forward declarations
 	class ShaderProgram;
-	class AABB;
+	class PhysicsBody;
 
 	class MapLayer
 	{
@@ -44,7 +44,7 @@ namespace VannoEngine {
 
 		virtual void LoadData(const rapidjson::Value* pData) = 0;
 
-		virtual Collision Collides(AABB const& aabb) { return Collision(); }
+		virtual Collision Collides(PhysicsBody* pBody) { return Collision(); }
 
 		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); mUpperLeft = glm::vec2(mPosition.x, mPosition.y + mDimensions.y); }
 		void SetDimensions(float width, float height) { mDimensions = glm::vec2(width, height); mUpperLeft = glm::vec2(mPosition.x, mPosition.y + mDimensions.y); }

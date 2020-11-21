@@ -28,7 +28,7 @@ Creation Date:	2020-Oct-29
 namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
-	class AABB;
+	class PhysicsBody;
 	class Collision;
 
 	class TileMapLayer : public MapLayer
@@ -48,7 +48,7 @@ namespace VannoEngine {
 		void Update(double deltaTime) override;
 		void Draw() override;
 
-		Collision Collides(AABB const& aabb) override;
+		Collision Collides(PhysicsBody* pBody) override;
 	private: // Methods
 
 	private: // Variables

@@ -43,136 +43,142 @@ Creation Date:	2020-Oct-19
 
 Controller::Controller(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
-	mCurrentState(State::Stand)
+	mCurrentState{ State::Stand },
+	mpInputManager{ VannoEngine::InputManager::GetInstance() },
+	mpPhysicsManager{ VannoEngine::PhysicsManager::GetInstance() },
+	mpConfigManager{ VannoEngine::ConfigurationManager::GetInstance() },
+	mpLevelManager{ VannoEngine::LevelManager::GetInstance() }
 {}
 
 Controller::~Controller() {
 }
 
 void Controller::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
-	
+
 }
 
 void Controller::Update(double deltaTime) {
-	VannoEngine::InputManager* pInputManager = VannoEngine::InputManager::GetInstance();
-	VannoEngine::PhysicsManager* pPhysicsManager = VannoEngine::PhysicsManager::GetInstance();
-
 	VannoEngine::Sprite* pSprite = dynamic_cast<VannoEngine::Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
 	VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 	VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
-	VannoEngine::ConfigurationManager* pConfigManager = VannoEngine::ConfigurationManager::GetInstance();
-
 	HandleCollisions(pTransform, pBody);
 
-	if (pInputManager->IsKeyTriggered(ACTION_DEBUG)) {
-		pConfigManager->ToggleBool("/debugMode");
-		LOG_CORE_DEBUG("Debug Mode is now: {0}", pConfigManager->GetBool("/debugMode"));
+	if (mpInputManager->IsKeyTriggered(ACTION_DEBUG)) {
+		mpConfigManager->ToggleBool("/debugMode");
+		LOG_CORE_DEBUG("Debug Mode is now: {0}", mpConfigManager->GetBool("/debugMode"));
 	}
 
 	VannoEngine::Collision collision = pBody->GetCollision();
+	glm::vec2 speed = pTransform->GetSpeed();
 	switch (mCurrentState) {
 	case State::Stand:
-		pTransform->SetSpeed(0.0f, 0.0f);
 		pAnimator->Play("idle");
-		if (!collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
-			mCurrentState = State::Jump;
+		speed.x = 0.0f;
+		if(speed.x == 0) {
+			if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+				mCurrentState = State::Crouch;
+			}
+			else if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
+				mCurrentState = State::Walk;
+				pSprite->SetFlipHorizontal(false);
+				speed.x += 11.0f;
+			}
+			else if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+				mCurrentState = State::Walk;
+				pSprite->SetFlipHorizontal(true);
+				speed.x -= 11.0f;
+			}
+
+			if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+				mCurrentState = State::Jump;
+				speed.y += 100.0f;
+				pTransform->SetPositionY(pTransform->GetPosition().y + 10.0f);
+			}
 		}
-		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
-			pTransform->SetSpeedY(cJumpSpeed);
-			mCurrentState = State::Jump;
-		} else if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) != pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
-			mCurrentState = State::Walk;
+		break;
+	case State::Crouch:
+		pAnimator->Play("crouch");
+
+		if (!mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+			mCurrentState = State::Stand;
 		}
 		break;
 	case State::Walk:
 		pAnimator->Play("walk");
-		if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) == pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
+		speed.x *= 1.0f + cWalkAccel;
+		if (speed.x > cWalkSpeed) {
+			speed.x = cWalkSpeed;
+		}
+		else if (speed.x < -cWalkSpeed) {
+			speed.x = -cWalkSpeed;
+		}
+		if(mpInputManager->IsKeyReleased(ACTION_RIGHT) || mpInputManager->IsKeyReleased(ACTION_LEFT)) {
+			mCurrentState = State::Slowing;	
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+			mCurrentState = State::Jump;
+			speed.y += 200.0f;
+			pTransform->SetPositionY(pTransform->GetPosition().y + 10.0f);
+		}
+		break;
+	case State::Slowing:
+		//pAnimator->Play("idle");
+		speed.x *= cWalkAccel;
+		if (speed.x > -10.0f && speed.x < 10.0f) {
+			speed.x = 0.0f;
 			mCurrentState = State::Stand;
-			pTransform->SetSpeed(0.0f, 0.0f);
-		}
-		else if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT)) {
-			pTransform->SetSpeedX(-cWalkSpeed);
-			pSprite->SetFlipHorizontal(true);
-		}
-		else if (pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
-			pTransform->SetSpeedX(cWalkSpeed);
-			pSprite->SetFlipHorizontal(false);
 		}
 
-		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
-			pTransform->SetSpeedY(cJumpSpeed);
-			mCurrentState = State::Jump;
-		}
-		else if (!collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
-			mCurrentState = State::Jump;
-		}
 		break;
 	case State::Jump:
-		if (pTransform->GetSpeed().y > 0) {
-			pAnimator->Play("jump");
+		pAnimator->Play("jump");
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP) && speed.y < cJumpSpeed) {
+			speed.y += 70.0f;
+			if (speed.y > cJumpSpeed) {
+				//speed.y = -1.0f;
+				mCurrentState = State::Falling;
+
+			}
 		}
-		else {
-			pAnimator->Play("falling");
+		
+		if (mpInputManager->IsKeyReleased(ACTION_RIGHT) || mpInputManager->IsKeyReleased(ACTION_LEFT)) {
+			mCurrentState = State::Slowing;
 		}
+
 		if (collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
 			mCurrentState = State::Stand;
+			speed.y = 0.0f;
 		}
-		/*if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT) == pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
-			mCurrentState = State::Stand;
-			pTransform->SetSpeed(0.0f, 0.0f);
+		break;
+	case State::Falling:
+		if(speed.y < 0.0) {
+			pAnimator->Play("falling");
 		}
-		else if (pInputManager->IsKeyPressed(ACTION_MOVE_LEFT)) {
-			pTransform->SetSpeedX(-cWalkSpeed);
-			pSprite->SetFlipHorizontal(true);
+		if(collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
+			pAnimator->Play("walk");
+			if (mpInputManager->IsKeyPressed(ACTION_RIGHT) || mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+				mCurrentState = State::Walk;
+			}
+			else {
+				mCurrentState = State::Slowing;
+			}
 		}
-		else if (pInputManager->IsKeyPressed(ACTION_MOVE_RIGHT)) {
-			pTransform->SetSpeedX(cWalkSpeed);
-			pSprite->SetFlipHorizontal(false);
-		}
-
-		if (pInputManager->IsKeyPressed(ACTION_JUMP)) {
-			pTransform->SetSpeedY(cJumpSpeed);
-			mCurrentState = State::Jump;
-		}
-		else if (!collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
-			mCurrentState = State::Jump;
-		}
-
-		if (!pInputManager->IsKeyPressed(ACTION_JUMP) && pTransform->GetSpeed().y > 0.0f) {
-			pTransform->SetSpeedY(std::min(pTransform->GetSpeed().y, cMinJumpSpeed));
-		}*/
 		break;
 	}
-
-	VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
-	VannoEngine::Camera* pCamera = pLevelManager->GetCamera();
-	VannoEngine::Level* pLevel = pLevelManager->GetCurrentLevel();
-	float levelWidth = pLevel->GetWidth();
-	float levelHeight = pLevel->GetHeight();
-	float hW = pCamera->GetScreenWidth() / 2.0f;
-	float hH = pCamera->GetScreenHeight() / 2.0f;
-	
-	glm::vec2 cameraPosition = pTransform->GetPosition();
-	if (cameraPosition.x - hW < 0.0f) {
-		cameraPosition.x = hW;
-	} else if (cameraPosition.x + hW > levelWidth) {
-		cameraPosition.x = levelWidth - hW;
-	}
-
-	/*if (cameraPosition.y - hH < 0.0f) {
-		cameraPosition.y = hH;
-	}
-	else if (cameraPosition.y + hH > levelHeight) {
-		cameraPosition.y = levelHeight - hH;
-	}*/
-	cameraPosition.y = hH;
-
-
-	pCamera->SetPosition(cameraPosition);
+	LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
+	pTransform->SetSpeed(speed.x, speed.y);
+	UpdateCamera(pTransform);
 }
 
+void Controller::Jump() {
+
+}
+
+void Controller::Draw() {
+
+}
 void Controller::HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody) {
 	VannoEngine::Collision collision = pBody->GetCollision();
 	VannoEngine::AABB aabb = pBody->GetAabb();
@@ -198,4 +204,33 @@ void Controller::HandleCollisions(VannoEngine::Transform* pTransform, VannoEngin
 
 	pTransform->SetPosition(newPosition.x, newPosition.y);
 	pTransform->SetSpeed(newSpeed.x, newSpeed.y);
+}
+
+void Controller::UpdateCamera(VannoEngine::Transform* pTransform) {
+	VannoEngine::Camera* pCamera = mpLevelManager->GetCamera();
+	VannoEngine::Level* pLevel = mpLevelManager->GetCurrentLevel();
+	float levelWidth = pLevel->GetWidth();
+	float levelHeight = pLevel->GetHeight();
+	float hW = pCamera->GetScreenWidth() / 2.0f;
+	float hH = pCamera->GetScreenHeight() / 2.0f;
+
+	glm::vec2 cameraPosition = pTransform->GetPosition();
+	if (cameraPosition.x - hW < 0.0f) {
+		cameraPosition.x = hW;
+	}
+	else if (cameraPosition.x + hW > levelWidth) {
+		cameraPosition.x = levelWidth - hW;
+	}
+
+	/*if (cameraPosition.y - hH < 0.0f) {
+		cameraPosition.y = hH;
+	}
+	else if (cameraPosition.y + hH > levelHeight) {
+		cameraPosition.y = levelHeight - hH;
+	}*/
+	cameraPosition.y = hH;
+
+
+	pCamera->SetPosition(cameraPosition);
+
 }

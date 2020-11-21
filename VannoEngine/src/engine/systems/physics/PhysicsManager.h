@@ -13,10 +13,10 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Nov-02
 *************************************************************************/
-#include "engine/systems/physics/Aabb.h"
 
 namespace VannoEngine {
 	class Collision;
+	class PhysicsBody;
 
 	class PhysicsManager
 	{
@@ -28,13 +28,14 @@ namespace VannoEngine {
 		void FlipGravity() { mGravity *= -1.0f;  }
 		float GetMaxFallingSpeed() { return 20.0f; }
 
-		Collision CollidesWithMap(AABB const& aabb);
+		Collision CollidesWithMap(PhysicsBody* pBody);
 	private:
 		PhysicsManager();
 
 	private:
 		static PhysicsManager* mpInstance;
 
-		float mGravity = -50.0f;
+		//float mGravity = -50.0f;
+		float mGravity = -20.0f;
 	};
 }

@@ -23,6 +23,7 @@ Creation Date:	2020-Oct-29
 
 #include "engine/systems/physics/Aabb.h"
 #include "engine/systems/physics/Collision.h"
+#include "engine/components/PhysicsBody.h"
 
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/components/Camera.h"
@@ -167,13 +168,15 @@ namespace VannoEngine {
 		pGraphicsManager->EndSpriteBatch();
 	}
 
-	Collision TileMapLayer::Collides(AABB const& aabb) {
+	Collision TileMapLayer::Collides(PhysicsBody* pBody) {
 		Collision result;
 		if (mSolid) {
 			float tH = (float)mTileHeight;
 			float tW = (float)mTileWidth;
-			glm::vec2 min(aabb.center.x - aabb.halfWidth, aabb.center.y - aabb.halfHeight); // Bottom left
-			glm::vec2 max(aabb.center.x + aabb.halfWidth, aabb.center.y + aabb.halfHeight); // Top right
+			glm::vec2 center = pBody->GetAabbCenter();
+			glm::vec2 halfDim = pBody->GetAabbHalfDimensions();
+			glm::vec2 min(center.x - halfDim.x, center.y - halfDim.y); // Bottom left
+			glm::vec2 max(center.x + halfDim.x, center.y + halfDim.y); // Top right
 
 			int topRow = (int)round((GetUpperLeft().y - max.y) / tH);
 			int bottomRow = (int)round((GetUpperLeft().y - min.y) / tH);

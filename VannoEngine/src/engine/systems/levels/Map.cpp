@@ -131,10 +131,10 @@ namespace VannoEngine {
 		}
 	}
 
-	Collision Map::Collides(AABB const& aabb) {
+	Collision Map::Collides(PhysicsBody* pBody) {
 		Collision result;
 		for (MapLayer* pLayer : mLayers) {
-			result = pLayer->Collides(aabb);
+			result = pLayer->Collides(pBody);
 			if (result.HasCollided()) {
 				break;
 			}

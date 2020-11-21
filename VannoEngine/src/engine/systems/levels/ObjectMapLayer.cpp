@@ -108,11 +108,13 @@ namespace VannoEngine {
 					else {
 						LOG_CORE_ERROR("Game object has no transform!");
 					}
+					/*
 					PhysicsBody* pBody = static_cast<PhysicsBody*>(pGameObject->GetComponent(PHYSICSBODY_COMPONENT));
 					if (pBody) {
 						pBody->SetWidth(width);
 						pBody->SetHeight(height);
 					}
+					*/
 					mObjects.push_back(pGameObject);
 				}
 				else {

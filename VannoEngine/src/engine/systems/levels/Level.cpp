@@ -72,8 +72,8 @@ namespace VannoEngine {
 		mpMap->Draw();
 	}
 
-	Collision Level::Collides(AABB const& aabb) {
-		return mpMap->Collides(aabb);
+	Collision Level::Collides(PhysicsBody* pBody) {
+		return mpMap->Collides(pBody);
 	}
 
 	float Level::GetWidth() {
