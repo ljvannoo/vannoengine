@@ -105,6 +105,11 @@ void Controller::Update(double deltaTime) {
 				targetSpeed = cRunSpeed;
 			}
 		}
+		if ((mpInputManager->IsKeyPressed(ACTION_RIGHT) && collision.CollisionDetected(VannoEngine::Direction::RIGHT)) ||
+			(mpInputManager->IsKeyPressed(ACTION_LEFT) && collision.CollisionDetected(VannoEngine::Direction::LEFT))) {
+			mCurrentState = State::Stand;
+				targetSpeed = 0.0f;
+		}
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
 		}
