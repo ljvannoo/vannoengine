@@ -28,7 +28,7 @@ uniform mat4 projection;
 uniform int flipHorizontal = 0;
 
 void main() {
-	gl_Position = projection * model * vec4(position, 0.0, 1.0);
+	gl_Position = projection * model * vec4(position.x-0.001, position.y - 0.001, 0.0, 1.0);
 
 	fragmentColor = vertexColor;
 	fragmentPosition = position;
