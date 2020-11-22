@@ -82,15 +82,28 @@ void Controller::Update(double deltaTime) {
 		moveInput = -1.0f;
 	}
 
+	float targetSpeed = 0.0f;
 	switch (mCurrentState) {
 	case State::Stand:
 		pAnimator->Play("idle");
 		speed.x = 0.0f;
-		if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
-			mCurrentState = State::Walk;
+		if (mpInputManager->IsKeyPressed(ACTION_WALK)) {
+			if (mpInputManager->IsKeyPressed(ACTION_RIGHT) || mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+				mCurrentState = State::Walk;
+				targetSpeed = cWalkSpeed;
+			}
 		}
-		if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
-			mCurrentState = State::Walk;
+		else if (mpInputManager->IsKeyPressed(ACTION_DASH)) {
+			if (mpInputManager->IsKeyPressed(ACTION_RIGHT) || mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+				mCurrentState = State::Dash;
+				targetSpeed = cDashSpeed;
+			}
+		}
+		else {
+			if (mpInputManager->IsKeyPressed(ACTION_RIGHT) || mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+				mCurrentState = State::Run;
+				targetSpeed = cRunSpeed;
+			}
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
@@ -101,6 +114,26 @@ void Controller::Update(double deltaTime) {
 		break;
 	case State::Walk:
 		pAnimator->Play("walk");
+		targetSpeed = cWalkSpeed;
+		if (!mpInputManager->IsKeyPressed(ACTION_WALK)) {
+			mCurrentState = State::Run;
+			targetSpeed = cRunSpeed;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+			mCurrentState = State::Jump;
+		}
+		break;
+	case State::Run:
+		pAnimator->Play("run");
+		targetSpeed = cRunSpeed;
+		if (mpInputManager->IsKeyPressed(ACTION_WALK)) {
+			mCurrentState = State::Walk;
+			targetSpeed = cWalkSpeed;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_DASH)) {
+			mCurrentState = State::Dash;
+			targetSpeed = cDashSpeed;
+		}
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
 		}
@@ -108,8 +141,20 @@ void Controller::Update(double deltaTime) {
 			mCurrentState = State::Stand;
 		}
 		break;
+	case State::Dash:
+		pAnimator->Play("dash");
+		targetSpeed = cDashSpeed;
+		if (!mpInputManager->IsKeyPressed(ACTION_DASH)) {
+			mCurrentState = State::Run;
+			targetSpeed = cRunSpeed;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+			mCurrentState = State::Jump;
+		}
+		break;
 	case State::Jump:
 		pAnimator->Play("jump");
+		targetSpeed = cRunSpeed;
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
 			speed.y = sqrtf(2.0f * cJumpHeight * fabsf(mpPhysicsManager->GetGravity())) ;
@@ -118,15 +163,17 @@ void Controller::Update(double deltaTime) {
 		
 		break;
 	case State::Jumping:
+		targetSpeed = cRunSpeed;
 		if (speed.y < 0.0f) {
 			mCurrentState = State::Fall;
 		}
 		break;
 	case State::Fall:
 		pAnimator->Play("falling");
+		targetSpeed = cRunSpeed;
 		if (speed.y == 0.0f) {
 			if (speed.x != 0.0f) {
-				mCurrentState = State::Walk;
+				mCurrentState = State::Run;
 			}
 			else {
 				mCurrentState = State::Stand;
@@ -135,13 +182,14 @@ void Controller::Update(double deltaTime) {
 		break;
 	case State::Crouch:
 		pAnimator->Play("crouch");
-		moveInput = 0.0f;
+		targetSpeed = 0.0f;
 		if (mpInputManager->IsKeyReleased(ACTION_DOWN)) {
 			mCurrentState = State::Stand;
 		}
 		break;
 	}
-	speed.x = MoveTowards(speed.x, cWalkSpeed * moveInput, cWalkAccel * deltaTime);
+	//LOG_DEBUG("({}) Targetspeed: {}", mCurrentState, targetSpeed);
+	speed.x = MoveTowards(speed.x, targetSpeed * moveInput, cWalkAccel * deltaTime);
 	//LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);

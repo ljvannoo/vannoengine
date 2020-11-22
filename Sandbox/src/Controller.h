@@ -26,49 +26,13 @@ enum class State : int {
 	Stand,
 	Crouch,
 	Walk,
+	Run,
+	Dash,
 	Jumping,
 	Jump,
 	Fall
 };
-/*
-class State {
-public:
-	enum Value : int {
-		Stand,
-		Crouch,
-		Walk,
-		Jump,
-		Fall
-	};
 
-	State() = default;
-	constexpr State(Value state) : value(state) {}
-
-	operator State() const { return value; }
-	explicit operator bool() = delete;
-
-	constexpr bool operator==(State rhs) const { return value == rhs.value; }
-	constexpr bool operator!=(State rhs) const { return value != rhs.value; }
-
-	std::string ToString() const {
-		switch (value) {
-		case Value::Stand:
-			return "Stand";
-		case Value::Crouch:
-			return "Crouch";
-		case Value::Walk:
-			return "Walk";
-		case Value::Jump:
-			return "Jump";
-		case Value::Fall:
-			return "Fall";
-		}
-		return "";
-	}
-private:
-	Value value;
-};
-*/
 namespace VannoEngine {
 	class Transform;
 	class PhysicsBody;
@@ -106,5 +70,7 @@ private:
 	State mCurrentState;
 	const float cWalkSpeed = 2.0f;
 	const float cWalkAccel = 60.0f;
+	const float cRunSpeed = 4.0f;
+	const float cDashSpeed = 6.0f;
 	const float cJumpHeight = 2.0f;
 };

@@ -11,6 +11,8 @@
     "left": "a",
     "right": "d",
     "jump": "space",
-    "debug":  "f1"
+    "debug": "f1",
+    "walk": "lshift",
+    "dash": "lctrl"
   }
 }

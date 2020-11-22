@@ -65,6 +65,13 @@
             "loop": true
           },
           {
+            "name": "dash",
+            "frameOffset": 170,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": true
+          },
+          {
             "name": "slowing",
             "frameOffset": 11,
             "frameCount": 1,

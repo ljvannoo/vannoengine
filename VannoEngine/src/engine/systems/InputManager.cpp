@@ -101,6 +101,10 @@ namespace VannoEngine {
 		mScanCodes["esc"] = SDL_SCANCODE_ESCAPE;
 		mScanCodes["enter"] = SDL_SCANCODE_RETURN;
 		mScanCodes["tab"] = SDL_SCANCODE_TAB;
+		mScanCodes["lshift"] = SDL_SCANCODE_LSHIFT;
+		mScanCodes["lctrl"] = SDL_SCANCODE_LCTRL;
+		mScanCodes["lalt"] = SDL_SCANCODE_LALT;
+		
 	}
 
 	void InputManager::Update() {
