@@ -19,7 +19,7 @@ public:
 
 	}
 
-	void Init() {
+	void Init() override {
 		VannoEngine::ConfigurationManager* pConfigurationManager = VannoEngine::ConfigurationManager::GetInstance();
 		pConfigurationManager->Init("config.json");
 
@@ -36,6 +36,29 @@ public:
 		VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 		pLevelManager->LoadLevel(pConfigurationManager->GetString("/initialLevel"));
 		pLevelManager->GetCamera()->SetScreenDimensions(windowWidth, windowHeight);
+	}
+
+	void HandleInput() override {
+		VannoEngine::InputManager* pInputManager = VannoEngine::InputManager::GetInstance();
+
+		if (pInputManager->IsKeyTriggered("quit")) {
+			IsRunning = false;
+		}
+
+		if (pInputManager->IsKeyTriggered("zoomIn")) {
+			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+			float scale = pLevelManager->GetCamera()->GetScale();
+			pLevelManager->GetCamera()->SetScale(scale + 0.25f);
+		} else if (pInputManager->IsKeyTriggered("zoomOut")) {
+			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+			float scale = pLevelManager->GetCamera()->GetScale();
+			scale -= 0.25f;
+			if (scale < 1.0f) {
+				scale = 1.0f;
+			}
+			pLevelManager->GetCamera()->SetScale(scale);
+
+		}
 	}
 };
 

@@ -4,8 +4,6 @@
     {
       "type": "camera",
       "data": {
-        "posX": 400.0,
-        "posY": 300.0,
         "scale": 1.0
       }
     }

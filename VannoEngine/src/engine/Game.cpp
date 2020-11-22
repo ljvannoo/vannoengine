@@ -88,24 +88,30 @@ namespace VannoEngine {
 					IsRunning = false;
 				}
 			}
+			double deltaTime = mpFramerateManager->GetDeltaTime();
+
 			// Input
 			mpInputManager->HandleInput();
+			HandleInput();
 
 			// Physics
 			mpTimeManager->StartTimer("physics");
-			mpLevelManager->UpdatePhysics(mpFramerateManager->GetDeltaTime());
+			mpLevelManager->UpdatePhysics(deltaTime);
+			UpdatePhysics(deltaTime);
 			mpTimeManager->StopTimer("physics");
 
 			// Update
 			mpTimeManager->StartTimer("update");
 			mpEventManager->Update();
-			mpLevelManager->Update(mpFramerateManager->GetDeltaTime());
+			mpLevelManager->Update(deltaTime);
+			Update(deltaTime);
 			mpTimeManager->StopTimer("update");
 
 			// Draw
 			mpTimeManager->StartTimer("draw");
 			mpGraphicsManager->StartDraw();
 			LevelManager::GetInstance()->Draw();
+			Draw();
 			mpGraphicsManager->EndDraw();
 			mpTimeManager->StopTimer("draw");
 

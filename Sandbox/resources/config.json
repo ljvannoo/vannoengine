@@ -13,6 +13,9 @@
     "jump": "space",
     "debug": "f1",
     "walk": "lshift",
-    "dash": "lctrl"
+    "dash": "lctrl",
+    "quit": "esc",
+    "zoomIn": ".",
+    "zoomOut":  ","
   }
 }

@@ -81,8 +81,8 @@ namespace VannoEngine {
 	}
 
 	bool Camera::InView(glm::vec2 const& min, glm::vec2 const& max) {
-		float hW = mScreenWidth / 2.0f;
-		float hH = mScreenHeight / 2.0f;
+		float hW = GetScaledWidth() / 2.0f;
+		float hH = GetScaledHeight() / 2.0f;
 		
 		if (min.x < mPosition.x - hW || max.x > mPosition.x + hW) {
 			return false;
@@ -95,8 +95,8 @@ namespace VannoEngine {
 	}
 
 	bool Camera::InViewX(float x) {
-		float hW = mScreenWidth / 2.0f;
-		float hH = mScreenHeight / 2.0f;
+		float hW = GetScaledWidth() / 2.0f;
+		float hH = GetScaledHeight() / 2.0f;
 
 		if (x < mPosition.x - hW || x > mPosition.x + hW) {
 			return false;

@@ -234,8 +234,8 @@ void Controller::UpdateCamera(VannoEngine::Transform* pTransform) {
 	VannoEngine::Level* pLevel = mpLevelManager->GetCurrentLevel();
 	float levelWidth = pLevel->GetWidth();
 	float levelHeight = pLevel->GetHeight();
-	float hW = pCamera->GetScreenWidth() / 2.0f;
-	float hH = pCamera->GetScreenHeight() / 2.0f;
+	float hW = pCamera->GetScaledWidth() / 2.0f;
+	float hH = pCamera->GetScaledHeight() / 2.0f;
 
 	glm::vec2 cameraPosition = pTransform->GetPosition();
 	if (cameraPosition.x - hW < 0.0f) {
@@ -245,13 +245,13 @@ void Controller::UpdateCamera(VannoEngine::Transform* pTransform) {
 		cameraPosition.x = levelWidth - hW;
 	}
 
-	/*if (cameraPosition.y - hH < 0.0f) {
+	if (cameraPosition.y - hH < 0.0f) {
 		cameraPosition.y = hH;
 	}
 	else if (cameraPosition.y + hH > levelHeight) {
 		cameraPosition.y = levelHeight - hH;
-	}*/
-	cameraPosition.y = hH;
+	}
+	//cameraPosition.y = hH;
 
 
 	pCamera->SetPosition(cameraPosition);

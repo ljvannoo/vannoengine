@@ -18,16 +18,25 @@ namespace VannoEngine {
 
 	class Game
 	{
-	public: 
-		bool IsRunning;
 
 	public:
 		Game();
 		virtual ~Game();
 
-		virtual void Init() = 0;
 		void Init(int windowWidth, int windowHeight, int fpsCap);
+
+		// The following methods are available for extension
+		virtual void Init() = 0;
+		virtual void HandleInput() {}
+		virtual void UpdatePhysics(double deltaTime) {}
+		virtual void Update(double deltaTime) {}
+		virtual void Draw() {}
+
 		void Run();
+
+	protected:
+		bool IsRunning;
+
 	private:
 		InputManager* mpInputManager;
 		FramerateController* mpFramerateManager;

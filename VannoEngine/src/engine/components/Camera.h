@@ -48,6 +48,8 @@ namespace VannoEngine {
 		void SetScreenDimensions(float width, float height);
 		float GetScreenWidth() { return mScreenWidth; }
 		float GetScreenHeight() { return mScreenHeight; }
+		float GetScaledWidth() { return mScreenWidth / mScale; }
+		float GetScaledHeight() { return mScreenHeight / mScale; }
 
 		bool InView(glm::vec2 const& min, glm::vec2 const& max);
 		bool InViewX(float x);
