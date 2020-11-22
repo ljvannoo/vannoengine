@@ -74,13 +74,13 @@ namespace VannoEngine {
 			glm::vec2 speed = pTransform->GetSpeed();
 
 			// Update Speed
-			speed.y += pPhysicsManager->GetGravity();
-			if (speed.x > -1.0f && speed.x < 1.0f) {
+			speed.y += pPhysicsManager->GetGravity() * deltaTime;
+			/*if (speed.x > -1.0f && speed.x < 1.0f) {
 				speed.x = 0.0f;
-			}
+			}*/
 
 			// Update position
-			position += speed * dT;
+			position += speed;
 
 			// Update AABB
 			//mAabb.center = position + mAabbOffset;

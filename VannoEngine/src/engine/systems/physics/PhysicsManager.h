@@ -36,6 +36,6 @@ namespace VannoEngine {
 		static PhysicsManager* mpInstance;
 
 		//float mGravity = -50.0f;
-		float mGravity = -20.0f;
+		float mGravity = -25.0f;
 	};
 }

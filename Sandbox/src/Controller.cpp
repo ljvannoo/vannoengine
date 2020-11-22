@@ -64,110 +64,85 @@ void Controller::Update(double deltaTime) {
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
 	HandleCollisions(pTransform, pBody);
-
+	glm::vec2 speed = pTransform->GetSpeed();
 	if (mpInputManager->IsKeyTriggered(ACTION_DEBUG)) {
 		mpConfigManager->ToggleBool("/debugMode");
 		LOG_CORE_DEBUG("Debug Mode is now: {0}", mpConfigManager->GetBool("/debugMode"));
 	}
 
 	VannoEngine::Collision collision = pBody->GetCollision();
-	glm::vec2 speed = pTransform->GetSpeed();
+	float moveInput = 0.0f;
+
+	if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
+		pSprite->SetFlipHorizontal(false);
+		moveInput = 1.0f;
+	}
+	if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+		pSprite->SetFlipHorizontal(true);
+		moveInput = -1.0f;
+	}
+
 	switch (mCurrentState) {
 	case State::Stand:
 		pAnimator->Play("idle");
 		speed.x = 0.0f;
-		if(speed.x == 0) {
-			if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
-				mCurrentState = State::Crouch;
-			}
-			else if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
+		if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
+			mCurrentState = State::Walk;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+			mCurrentState = State::Walk;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+			mCurrentState = State::Jump;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+			mCurrentState = State::Crouch;
+		}
+		break;
+	case State::Walk:
+		pAnimator->Play("walk");
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+			mCurrentState = State::Jump;
+		}
+		if (speed.x == 0.0f) {
+			mCurrentState = State::Stand;
+		}
+		break;
+	case State::Jump:
+		pAnimator->Play("jump");
+		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
+			mCurrentState = State::Jump;
+			speed.y = sqrtf(2.0f * cJumpHeight * fabsf(mpPhysicsManager->GetGravity())) ;
+			mCurrentState = State::Jumping;
+		}
+		
+		break;
+	case State::Jumping:
+		if (speed.y < 0.0f) {
+			mCurrentState = State::Fall;
+		}
+		break;
+	case State::Fall:
+		pAnimator->Play("falling");
+		if (speed.y == 0.0f) {
+			if (speed.x != 0.0f) {
 				mCurrentState = State::Walk;
-				pSprite->SetFlipHorizontal(false);
-				speed.x += 11.0f;
 			}
-			else if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
-				mCurrentState = State::Walk;
-				pSprite->SetFlipHorizontal(true);
-				speed.x -= 11.0f;
-			}
-
-			if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
-				mCurrentState = State::Jump;
-				speed.y += 100.0f;
-				pTransform->SetPositionY(pTransform->GetPosition().y + 10.0f);
+			else {
+				mCurrentState = State::Stand;
 			}
 		}
 		break;
 	case State::Crouch:
 		pAnimator->Play("crouch");
-
-		if (!mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+		moveInput = 0.0f;
+		if (mpInputManager->IsKeyReleased(ACTION_DOWN)) {
 			mCurrentState = State::Stand;
-		}
-		break;
-	case State::Walk:
-		pAnimator->Play("walk");
-		speed.x *= 1.0f + cWalkAccel;
-		if (speed.x > cWalkSpeed) {
-			speed.x = cWalkSpeed;
-		}
-		else if (speed.x < -cWalkSpeed) {
-			speed.x = -cWalkSpeed;
-		}
-		if(mpInputManager->IsKeyReleased(ACTION_RIGHT) || mpInputManager->IsKeyReleased(ACTION_LEFT)) {
-			mCurrentState = State::Slowing;	
-		}
-		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
-			mCurrentState = State::Jump;
-			speed.y += 200.0f;
-			pTransform->SetPositionY(pTransform->GetPosition().y + 10.0f);
-		}
-		break;
-	case State::Slowing:
-		//pAnimator->Play("idle");
-		speed.x *= cWalkAccel;
-		if (speed.x > -10.0f && speed.x < 10.0f) {
-			speed.x = 0.0f;
-			mCurrentState = State::Stand;
-		}
-
-		break;
-	case State::Jump:
-		pAnimator->Play("jump");
-		if (mpInputManager->IsKeyPressed(ACTION_JUMP) && speed.y < cJumpSpeed) {
-			speed.y += 70.0f;
-			if (speed.y > cJumpSpeed) {
-				//speed.y = -1.0f;
-				mCurrentState = State::Falling;
-
-			}
-		}
-		
-		if (mpInputManager->IsKeyReleased(ACTION_RIGHT) || mpInputManager->IsKeyReleased(ACTION_LEFT)) {
-			mCurrentState = State::Slowing;
-		}
-
-		if (collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
-			mCurrentState = State::Stand;
-			speed.y = 0.0f;
-		}
-		break;
-	case State::Falling:
-		if(speed.y < 0.0) {
-			pAnimator->Play("falling");
-		}
-		if(collision.CollisionDetected(VannoEngine::Direction::BOTTOM)) {
-			pAnimator->Play("walk");
-			if (mpInputManager->IsKeyPressed(ACTION_RIGHT) || mpInputManager->IsKeyPressed(ACTION_LEFT)) {
-				mCurrentState = State::Walk;
-			}
-			else {
-				mCurrentState = State::Slowing;
-			}
 		}
 		break;
 	}
-	LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
+	speed.x = MoveTowards(speed.x, cWalkSpeed * moveInput, cWalkAccel * deltaTime);
+	//LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);
 }
@@ -233,4 +208,15 @@ void Controller::UpdateCamera(VannoEngine::Transform* pTransform) {
 
 	pCamera->SetPosition(cameraPosition);
 
+}
+
+float Controller::MoveTowards(float current, float target, float maxDelta) {
+	if (fabs(target - current) <= maxDelta) {
+		return target;
+	}
+	float sign = 1.0f;
+	if (target - current < 0.0f) {
+		sign = -1.0f;
+	}
+	return current + sign * maxDelta;
 }

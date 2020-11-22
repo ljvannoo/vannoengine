@@ -17,23 +17,58 @@ Creation Date:	2020-Oct-19
 
 #define CONTROLLER_COMPONENT "controller"
 
-#include <rapidjson/document.h>
-
 #include "engine/components/GameComponent.h"
 #include "engine/systems/objects/GameObject.h"
 
-enum class State {
-	Stand		= 0,
-	Stand2		= 1,
-	Slowing		= 2,
-	Crouch		= 3,
-	Crouch2		= 4,
-	Walk		= 5,
-	Jump		= 6,
-	Falling		= 7,
-	Slide		= 8
-};
+#include <rapidjson/document.h>
 
+enum class State : int {
+	Stand,
+	Crouch,
+	Walk,
+	Jumping,
+	Jump,
+	Fall
+};
+/*
+class State {
+public:
+	enum Value : int {
+		Stand,
+		Crouch,
+		Walk,
+		Jump,
+		Fall
+	};
+
+	State() = default;
+	constexpr State(Value state) : value(state) {}
+
+	operator State() const { return value; }
+	explicit operator bool() = delete;
+
+	constexpr bool operator==(State rhs) const { return value == rhs.value; }
+	constexpr bool operator!=(State rhs) const { return value != rhs.value; }
+
+	std::string ToString() const {
+		switch (value) {
+		case Value::Stand:
+			return "Stand";
+		case Value::Crouch:
+			return "Crouch";
+		case Value::Walk:
+			return "Walk";
+		case Value::Jump:
+			return "Jump";
+		case Value::Fall:
+			return "Fall";
+		}
+		return "";
+	}
+private:
+	Value value;
+};
+*/
 namespace VannoEngine {
 	class Transform;
 	class PhysicsBody;
@@ -59,7 +94,8 @@ public:
 private:
 	void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);
 	void UpdateCamera(VannoEngine::Transform* pTransform);
-	void Controller::Jump();
+	void Jump();
+	float MoveTowards(float current, float target, float maxDelta);
 
 private:
 	VannoEngine::InputManager* mpInputManager;
@@ -68,8 +104,7 @@ private:
 	VannoEngine::LevelManager* mpLevelManager;
 
 	State mCurrentState;
-	const float cWalkSpeed = 300.0f;
-	const float cJumpSpeed = 400.0f;
-	const float cMinJumpSpeed = 200.0f;
-	const float cWalkAccel = 0.8f;
+	const float cWalkSpeed = 2.0f;
+	const float cWalkAccel = 60.0f;
+	const float cJumpHeight = 2.0f;
 };

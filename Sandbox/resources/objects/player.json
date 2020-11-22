@@ -5,9 +5,9 @@
       "type": "sprite",
       "data": {
         "texture": {
-          "file": "sprites\\adventurer_indexed.png",
-          "cols": 7,
-          "rows": 16,
+          "file": "sprites\\adventurer_ext.png",
+          "cols": 14,
+          "rows": 15,
           "flipHorizontal": false
         }
       }
@@ -52,6 +52,13 @@
           },
           {
             "name": "walk",
+            "frameOffset": 158,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": true
+          },
+          {
+            "name": "run",
             "frameOffset": 8,
             "frameCount": 6,
             "frameDuration": 0.1,
