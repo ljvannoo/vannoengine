@@ -1,0 +1,37 @@
+{
+  "name": "light_bandit",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\light_bandit.png",
+          "cols": 8,
+          "rows": 5
+        }
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    },
+    {
+      "type": "animator",
+      "defaultAnimation": "idle",
+      "data": {
+        "animations": [
+          {
+            "name": "idle",
+            "frameOffset": 0,
+            "frameCount": 4,
+            "frameDuration": 0.2,
+            "loop": true
+          }
+        ]
+      }
+    }
+  ]
+}
