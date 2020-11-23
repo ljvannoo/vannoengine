@@ -55,7 +55,7 @@ namespace VannoEngine {
 		void RenderText(std::string text, float x, float y, float scale, glm::vec3 color);
 
 		void StartSpriteBatch(Surface* pSurface, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight);
-		void BatchRender(glm::mat4 const& transformation, int spriteIndex);
+		void BatchRender(glm::mat4 const& transformation, int col, int row);
 		void EndSpriteBatch();
 
 		void Render(
@@ -65,7 +65,8 @@ namespace VannoEngine {
 			float spriteSheetHeight,
 			float spriteWidth,
 			float spriteHeight,
-			int spriteIndex,
+			int col,
+			int row,
 			bool flipHorizontal,
 			int debugMode = 0);
 		void RenderSquare(glm::vec2 center, float width, float height, glm::vec4 color, bool fill);

@@ -90,6 +90,27 @@
             "frameCount": 2,
             "frameDuration": 0.1,
             "loop": true
+          },
+          {
+            "name": "punch1",
+            "frameOffset": 112,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "punch2",
+            "frameOffset": 116,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "punch3",
+            "frameOffset": 120,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": false
           }
         ]
       }

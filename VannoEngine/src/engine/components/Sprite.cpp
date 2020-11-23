@@ -127,7 +127,10 @@ namespace VannoEngine {
 			glm::mat4 s = pTransform->GetScaleMatrix();
 			model = t * r * s;
 
-			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal);
+			int cols = (int)(spriteSheetWidth / spriteWidth);
+			int col = spriteIndex % cols;
+			int row = spriteIndex / cols;
+			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, col, row, mFlipHorizontal);
 			if (ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
 				pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal, true);
 			}

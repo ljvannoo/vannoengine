@@ -107,8 +107,25 @@
                  "type":"player",
                  "visible":true,
                  "width":25,
-                 "x":82.0539910662265,
-                 "y":431.916100213634
+                 "x":82.054,
+                 "y":431.916
+                }, 
+                {
+                 "height":16,
+                 "id":2,
+                 "name":"sword",
+                 "properties":[
+                        {
+                         "name":"objectFile",
+                         "type":"file",
+                         "value":"objects\/sword_powerup.json"
+                        }],
+                 "rotation":0,
+                 "type":"powerup",
+                 "visible":true,
+                 "width":16,
+                 "x":256,
+                 "y":480
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -117,7 +134,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":2,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.10.28",

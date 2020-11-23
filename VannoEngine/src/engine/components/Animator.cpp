@@ -121,7 +121,7 @@ namespace VannoEngine {
 	}
 
 	void Animator::Draw() {
-		/*
+		
 		if (ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
 			GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
 			Transform* pTransform = dynamic_cast<Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
@@ -132,7 +132,7 @@ namespace VannoEngine {
 			glm::vec2 position = pTransform->GetPosition();
 			pGraphicsManager->RenderText(ss.str(), position.x+16.0f, position.y - 5.0f, 0.5f, RED);
 		}
-		*/
+		
 	}
 
 	void Animator::Play(std::string animationName) {

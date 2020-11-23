@@ -158,8 +158,11 @@ namespace VannoEngine {
 
 					if (pCamera->InView(glm::vec2(position.x + (float)mTileWidth, position.y + (float)mTileHeight), glm::vec2(position.x - (float)mTileWidth, position.y - (float)mTileHeight))) {
 						t = glm::translate(t, position);
-
-						pGraphicsManager->BatchRender(t, tileId - pTileset->GetStartIndex());
+						int spriteIndex = tileId - pTileset->GetStartIndex();
+						int cols = (int)(pTileset->GetWidth() / (float)pTileset->GetTileWidth());
+						int col = spriteIndex % cols;
+						int row = spriteIndex / cols;
+						pGraphicsManager->BatchRender(t, col, row);
 					}
 				}
 			}

@@ -117,7 +117,7 @@ namespace VannoEngine {
 			model = glm::translate(model, position);
 
 			// TODO Only render if image is on the screen
-			pGraphicsManager->Render(mpSurface, &model, imageWidth, imageHeight, imageWidth, imageHeight, 0, false);
+			pGraphicsManager->Render(mpSurface, &model, imageWidth, imageHeight, imageWidth, imageHeight, 0, 0, false);
 		}
 	}
 }

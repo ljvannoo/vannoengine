@@ -360,13 +360,16 @@ namespace VannoEngine {
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, uv));
 	}
 
-	void GraphicsManager::BatchRender(glm::mat4 const& transformation, int spriteIndex) {
+	void GraphicsManager::BatchRender(glm::mat4 const& transformation, int col, int row) {
 		GLuint loc = 0;
 		loc = mpGeneralShader->GetUniformLocation("model");
 		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(transformation));
 
-		loc = mpGeneralShader->GetUniformLocation("index");
-		glUniform1i(loc, spriteIndex);
+		loc = mpGeneralShader->GetUniformLocation("col");
+		glUniform1i(loc, col);
+
+		loc = mpGeneralShader->GetUniformLocation("row");
+		glUniform1i(loc, row);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 		mBatchRenderCalls++;
@@ -386,7 +389,7 @@ namespace VannoEngine {
 		mpGeneralShader->Unuse();
 	}
 
-	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int spriteIndex, bool flipHorizontal, int debugMode) {
+	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int col, int row, bool flipHorizontal, int debugMode) {
 		mpGeneralShader->Use();
 
 		GLuint loc = 0;
@@ -413,14 +416,20 @@ namespace VannoEngine {
 		loc = mpGeneralShader->GetUniformLocation("spriteSize");
 		glUniform2f(loc, spriteWidth, spriteHeight);
 
-		loc = mpGeneralShader->GetUniformLocation("index");
-		glUniform1i(loc, spriteIndex);
-
 		loc = mpGeneralShader->GetUniformLocation("flipHorizontal");
 		glUniform1i(loc, flipHorizontal ? 1 : 0);
 
 		loc = mpGeneralShader->GetUniformLocation("debugMode");
 		glUniform1i(loc, debugMode);
+
+		//int cols = (int)(spriteSheetWidth / spriteWidth);
+		//int col = spriteIndex % cols;
+		//int row = spriteIndex / cols;
+		loc = mpGeneralShader->GetUniformLocation("col");
+		glUniform1i(loc, col);
+		
+		loc = mpGeneralShader->GetUniformLocation("row");
+		glUniform1i(loc, row);
 
 		glBindVertexArray(pSurface->GetVertexArrayId());
 		glBindBuffer(GL_ARRAY_BUFFER, pSurface->GetVertexBufferId());

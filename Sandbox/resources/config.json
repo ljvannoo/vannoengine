@@ -16,6 +16,7 @@
     "dash": "lctrl",
     "quit": "esc",
     "zoomIn": ".",
-    "zoomOut":  ","
+    "zoomOut": ",",
+    "attack": "enter"
   }
 }

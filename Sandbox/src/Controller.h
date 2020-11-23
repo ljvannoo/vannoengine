@@ -30,7 +30,8 @@ enum class State : int {
 	Dash,
 	Jumping,
 	Jump,
-	Fall
+	Fall,
+	Attack
 };
 
 namespace VannoEngine {
@@ -40,6 +41,7 @@ namespace VannoEngine {
 	class PhysicsManager;
 	class ConfigurationManager;
 	class LevelManager;
+	class TimeManager;
 }
 class Controller : public VannoEngine::GameComponent
 {
@@ -55,6 +57,7 @@ public:
 	std::string GetType() override {
 		return CONTROLLER_COMPONENT;
 	}
+
 private:
 	void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);
 	void UpdateCamera(VannoEngine::Transform* pTransform);
@@ -66,11 +69,16 @@ private:
 	VannoEngine::PhysicsManager* mpPhysicsManager;
 	VannoEngine::ConfigurationManager* mpConfigManager;
 	VannoEngine::LevelManager* mpLevelManager;
+	VannoEngine::TimeManager* mpTimeManager;
 
-	State mCurrentState;
 	const float cWalkSpeed = 2.0f;
 	const float cWalkAccel = 60.0f;
 	const float cRunSpeed = 4.0f;
 	const float cDashSpeed = 6.0f;
 	const float cJumpHeight = 2.0f;
+	const unsigned long cAttackDuration = 400l;
+
+	State mCurrentState;
+	unsigned long mAttackStartTime;
+	unsigned short mAttackNum = 1;
 };

@@ -37,9 +37,12 @@ Creation Date:	2020-Oct-19
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"
 
+#include "engine/systems/TimeManager.h"
+
 #include "Actions.h"
 
 #include <algorithm>
+#include <sstream>
 
 Controller::Controller(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
@@ -47,7 +50,8 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mpInputManager{ VannoEngine::InputManager::GetInstance() },
 	mpPhysicsManager{ VannoEngine::PhysicsManager::GetInstance() },
 	mpConfigManager{ VannoEngine::ConfigurationManager::GetInstance() },
-	mpLevelManager{ VannoEngine::LevelManager::GetInstance() }
+	mpLevelManager{ VannoEngine::LevelManager::GetInstance() },
+	mpTimeManager{ VannoEngine::TimeManager::GetInstance() }
 {}
 
 Controller::~Controller() {
@@ -115,6 +119,10 @@ void Controller::Update(double deltaTime) {
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
 			mCurrentState = State::Crouch;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_ATTACK)) {
+			mCurrentState = State::Attack;
+			mAttackStartTime = mpTimeManager->GetElapsedMillis();
 		}
 		break;
 	case State::Walk:
@@ -192,6 +200,22 @@ void Controller::Update(double deltaTime) {
 			mCurrentState = State::Stand;
 		}
 		break;
+	case State::Attack:
+		std::stringstream ss;
+		ss << "punch" << mAttackNum;
+		pAnimator->Play(ss.str());
+		targetSpeed = 0.0f;
+		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + cAttackDuration) {
+			if (mpInputManager->IsKeyPressed(ACTION_ATTACK) && mAttackNum < 3) {
+				mAttackStartTime = mpTimeManager->GetElapsedMillis();
+				mAttackNum++;
+			}
+			else {
+				mCurrentState = State::Stand;
+				mAttackNum = 1;
+			}
+		}
+		break;
 	}
 	//LOG_DEBUG("({}) Targetspeed: {}", mCurrentState, targetSpeed);
 	speed.x = MoveTowards(speed.x, targetSpeed * moveInput, cWalkAccel * deltaTime);
@@ -207,6 +231,7 @@ void Controller::Jump() {
 void Controller::Draw() {
 
 }
+
 void Controller::HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody) {
 	VannoEngine::Collision collision = pBody->GetCollision();
 	VannoEngine::AABB aabb = pBody->GetAabb();
