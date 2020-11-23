@@ -14,28 +14,21 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-13
 *************************************************************************/
 
+#include "engine\systems\events\Event.h"
+
 #include <string>
 #include <queue>
 #include <vector>
 #include <unordered_map>
 
 
-
-#define EVT_INPUT "input"
-
 namespace VannoEngine {
 	class EventHandler;
-
-	struct Event {
-		double time;
-		std::string name;
-		std::string data;
-	};
 
 	class EventComparator {
 	public:
 		bool operator()(const Event& lhs, Event& rhs) const {
-			return (lhs.time > rhs.time);
+			return (lhs.GetTime() > rhs.GetTime());
 		}
 	};
 
@@ -49,8 +42,8 @@ namespace VannoEngine {
 		void Update();
 		void Subscribe(std::string eventName, EventHandler* handler);
 		void Unsubscribe(std::string eventName, EventHandler* handler);
-		void Notify(std::string eventName, std::string data);
-		void DelayedNotify(double delaySec, std::string eventName, std::string data);
+		void Notify(Message* message);
+		void DelayedNotify(double delaySec, Message* message);
 	private:
 		EventManager() {}
 	private:

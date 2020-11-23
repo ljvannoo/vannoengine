@@ -18,10 +18,12 @@ Creation Date:	2020-Oct-13
 
 #include <string>
 namespace VannoEngine {
+	class Message;
+
 	class EventHandler
 	{
 	public:
 		virtual ~EventHandler() {};
-		virtual void HandleEvent(std::string eventName, std::string data) = 0;
+		virtual void HandleEvent(std::string eventName, Message* message) = 0;
 	};
 }
