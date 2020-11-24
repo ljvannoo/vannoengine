@@ -12,6 +12,14 @@
       }
     },
     {
+      "type": "physicsbody",
+      "data": {
+        "mass": 0.0,
+        "offsetX": 0.0,
+        "offsetY": 0.0
+      }
+    },
+    {
       "type": "transform",
       "data": {
         "scaleX": 1.0,

@@ -141,4 +141,13 @@ namespace VannoEngine {
 			pObject->Draw();
 		}
 	}
+
+	void ObjectMapLayer::CheckCollisions(PhysicsBody* pBody) {
+		for (GameObject* pObject : mObjects) {
+			if (pObject->HasComponent(PHYSICSBODY_COMPONENT)) {
+				PhysicsBody* pOtherBody = dynamic_cast<PhysicsBody*>(pObject->GetComponent(PHYSICSBODY_COMPONENT));
+				pBody->CheckCollision(pOtherBody);
+			}
+		}
+	}
 }

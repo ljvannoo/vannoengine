@@ -85,9 +85,4 @@ private:
 	State mCurrentState;
 	unsigned long mAttackStartTime;
 	unsigned short mAttackNum = 1;
-
-	bool mOnGround;
-	bool mAtCeiling;
-	bool mAgainstLeftWall;
-	bool mAgainstRightWall;
 };

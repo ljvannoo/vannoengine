@@ -131,9 +131,6 @@ namespace VannoEngine {
 			int col = spriteIndex % cols;
 			int row = spriteIndex / cols;
 			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, col, row, mFlipHorizontal);
-			if (ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
-				pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, spriteIndex, mFlipHorizontal, true);
-			}
 		}
 	}
 

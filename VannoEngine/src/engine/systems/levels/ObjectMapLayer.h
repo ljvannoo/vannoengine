@@ -22,6 +22,7 @@ Creation Date:	2020-Oct-31
 
 namespace VannoEngine {
 	class GameObject;
+	class PhysicsBody;
 
 	class ObjectMapLayer : public MapLayer
 	{
@@ -38,6 +39,7 @@ namespace VannoEngine {
 		void UpdatePhysics(double deltaTime) override;
 		void Update(double deltaTime) override;
 		void Draw() override;
+		void CheckCollisions(PhysicsBody* pBody) override;
 
 	private: // Methods
 

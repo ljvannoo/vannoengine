@@ -17,7 +17,6 @@ Creation Date:	2020-Nov-02
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"
 
-
 namespace VannoEngine {
 	PhysicsManager* PhysicsManager::mpInstance = nullptr;
 

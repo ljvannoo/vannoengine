@@ -17,6 +17,8 @@ Creation Date:	2020-Nov-01
 
 #include "GameComponent.h"
 
+#include "engine/systems/events/EventHandler.h"
+
 #include "engine/systems/physics/Aabb.h"
 
 #include <glm/vec2.hpp>
@@ -25,7 +27,9 @@ Creation Date:	2020-Nov-01
 
 
 namespace VannoEngine {
-	class PhysicsBody : public GameComponent
+	class Event;
+
+	class PhysicsBody : public GameComponent, public EventHandler
 	{
 	public: // Variables
 
@@ -39,6 +43,8 @@ namespace VannoEngine {
 		void Update(double deltaTime);
 		void Draw() override;
 
+		void HandleEvent(std::string eventName, VannoEngine::Event* event) override;
+
 		AABB const& GetAabb() { return mAabb; }
 
 		void SetAabbOffset(float x, float y) { mAabbOffset = glm::vec2(x, y); }
@@ -47,10 +53,18 @@ namespace VannoEngine {
 		void SetAabbDimensions(float width, float height);
 		glm::vec2 GetAabbHalfDimensions() { return glm::vec2(mAabb.halfWidth, mAabb.halfHeight); }
 		glm::vec2 GetAabbCenter();
+
+		void CheckCollision(PhysicsBody* pOtherBody);
 	private: // Methods
 
 	private: // Variables
 		AABB mAabb;
 		glm::vec2 mAabbOffset;
+		float mMass;
+
+		bool mOnGround;
+		bool mAtCeiling;
+		bool mAgainstLeftWall;
+		bool mAgainstRightWall;
 	};
 }

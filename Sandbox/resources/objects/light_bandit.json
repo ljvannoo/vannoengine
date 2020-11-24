@@ -19,6 +19,15 @@
       }
     },
     {
+      "type": "physicsbody",
+      "data": {
+        "mass": 1.0,
+        "offsetY": -3.0,
+        "width": 20.0,
+        "height": 35.0
+      }
+    },
+    {
       "type": "animator",
       "defaultAnimation": "idle",
       "data": {

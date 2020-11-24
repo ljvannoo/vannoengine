@@ -28,7 +28,7 @@ Creation Date:	2020-Oct-19
 
 #include "engine/systems/events/EventManager.h"
 #include "engine/systems/events/Event.h"
-#include "engine/systems/physics/MapCollisionEvent.h"
+#include "engine/systems/physics/ObjectCollisionEvent.h"
 
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/InputManager.h"
@@ -55,13 +55,9 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mpPhysicsManager{ VannoEngine::PhysicsManager::GetInstance() },
 	mpConfigManager{ VannoEngine::ConfigurationManager::GetInstance() },
 	mpLevelManager{ VannoEngine::LevelManager::GetInstance() },
-	mpTimeManager{ VannoEngine::TimeManager::GetInstance() },
-	mOnGround{ false },
-	mAtCeiling{ false },
-	mAgainstLeftWall{ false },
-	mAgainstRightWall{ false }
+	mpTimeManager{ VannoEngine::TimeManager::GetInstance() }
 {
-	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
+	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 }
 
 Controller::~Controller() {
@@ -113,11 +109,11 @@ void Controller::Update(double deltaTime) {
 				targetSpeed = cRunSpeed;
 			}
 		}
-		if ((mpInputManager->IsKeyPressed(ACTION_RIGHT) && mAgainstRightWall) ||
+		/*if ((mpInputManager->IsKeyPressed(ACTION_RIGHT) && mAgainstRightWall) ||
 			(mpInputManager->IsKeyPressed(ACTION_LEFT) && mAgainstLeftWall)) {
 			mCurrentState = State::Stand;
 				targetSpeed = 0.0f;
-		}
+		}*/
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
 		}
@@ -228,11 +224,12 @@ void Controller::Update(double deltaTime) {
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);
 	
+	/*
 	mOnGround = false;
 	mAtCeiling = false;
 	mAgainstLeftWall = false;
 	mAgainstRightWall = false;
-	
+	*/
 }
 
 void Controller::Jump() {
@@ -244,55 +241,13 @@ void Controller::Draw() {
 }
 
 void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
-	if (event->GetName() == EVT_MAP_COLLISION) {
-		VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
+	if (event->GetName() == EVT_OBJECT_COLLISION) {
+		VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
+		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
-		VannoEngine::PhysicsBody* pBody = pCollisionEvent->GetBody();
-		VannoEngine::AABB aabb = pBody->GetAabb();
-		glm::vec2 aabbOffset = pBody->GetAabbOffset();
-
-		VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
-		glm::vec2 newPosition = pTransform->GetPosition();
-		glm::vec2 newSpeed = pTransform->GetSpeed();
-
-		switch (pCollisionEvent->GetDirection()) {
-		case VannoEngine::Direction::DOWN:
-			if (newSpeed.y < 0.0f) {
-				if(pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD || !mpInputManager->IsKeyPressed(ACTION_DOWN)) {
-					newPosition.y = pCollisionEvent->GetPlane() + aabb.halfHeight - aabbOffset.y;
-					newSpeed.y = 0.0f;
-					mOnGround = true;
-				}
-				else {
-					mCurrentState = State::Fall;
-				}
-			}
-			break;
-		case VannoEngine::Direction::UP:
-			if (newSpeed.y > 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
-				newPosition.y = pCollisionEvent->GetPlane() - aabb.halfHeight - aabbOffset.y;
-				newSpeed.y = 0.0f;
-				mAtCeiling = true;
-			}
-			break;
-		case VannoEngine::Direction::LEFT:
-			if (newSpeed.x < 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
-				newPosition.x = pCollisionEvent->GetPlane() + aabb.halfWidth - aabbOffset.x;
-				newSpeed.x = 0.0f;
-				mAgainstLeftWall = true;
-			}
-			break;
-		case VannoEngine::Direction::RIGHT:
-			if (newSpeed.x > 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
-				newPosition.x = pCollisionEvent->GetPlane() - aabb.halfWidth - aabbOffset.x;
-				newSpeed.x = 0.0f;
-				mAgainstRightWall = true;
-			}
-			break;
+		if(pCollisionEvent->GetBody() == pBody) {
+			LOG_DEBUG("Collided with: {}", pCollisionEvent->GetOtherBody()->GetOwner()->GetName());
 		}
-
-		pTransform->SetPosition(newPosition.x, newPosition.y);
-		pTransform->SetSpeed(newSpeed.x, newSpeed.y);
 	}
 }
 
