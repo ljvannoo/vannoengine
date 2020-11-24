@@ -17,7 +17,6 @@ Creation Date:	2020-Nov-02
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"
 
-#include "engine/systems/physics/Collision.h"
 
 namespace VannoEngine {
 	PhysicsManager* PhysicsManager::mpInstance = nullptr;
@@ -38,9 +37,15 @@ namespace VannoEngine {
 
 	}
 
-	Collision PhysicsManager::CollidesWithMap(PhysicsBody* pBody) {
+	/*Collision PhysicsManager::CollidesWithMap(PhysicsBody* pBody) {
 		LevelManager* pLevelManager = LevelManager::GetInstance();
 		Level* pLevel = pLevelManager->GetCurrentLevel();
 		return pLevel->Collides(pBody);
+	}*/
+
+	void PhysicsManager::CheckCollisions(PhysicsBody* pBody) {
+		LevelManager* pLevelManager = LevelManager::GetInstance();
+		Level* pLevel = pLevelManager->GetCurrentLevel();
+		pLevel->CheckCollisions(pBody);
 	}
 }

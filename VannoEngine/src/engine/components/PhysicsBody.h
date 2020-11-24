@@ -21,8 +21,6 @@ Creation Date:	2020-Nov-01
 
 #include <glm/vec2.hpp>
 
-#include "engine/systems/physics/Collision.h"
-
 #include <string>
 
 
@@ -41,11 +39,6 @@ namespace VannoEngine {
 		void Update(double deltaTime);
 		void Draw() override;
 
-		//void SetWidth(float width) { mAabb.halfWidth = width / 2.0f; }
-		//void SetHeight(float height) { mAabb.halfHeight = height / 2.0f; }
-
-		Collision const& GetCollision() { return mCollision; }
-
 		AABB const& GetAabb() { return mAabb; }
 
 		void SetAabbOffset(float x, float y) { mAabbOffset = glm::vec2(x, y); }
@@ -59,7 +52,5 @@ namespace VannoEngine {
 	private: // Variables
 		AABB mAabb;
 		glm::vec2 mAabbOffset;
-
-		Collision mCollision;
 	};
 }

@@ -29,7 +29,6 @@ namespace VannoEngine {
 	// Forward declarations
 	class Tileset;
 	class PhysicsBody;
-	class Collision;
 
 	class TileMapLayer : public MapLayer
 	{
@@ -48,7 +47,7 @@ namespace VannoEngine {
 		void Update(double deltaTime) override;
 		void Draw() override;
 
-		Collision Collides(PhysicsBody* pBody) override;
+		void CheckCollisions(PhysicsBody* pBody) override;
 	private: // Methods
 
 	private: // Variables

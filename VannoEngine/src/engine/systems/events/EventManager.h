@@ -42,8 +42,8 @@ namespace VannoEngine {
 		void Update();
 		void Subscribe(std::string eventName, EventHandler* handler);
 		void Unsubscribe(std::string eventName, EventHandler* handler);
-		void Notify(Event* message);
-		void DelayedNotify(double delaySec, Event* message);
+		void Broadcast(Event* message);
+		void DelayedBroadcast(double delaySec, Event* message);
 	private:
 		EventManager() {}
 	private:

@@ -15,7 +15,6 @@ Creation Date:	2020-Nov-02
 *************************************************************************/
 
 namespace VannoEngine {
-	class Collision;
 	class PhysicsBody;
 
 	class PhysicsManager
@@ -25,10 +24,9 @@ namespace VannoEngine {
 		~PhysicsManager();
 
 		float GetGravity() { return mGravity; }
-		void FlipGravity() { mGravity *= -1.0f;  }
-		float GetMaxFallingSpeed() { return 20.0f; }
 
-		Collision CollidesWithMap(PhysicsBody* pBody);
+		//Collision CollidesWithMap(PhysicsBody* pBody);
+		void CheckCollisions(PhysicsBody* pBody);
 	private:
 		PhysicsManager();
 

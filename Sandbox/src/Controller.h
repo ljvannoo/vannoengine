@@ -19,6 +19,7 @@ Creation Date:	2020-Oct-19
 
 #include "engine/components/GameComponent.h"
 #include "engine/systems/objects/GameObject.h"
+#include "engine/systems/events/EventHandler.h"
 
 #include <rapidjson/document.h>
 
@@ -42,8 +43,9 @@ namespace VannoEngine {
 	class ConfigurationManager;
 	class LevelManager;
 	class TimeManager;
+	class Event;
 }
-class Controller : public VannoEngine::GameComponent
+class Controller : public VannoEngine::GameComponent, public VannoEngine::EventHandler
 {
 public:
 	Controller(VannoEngine::GameObject* owner);
@@ -58,8 +60,10 @@ public:
 		return CONTROLLER_COMPONENT;
 	}
 
+	virtual void HandleEvent(std::string eventName, VannoEngine::Event* event);
+
 private:
-	void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);
+	//void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);
 	void UpdateCamera(VannoEngine::Transform* pTransform);
 	void Jump();
 	float MoveTowards(float current, float target, float maxDelta);
@@ -81,4 +85,9 @@ private:
 	State mCurrentState;
 	unsigned long mAttackStartTime;
 	unsigned short mAttackNum = 1;
+
+	bool mOnGround;
+	bool mAtCeiling;
+	bool mAgainstLeftWall;
+	bool mAgainstRightWall;
 };

@@ -26,6 +26,7 @@ Creation Date:	2020-Nov-01
 #include "engine/systems/graphics/GraphicsManager.h"
 #include "engine/systems/graphics/Colors.h"
 
+
 #include "engine/systems/ConfigurationManager.h"
 
 #include "engine/util/bitmask.h"
@@ -74,68 +75,62 @@ namespace VannoEngine {
 			glm::vec2 speed = pTransform->GetSpeed();
 
 			// Update Speed
-			speed.y += pPhysicsManager->GetGravity() * deltaTime;
-			/*if (speed.x > -1.0f && speed.x < 1.0f) {
-				speed.x = 0.0f;
-			}*/
+			speed.y += pPhysicsManager->GetGravity() * (float)deltaTime;
 
 			// Update position
 			position += speed;
 
-			// Update AABB
-			//mAabb.center = position + mAabbOffset;
-
-			mCollision = pPhysicsManager->CollidesWithMap(this);
-
+			pPhysicsManager->CheckCollisions(this);
+			
 			pTransform->SetPosition(position.x, position.y);
 			pTransform->SetSpeed(speed.x, speed.y);
 		}
 	}
 
 	void PhysicsBody::Draw() {
-		if(ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
-			GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
-			Transform* pTransform = static_cast<Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+		//if(ConfigurationManager::GetInstance()->GetBool("/debugMode")) {
+		//	GraphicsManager* pGraphicsManager = GraphicsManager::GetInstance();
+		//	Transform* pTransform = static_cast<Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 
-			if(pTransform) {
-				glm::vec2 center = pTransform->GetPosition() + mAabbOffset;
-		
-				pGraphicsManager->RenderSquare(center, mAabb.halfWidth * 2.0f, mAabb.halfHeight * 2.0f, RED, false);
-				//pGraphicsManager->RenderCircle(center, 3.0f, RED, true);
-		
-				if (mCollision.GetType(Direction::TOP) == CollisionType::HARD) {
-					glm::vec2 start(center.x - mAabb.halfWidth + mAabb.margin, center.y + mAabb.halfHeight);
-					glm::vec2 end(center.x + mAabb.halfWidth - mAabb.margin, center.y + mAabb.halfHeight);
+		//	if(pTransform) {
+		//		glm::vec2 center = pTransform->GetPosition() + mAabbOffset;
+		//
+		//		pGraphicsManager->RenderSquare(center, mAabb.halfWidth * 2.0f, mAabb.halfHeight * 2.0f, RED, false);
+		//		//pGraphicsManager->RenderCircle(center, 3.0f, RED, true);
+		//
+		//		if (mCollision.GetType(Direction::TOP) == CollisionType::HARD) {
+		//			glm::vec2 start(center.x - mAabb.halfWidth + mAabb.margin, center.y + mAabb.halfHeight);
+		//			glm::vec2 end(center.x + mAabb.halfWidth - mAabb.margin, center.y + mAabb.halfHeight);
 
-					pGraphicsManager->RenderLine(start, end, YELLOW);
-					pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.GetEdge(Direction::TOP)), glm::vec2(end.x + 100.0f, mCollision.GetEdge(Direction::TOP)), PURPLE);
-				}
+		//			pGraphicsManager->RenderLine(start, end, YELLOW);
+		//			pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.GetEdge(Direction::TOP)), glm::vec2(end.x + 100.0f, mCollision.GetEdge(Direction::TOP)), PURPLE);
+		//		}
 
-				if(mCollision.GetType(Direction::BOTTOM) == CollisionType::HARD) {
-					glm::vec2 start(center.x - mAabb.halfWidth + mAabb.margin, center.y - mAabb.halfHeight);
-					glm::vec2 end(center.x + mAabb.halfWidth - mAabb.margin, center.y - mAabb.halfHeight);
+		//		if(mCollision.GetType(Direction::BOTTOM) == CollisionType::HARD) {
+		//			glm::vec2 start(center.x - mAabb.halfWidth + mAabb.margin, center.y - mAabb.halfHeight);
+		//			glm::vec2 end(center.x + mAabb.halfWidth - mAabb.margin, center.y - mAabb.halfHeight);
 
-					pGraphicsManager->RenderLine(start, end, YELLOW);
-					pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.GetEdge(Direction::BOTTOM)), glm::vec2(end.x + 100.0f, mCollision.GetEdge(Direction::BOTTOM)), GREEN);
-				}
+		//			pGraphicsManager->RenderLine(start, end, YELLOW);
+		//			pGraphicsManager->RenderLine(glm::vec2(start.x-100.0f, mCollision.GetEdge(Direction::BOTTOM)), glm::vec2(end.x + 100.0f, mCollision.GetEdge(Direction::BOTTOM)), GREEN);
+		//		}
 
-				if (mCollision.GetType(Direction::LEFT) == CollisionType::HARD) {
-					glm::vec2 start(center.x - mAabb.halfWidth, center.y + mAabb.halfHeight - mAabb.margin);
-					glm::vec2 end(center.x - mAabb.halfWidth, center.y - mAabb.halfHeight + mAabb.margin);
+		//		if (mCollision.GetType(Direction::LEFT) == CollisionType::HARD) {
+		//			glm::vec2 start(center.x - mAabb.halfWidth, center.y + mAabb.halfHeight - mAabb.margin);
+		//			glm::vec2 end(center.x - mAabb.halfWidth, center.y - mAabb.halfHeight + mAabb.margin);
 
-					pGraphicsManager->RenderLine(start, end, RED);
-					pGraphicsManager->RenderLine(glm::vec2(mCollision.GetEdge(Direction::LEFT), start.y - 100.0f), glm::vec2(mCollision.GetEdge(Direction::LEFT), end.y + 100.0f), RED);
-				}
+		//			pGraphicsManager->RenderLine(start, end, RED);
+		//			pGraphicsManager->RenderLine(glm::vec2(mCollision.GetEdge(Direction::LEFT), start.y - 100.0f), glm::vec2(mCollision.GetEdge(Direction::LEFT), end.y + 100.0f), RED);
+		//		}
 
-				if (mCollision.GetType(Direction::RIGHT) == CollisionType::HARD) {
-					glm::vec2 start(center.x + mAabb.halfWidth, center.y + mAabb.halfHeight - mAabb.margin);
-					glm::vec2 end(center.x + mAabb.halfWidth, center.y - mAabb.halfHeight + mAabb.margin);
+		//		if (mCollision.GetType(Direction::RIGHT) == CollisionType::HARD) {
+		//			glm::vec2 start(center.x + mAabb.halfWidth, center.y + mAabb.halfHeight - mAabb.margin);
+		//			glm::vec2 end(center.x + mAabb.halfWidth, center.y - mAabb.halfHeight + mAabb.margin);
 
-					pGraphicsManager->RenderLine(start, end, BLUE);
-					pGraphicsManager->RenderLine(glm::vec2(mCollision.GetEdge(Direction::RIGHT), start.y - 100.0f), glm::vec2(mCollision.GetEdge(Direction::RIGHT), end.y + 100.0f), BLUE);
-				}
-			}
-		}
+		//			pGraphicsManager->RenderLine(start, end, BLUE);
+		//			pGraphicsManager->RenderLine(glm::vec2(mCollision.GetEdge(Direction::RIGHT), start.y - 100.0f), glm::vec2(mCollision.GetEdge(Direction::RIGHT), end.y + 100.0f), BLUE);
+		//		}
+		//	}
+		//}
 	}
 	void PhysicsBody::SetAabbDimensions(float width, float height) {
 		mAabb.halfWidth = width / 2.0f; 

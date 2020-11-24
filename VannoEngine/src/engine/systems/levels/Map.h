@@ -22,7 +22,6 @@ namespace VannoEngine {
 	class Tileset;
 	class MapLayer;
 	class PhysicsBody;
-	class Collision;
 
 	class Map 
 	{
@@ -41,7 +40,7 @@ namespace VannoEngine {
 		float GetWidth() { return (float)(mWidth * mTileWidth); }
 		float GetHeight() { return (float)(mHeight * mTileHeight); }
 
-		Collision Collides(PhysicsBody* pBody);
+		void CheckCollisions(PhysicsBody* pBody);
 	private: // Methods
 
 	private: // Variables

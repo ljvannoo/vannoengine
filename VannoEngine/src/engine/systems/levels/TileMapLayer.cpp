@@ -22,11 +22,14 @@ Creation Date:	2020-Oct-29
 #include "engine/systems/graphics/Vertex.h"
 
 #include "engine/systems/physics/Aabb.h"
-#include "engine/systems/physics/Collision.h"
+#include "engine/systems/physics/MapCollisionEvent.h"
+
 #include "engine/components/PhysicsBody.h"
 
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/components/Camera.h"
+
+#include "engine/systems/events/EventManager.h"
 
 #include "engine/core/Log.h"
 
@@ -171,9 +174,10 @@ namespace VannoEngine {
 		pGraphicsManager->EndSpriteBatch();
 	}
 
-	Collision TileMapLayer::Collides(PhysicsBody* pBody) {
-		Collision result;
+	void TileMapLayer::CheckCollisions(PhysicsBody* pBody) {
 		if (mSolid) {
+			EventManager* pEventManager = EventManager::GetInstance();
+			MapCollisionEvent* collisionEvent;
 			float tH = (float)mTileHeight;
 			float tW = (float)mTileWidth;
 			glm::vec2 center = pBody->GetAabbCenter();
@@ -196,12 +200,14 @@ namespace VannoEngine {
 				
 				index = topRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
-					result.SetCollision(Direction::TOP, CollisionType::HARD, GetUpperLeft().y - ((index / mCols) * tH) - tH);
+					collisionEvent = new MapCollisionEvent(pBody, CollisionType::HARD, Direction::UP, GetUpperLeft().y - ((index / mCols) * tH) - tH);
+					pEventManager->Broadcast(collisionEvent);
 				}
 				
 				index = bottomRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
-					result.SetCollision(Direction::BOTTOM, CollisionType::HARD, GetUpperLeft().y - ((index / mCols) * tH));
+					collisionEvent = new MapCollisionEvent(pBody, CollisionType::HARD, Direction::DOWN, GetUpperLeft().y - ((index / mCols) * tH));
+					pEventManager->Broadcast(collisionEvent);
 				}
 
 				test += tW;
@@ -214,17 +220,17 @@ namespace VannoEngine {
 
 				index = testRow * mCols + leftCol;
 				if (index < mData.size() && mData[index] != 0) {
-					result.SetCollision(Direction::LEFT, CollisionType::HARD, mPosition.x + ((index % mCols) * tW) + tW);
+					collisionEvent = new MapCollisionEvent(pBody, CollisionType::HARD, Direction::LEFT, mPosition.x + ((index % mCols) * tW) + tW);
+					pEventManager->Broadcast(collisionEvent);
 				}
 
 				index = testRow * mCols + rightCol;
 				if (index < mData.size() && mData[index] != 0) {
-					result.SetCollision(Direction::RIGHT, CollisionType::HARD, mPosition.x + ((index % mCols) * tW));
+					collisionEvent = new MapCollisionEvent(pBody, CollisionType::HARD, Direction::RIGHT, mPosition.x + ((index % mCols) * tW));
+					pEventManager->Broadcast(collisionEvent);
 				}
 				test += tH;
 			}
 		}
-
-		return result;
 	}
 }

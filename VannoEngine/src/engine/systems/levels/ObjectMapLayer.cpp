@@ -102,7 +102,7 @@ namespace VannoEngine {
 						}
 						pTransform->SetPositionY(GetUpperLeft().y - (y + height / 2.0f));
 						pTransform->SetPositionX(GetUpperLeft().x + (x + width / 2.0f));
-						LOG_CORE_DEBUG("Upper left: ({0}, {1})", GetUpperLeft().x, GetUpperLeft().y);
+						//LOG_CORE_DEBUG("Upper left: ({0}, {1})", GetUpperLeft().x, GetUpperLeft().y);
 						LOG_CORE_DEBUG("{0} is at ({1}, {2})", pGameObject->GetName(), pTransform->GetPosition().x, pTransform->GetPosition().y);
 					}
 					else {

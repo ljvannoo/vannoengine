@@ -73,11 +73,11 @@ namespace VannoEngine {
 	void EventManager::Unsubscribe(std::string eventName, EventHandler* handler) {
 	}
 
-	void EventManager::Notify(Event* message) {
-		DelayedNotify(0.0, message);
+	void EventManager::Broadcast(Event* message) {
+		DelayedBroadcast(0.0, message);
 	}
 
-	void EventManager::DelayedNotify(double delaySec, Event* message) {
+	void EventManager::DelayedBroadcast(double delaySec, Event* message) {
 		TimeManager* timeManager = TimeManager::GetInstance();
 		EventWrapper evt(timeManager->Now() + delaySec, message);
 		mEvents.push(evt);
