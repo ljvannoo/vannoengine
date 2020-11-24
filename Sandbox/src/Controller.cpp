@@ -177,7 +177,7 @@ void Controller::Update(double deltaTime) {
 		break;
 	case State::Jumping:
 		targetSpeed = cRunSpeed;
-		if (speed.y < 0.0f) {
+		if (speed.y <= 0.0f) {
 			mCurrentState = State::Fall;
 		}
 		break;
@@ -217,6 +217,7 @@ void Controller::Update(double deltaTime) {
 		}
 		break;
 	}
+
 	//LOG_DEBUG("({}) Targetspeed: {}", mCurrentState, targetSpeed);
 	speed.x = MoveTowards(speed.x, targetSpeed * moveInput, cWalkAccel * deltaTime);
 	//LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
