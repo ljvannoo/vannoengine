@@ -78,10 +78,6 @@ void Controller::Update(double deltaTime) {
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
 	glm::vec2 speed = pTransform->GetSpeed();
-	if (mpInputManager->IsKeyTriggered(ACTION_DEBUG)) {
-		mpConfigManager->ToggleBool("/debugMode");
-		LOG_CORE_DEBUG("Debug Mode is now: {0}", mpConfigManager->GetBool("/debugMode"));
-	}
 
 	float moveInput = 0.0f;
 
@@ -262,27 +258,32 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 		switch (pCollisionEvent->GetDirection()) {
 		case VannoEngine::Direction::DOWN:
 			if (newSpeed.y < 0.0f) {
-				newPosition.y = pCollisionEvent->GetPlane() + aabb.halfHeight - aabbOffset.y;
-				newSpeed.y = 0.0f;
-				mOnGround = true;
+				if(pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD || !mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+					newPosition.y = pCollisionEvent->GetPlane() + aabb.halfHeight - aabbOffset.y;
+					newSpeed.y = 0.0f;
+					mOnGround = true;
+				}
+				else {
+					mCurrentState = State::Fall;
+				}
 			}
 			break;
 		case VannoEngine::Direction::UP:
-			if (newSpeed.y > 0.0f) {
+			if (newSpeed.y > 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
 				newPosition.y = pCollisionEvent->GetPlane() - aabb.halfHeight - aabbOffset.y;
 				newSpeed.y = 0.0f;
 				mAtCeiling = true;
 			}
 			break;
 		case VannoEngine::Direction::LEFT:
-			if (newSpeed.x < 0.0f) {
+			if (newSpeed.x < 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
 				newPosition.x = pCollisionEvent->GetPlane() + aabb.halfWidth - aabbOffset.x;
 				newSpeed.x = 0.0f;
 				mAgainstLeftWall = true;
 			}
 			break;
 		case VannoEngine::Direction::RIGHT:
-			if (newSpeed.x > 0.0f) {
+			if (newSpeed.x > 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
 				newPosition.x = pCollisionEvent->GetPlane() - aabb.halfWidth - aabbOffset.x;
 				newSpeed.x = 0.0f;
 				mAgainstRightWall = true;
@@ -294,33 +295,6 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 		pTransform->SetSpeed(newSpeed.x, newSpeed.y);
 	}
 }
-
-//void Controller::HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody) {
-//	VannoEngine::Collision collision = pBody->GetCollision();
-//	VannoEngine::AABB aabb = pBody->GetAabb();
-//	glm::vec2 aabbOffset = pBody->GetAabbOffset();
-//
-//	glm::vec2 newPosition = pTransform->GetPosition();
-//	glm::vec2 newSpeed = pTransform->GetSpeed();
-//	if (collision.CollisionDetected(VannoEngine::Direction::BOTTOM) && pTransform->GetSpeed().y < 0.0f) {
-//		newPosition.y = collision.GetEdge(VannoEngine::Direction::BOTTOM) + aabb.halfHeight - aabbOffset.y;
-//		newSpeed.y = 0.0f;
-//	} else if (collision.CollisionDetected(VannoEngine::Direction::TOP) && pTransform->GetSpeed().y > 0.0f) {
-//		newPosition.y = collision.GetEdge(VannoEngine::Direction::TOP) - aabb.halfHeight - aabbOffset.y;
-//		newSpeed.y = 0.0f;
-//	}
-//
-//	if (collision.CollisionDetected(VannoEngine::Direction::LEFT) && pTransform->GetSpeed().x < 0.0f) {
-//		newPosition.x = collision.GetEdge(VannoEngine::Direction::LEFT) + aabb.halfWidth - aabbOffset.x;
-//		newSpeed.x = 0.0f;
-//	} else if (collision.CollisionDetected(VannoEngine::Direction::RIGHT) && pTransform->GetSpeed().x > 0.0f) {
-//		newPosition.x = collision.GetEdge(VannoEngine::Direction::RIGHT) - aabb.halfWidth - aabbOffset.x;
-//		newSpeed.x = 0.0f;
-//	}
-//
-//	pTransform->SetPosition(newPosition.x, newPosition.y);
-//	pTransform->SetSpeed(newSpeed.x, newSpeed.y);
-//}
 
 void Controller::UpdateCamera(VannoEngine::Transform* pTransform) {
 	VannoEngine::Camera* pCamera = mpLevelManager->GetCamera();

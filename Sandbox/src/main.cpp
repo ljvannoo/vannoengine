@@ -45,6 +45,13 @@ public:
 			IsRunning = false;
 		}
 
+		// TODO: Fix debug mode
+		if (pInputManager->IsKeyTriggered("debug")) {
+			VannoEngine::ConfigurationManager* pConfigrationManager = VannoEngine::ConfigurationManager::GetInstance();
+			pConfigrationManager->ToggleBool("/debugMode");
+			LOG_DEBUG("Debug Mode is now: {0}", pConfigrationManager->GetBool("/debugMode"));
+		}
+
 		if (pInputManager->IsKeyTriggered("zoomIn")) {
 			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 			float scale = pLevelManager->GetCamera()->GetScale();

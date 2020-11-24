@@ -20,13 +20,14 @@ namespace VannoEngine {
 	public: // Variables
 
 	public: // Methods
-		MapCollisionEvent(PhysicsBody* pBody, CollisionType type, Direction dir, float plane);
+		MapCollisionEvent(PhysicsBody* pBody, std::string layerName, CollisionType type, Direction dir, float plane);
 		~MapCollisionEvent();
 
 		PhysicsBody* GetBody() { return mpBody; }
 		CollisionType GetType() { return mType; }
 		Direction GetDirection() { return mDir; }
 		float GetPlane() const { return mPlane; }
+		std::string GetLayerName() { return mLayerName; }
 
 	private: // Methods
 
@@ -35,5 +36,6 @@ namespace VannoEngine {
 		CollisionType mType;
 		Direction mDir;
 		float mPlane;
+		std::string mLayerName;
 	};
 }

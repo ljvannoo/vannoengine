@@ -59,5 +59,6 @@ namespace VannoEngine {
 		std::vector<int> mData;
 		std::vector<Tileset*>* mpTilesets;
 		bool mSolid;
+		bool mPlatform;
 	};
 }

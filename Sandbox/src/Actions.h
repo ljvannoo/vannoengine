@@ -7,5 +7,4 @@
 #define ACTION_JUMP		"jump"
 #define ACTION_WALK		"walk"
 #define ACTION_DASH		"dash"
-#define ACTION_DEBUG	"debug"
 #define ACTION_ATTACK	"attack"
