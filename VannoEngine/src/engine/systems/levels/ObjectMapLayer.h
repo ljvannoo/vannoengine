@@ -17,14 +17,18 @@ Creation Date:	2020-Oct-31
 #define OBJECT_LAYER "objectgroup"
 #include "MapLayer.h"
 
+#include "engine/systems/events/EventHandler.h"
+#include "engine/systems/events/Event.h"
+
 #include <string>
-#include <vector>
+#include <list>
 
 namespace VannoEngine {
 	class GameObject;
 	class PhysicsBody;
+	class Event;
 
-	class ObjectMapLayer : public MapLayer
+	class ObjectMapLayer : public MapLayer, public EventHandler
 	{
 	public: // Variables
 
@@ -41,9 +45,11 @@ namespace VannoEngine {
 		void Draw() override;
 		void CheckCollisions(PhysicsBody* pBody) override;
 
+		void HandleEvent(std::string eventName, Event* event) override;
+
 	private: // Methods
 
 	private: // Variables
-		std::vector<GameObject*> mObjects;
+		std::list<GameObject*> mObjects;
 	};
 }

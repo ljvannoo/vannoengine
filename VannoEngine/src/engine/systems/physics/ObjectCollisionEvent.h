@@ -8,8 +8,12 @@ namespace VannoEngine {
 	class ObjectCollisionEvent : public Event
 	{
 	public: // Methods
-		ObjectCollisionEvent(PhysicsBody* pBody, PhysicsBody* pOtherBody);
-		~ObjectCollisionEvent();
+		ObjectCollisionEvent(PhysicsBody* pBody, PhysicsBody* pOtherBody) :
+			Event(EVT_OBJECT_COLLISION),
+			mpBody{ pBody },
+			mpOtherBody{ pOtherBody }
+		{ }
+		~ObjectCollisionEvent() {}
 
 		PhysicsBody* GetBody() { return mpBody; }
 		PhysicsBody* GetOtherBody() { return mpOtherBody; }

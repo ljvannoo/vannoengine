@@ -20,6 +20,7 @@ Creation Date:	2020-Oct-13
 #include <queue>
 #include <vector>
 #include <unordered_map>
+#include <list>
 
 
 namespace VannoEngine {
@@ -49,6 +50,6 @@ namespace VannoEngine {
 	private:
 		static EventManager* mpInstance;
 		std::priority_queue<EventWrapper, std::vector<EventWrapper>, EventComparator > mEvents;
-		std::unordered_map<std::string, std::vector<EventHandler*>*> mSubscribers;
+		std::unordered_map<std::string, std::list<EventHandler*>*> mSubscribers;
 	};
 }

@@ -50,7 +50,7 @@ namespace VannoEngine {
 	}
 
 	PhysicsBody::~PhysicsBody() {
-
+		EventManager::GetInstance()->Unsubscribe(EVT_MAP_COLLISION, this);
 	}
 	void PhysicsBody::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
 		float x = 0.0f;
@@ -187,6 +187,11 @@ namespace VannoEngine {
 
 	void PhysicsBody::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 		if (event->GetName() == EVT_MAP_COLLISION) {
+			mOnGround = false;
+			mAtCeiling = false;
+			mAgainstLeftWall = false;
+			mAgainstRightWall = false;
+
 			VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
 			VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 			if (pBody == pCollisionEvent->GetBody()) {

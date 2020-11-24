@@ -14,6 +14,9 @@ Creation Date:	2020-Oct-15
 *************************************************************************/
 #include "engine/core/Log.h"
 
+#include "engine/systems/events/EventManager.h"
+#include "engine/systems/objects/DestroyObjectEvent.h"
+
 #include "engine/systems/objects/GameObjectFactory.h"
 #include "engine/systems/objects/GameObject.h"
 
@@ -38,7 +41,7 @@ namespace VannoEngine {
 	}
 
 	GameObjectFactory::GameObjectFactory() {
-
+		EventManager::GetInstance()->Subscribe(EVT_DESTROY_OBJECT, this);
 	}
 
 	GameObjectFactory::~GameObjectFactory() {
@@ -128,12 +131,22 @@ namespace VannoEngine {
 
 		return pObject;
 	}
-
-	std::forward_list<GameObject*>::iterator GameObjectFactory::ObjectsBegin() {
+	/*
+	std::list<GameObject*>::iterator GameObjectFactory::ObjectsBegin() {
 		return mObjects.begin();
 	}
 
-	std::forward_list<GameObject*>::iterator GameObjectFactory::ObjectsEnd() {
+	std::list<GameObject*>::iterator GameObjectFactory::ObjectsEnd() {
 		return mObjects.end();
+	}
+	*/
+	void GameObjectFactory::HandleEvent(std::string eventName, Event* event) {
+		if (event->GetName() == EVT_DESTROY_OBJECT) {
+			DestroyObjectEvent* pEvent = dynamic_cast<DestroyObjectEvent*>(event);
+
+			GameObject* pObj = pEvent->GetObj();
+			mObjects.remove(pObj);
+			delete pObj;
+		}
 	}
 }

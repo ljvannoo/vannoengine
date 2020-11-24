@@ -26,6 +26,8 @@ Creation Date:	2020-Oct-19
 
 #include "engine/systems/objects/GameObject.h"
 
+#include "engine/systems/objects/GameObject.h"
+
 #include "engine/systems/events/EventManager.h"
 #include "engine/systems/events/Event.h"
 #include "engine/systems/physics/ObjectCollisionEvent.h"
@@ -45,6 +47,8 @@ Creation Date:	2020-Oct-19
 #include "Actions.h"
 #include "engine/util/Directions.h"
 
+#include "PowerUp.h"
+
 #include <algorithm>
 #include <sstream>
 
@@ -61,6 +65,7 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 }
 
 Controller::~Controller() {
+	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_OBJECT_COLLISION, this);
 }
 
 void Controller::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
@@ -223,13 +228,7 @@ void Controller::Update(double deltaTime) {
 	//LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);
-	
-	/*
-	mOnGround = false;
-	mAtCeiling = false;
-	mAgainstLeftWall = false;
-	mAgainstRightWall = false;
-	*/
+
 }
 
 void Controller::Jump() {
@@ -246,7 +245,12 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
 		if(pCollisionEvent->GetBody() == pBody) {
-			LOG_DEBUG("Collided with: {}", pCollisionEvent->GetOtherBody()->GetOwner()->GetName());
+			VannoEngine::GameObject* pObject = pCollisionEvent->GetOtherBody()->GetOwner();
+
+			if (pObject->HasComponent(POWERUP_COMPONENT)) {
+				LOG_DEBUG("Collided with: {}", pObject->GetName());
+				pObject->Destroy();
+			}
 		}
 	}
 }

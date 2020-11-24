@@ -8,6 +8,7 @@
 #include "engine/components/Camera.h"
 
 #include "Controller.h"
+#include "PowerUp.h"
 
 class Sandbox : public VannoEngine::Game {
 public:
@@ -31,6 +32,7 @@ public:
 		// Add custom components
 		VannoEngine::GameObjectFactory* pObjectFactory = VannoEngine::GameObjectFactory::GetInstance();
 		pObjectFactory->RegisterComponent(CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<Controller>());
+		pObjectFactory->RegisterComponent(POWERUP_COMPONENT, new VannoEngine::ComponentCreator<PowerUp>());
 
 		// Load the level
 		VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();

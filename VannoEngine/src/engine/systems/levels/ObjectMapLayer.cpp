@@ -24,11 +24,15 @@ Creation Date:	2020-Oct-31
 #include "engine/components/PhysicsBody.h"
 #include "engine/components/Sprite.h"
 
+#include "engine/systems/events/EventManager.h"
+#include "engine/systems/objects/DestroyObjectEvent.h"
+
 namespace VannoEngine {
 	ObjectMapLayer::ObjectMapLayer(float width, float height) : 
 		MapLayer()
 	{
 		SetDimensions(width, height);
+		EventManager::GetInstance()->Subscribe(EVT_DESTROY_OBJECT, this);
 	}
 
 	ObjectMapLayer::~ObjectMapLayer() {
@@ -78,7 +82,7 @@ namespace VannoEngine {
 					if (object.HasMember("name") && object["name"].IsString()) {
 						pGameObject->SetName(object["name"].GetString());
 					}
-
+					LOG_CORE_DEBUG("Loading object {} on layer {}", pGameObject->GetName(), mName);
 					float width = 0.0f;
 					if (object.HasMember("width") && object["width"].IsNumber()) {
 						width = object["width"].GetFloat();
@@ -148,6 +152,14 @@ namespace VannoEngine {
 				PhysicsBody* pOtherBody = dynamic_cast<PhysicsBody*>(pObject->GetComponent(PHYSICSBODY_COMPONENT));
 				pBody->CheckCollision(pOtherBody);
 			}
+		}
+	}
+
+	void ObjectMapLayer::HandleEvent(std::string eventName, Event* event) {
+		if (event->GetName() == EVT_DESTROY_OBJECT) {
+			DestroyObjectEvent* pEvent = dynamic_cast<DestroyObjectEvent*>(event);
+			GameObject* pObj = pEvent->GetObj();
+			mObjects.remove(pObj);
 		}
 	}
 }

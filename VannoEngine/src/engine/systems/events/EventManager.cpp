@@ -28,7 +28,7 @@ namespace VannoEngine {
 	EventManager* EventManager::mpInstance = nullptr;
 
 	EventManager::~EventManager() {
-		for (std::pair<std::string, std::vector<EventHandler*>*> element : mSubscribers) {
+		for (std::pair<std::string, std::list<EventHandler*>*> element : mSubscribers) {
 			delete element.second;
 		}
 		mSubscribers.clear();
@@ -51,19 +51,21 @@ namespace VannoEngine {
 				break;
 			}
 			mEvents.pop();
-			std::vector<EventHandler*>* handlers = mSubscribers[evt.GetName()];
+			std::list<EventHandler*>* handlers = mSubscribers[evt.GetName()];
 			if (handlers) {
 				for (EventHandler* handler : *handlers) {
-					handler->HandleEvent(evt.GetName(), evt.GetEvent());
+					std::string evtName = evt.GetName();
+					Event* event = evt.GetEvent();
+					handler->HandleEvent(evtName, event);
 				}
 			}
 		}
 	}
 
 	void EventManager::Subscribe(std::string eventName, EventHandler* handler) {
-		std::vector<EventHandler*>* handlers = mSubscribers[eventName];
+		std::list<EventHandler*>* handlers = mSubscribers[eventName];
 		if (!handlers) {
-			handlers = new std::vector<EventHandler*>;
+			handlers = new std::list<EventHandler*>;
 			mSubscribers[eventName] = handlers;
 		}
 
@@ -71,6 +73,8 @@ namespace VannoEngine {
 	}
 
 	void EventManager::Unsubscribe(std::string eventName, EventHandler* handler) {
+		std::list<EventHandler*>* handlers = mSubscribers[eventName];
+		handlers->remove(handler);
 	}
 
 	void EventManager::Broadcast(Event* message) {

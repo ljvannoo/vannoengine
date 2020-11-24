@@ -14,21 +14,26 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-15
 *************************************************************************/
 
+#include "engine/systems/events/EventHandler.h"
+#include "engine/systems/events/Event.h"
+
 #include <rapidjson/document.h>
 #include <string>
 #include <unordered_map>
-#include <forward_list>
+#include <list>
 
 namespace VannoEngine {
 	class GameObject;
 	class GameComponent;
 	class ComponentCreatorInterface;
 
-	class GameObjectFactory
+	class GameObjectFactory : public EventHandler
 	{
 	public:
 		static GameObjectFactory* GetInstance();
 		~GameObjectFactory();
+
+		void HandleEvent(std::string eventName, Event* event) override;
 
 		void Init();
 
@@ -37,8 +42,10 @@ namespace VannoEngine {
 		GameObject* CreateObject(const std::string relativeFilePath);
 
 		bool HasObjects() { return !mObjects.empty(); }
-		std::forward_list<GameObject*>::iterator ObjectsBegin();
-		std::forward_list<GameObject*>::iterator ObjectsEnd();
+		/*
+		std::list<GameObject*>::iterator ObjectsBegin();
+		std::list<GameObject*>::iterator ObjectsEnd();
+		*/
 	private:
 		GameObjectFactory();
 
@@ -47,6 +54,6 @@ namespace VannoEngine {
 		static GameObjectFactory* mpInstance;
 
 		std::unordered_map<std::string, ComponentCreatorInterface*> mCreators;
-		std::forward_list<GameObject*> mObjects;
+		std::list<GameObject*> mObjects;
 	};
 }

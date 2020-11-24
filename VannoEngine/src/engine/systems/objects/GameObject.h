@@ -21,10 +21,10 @@ Creation Date:	2020-Oct-24
 
 namespace VannoEngine {
 	class GameComponent;
+	class ObjectMapLayer;
 
 	class GameObject
 	{
-	public:
 	public:
 		GameObject();
 		~GameObject();
@@ -50,12 +50,12 @@ namespace VannoEngine {
 
 		void AddChildObject(GameObject* pChildObject) { mChildObjects.push_back(pChildObject); }
 
+		void Destroy();
 	private:
 		std::string mName;
 		std::unordered_map<std::string, GameComponent*> mComponents;
 		GameObject* mpParentObject;
 		std::vector<GameObject*> mChildObjects;
-
 		std::string mUuid;
 	};
 }
