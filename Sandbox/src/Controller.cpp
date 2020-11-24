@@ -59,7 +59,8 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mpPhysicsManager{ VannoEngine::PhysicsManager::GetInstance() },
 	mpConfigManager{ VannoEngine::ConfigurationManager::GetInstance() },
 	mpLevelManager{ VannoEngine::LevelManager::GetInstance() },
-	mpTimeManager{ VannoEngine::TimeManager::GetInstance() }
+	mpTimeManager{ VannoEngine::TimeManager::GetInstance() },
+	mHasSword{ false }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 }
@@ -128,6 +129,12 @@ void Controller::Update(double deltaTime) {
 		if (mpInputManager->IsKeyPressed(ACTION_ATTACK)) {
 			mCurrentState = State::Attack;
 			mAttackStartTime = mpTimeManager->GetElapsedMillis();
+			if (mHasSword) {
+				mAttackDuration = 600l;
+			}
+			else {
+				mAttackDuration = 400l;
+			}
 		}
 		break;
 	case State::Walk:
@@ -207,10 +214,15 @@ void Controller::Update(double deltaTime) {
 		break;
 	case State::Attack:
 		std::stringstream ss;
-		ss << "punch" << mAttackNum;
+		if(mHasSword) {
+			ss << "sword" << mAttackNum;
+		}
+		else {
+			ss << "punch" << mAttackNum;
+		}
 		pAnimator->Play(ss.str());
 		targetSpeed = 0.0f;
-		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + cAttackDuration) {
+		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + mAttackDuration) {
 			if (mpInputManager->IsKeyPressed(ACTION_ATTACK) && mAttackNum < 3) {
 				mAttackStartTime = mpTimeManager->GetElapsedMillis();
 				mAttackNum++;
@@ -250,6 +262,7 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 			if (pObject->HasComponent(POWERUP_COMPONENT)) {
 				LOG_DEBUG("Collided with: {}", pObject->GetName());
 				pObject->Destroy();
+				mHasSword = true;
 			}
 		}
 	}

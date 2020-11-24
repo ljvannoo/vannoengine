@@ -80,9 +80,11 @@ private:
 	const float cRunSpeed = 4.0f;
 	const float cDashSpeed = 6.0f;
 	const float cJumpHeight = 1.2f;
-	const unsigned long cAttackDuration = 400l;
+	unsigned long mAttackDuration = 400l;
 
 	State mCurrentState;
 	unsigned long mAttackStartTime;
 	unsigned short mAttackNum = 1;
+
+	bool mHasSword;
 };

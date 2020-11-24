@@ -39,6 +39,19 @@
             }
           },
           {
+            "name": "idle_sword",
+            "frameOffset": 38,
+            "frameCount": 4,
+            "frameDuration": 0.2,
+            "loop": true,
+            "aabb": {
+              "offsetX": 0.0,
+              "offsetY": -12.0,
+              "width": 20.0,
+              "height": 27.0
+            }
+          },
+          {
             "name": "crouch",
             "frameOffset": 4,
             "frameCount": 4,
@@ -110,6 +123,27 @@
             "name": "punch3",
             "frameOffset": 120,
             "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "sword1",
+            "frameOffset": 41,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "sword2",
+            "frameOffset": 47,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": false
+          },
+          {
+            "name": "sword3",
+            "frameOffset": 53,
+            "frameCount": 6,
             "frameDuration": 0.1,
             "loop": false
           }
