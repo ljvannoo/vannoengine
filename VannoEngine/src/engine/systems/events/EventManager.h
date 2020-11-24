@@ -14,7 +14,7 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-13
 *************************************************************************/
 
-#include "engine\systems\events\Event.h"
+#include "engine/systems/events/EventWrapper.h"
 
 #include <string>
 #include <queue>
@@ -27,7 +27,7 @@ namespace VannoEngine {
 
 	class EventComparator {
 	public:
-		bool operator()(const Event& lhs, Event& rhs) const {
+		bool operator()(const EventWrapper& lhs, EventWrapper& rhs) const {
 			return (lhs.GetTime() > rhs.GetTime());
 		}
 	};
@@ -42,13 +42,13 @@ namespace VannoEngine {
 		void Update();
 		void Subscribe(std::string eventName, EventHandler* handler);
 		void Unsubscribe(std::string eventName, EventHandler* handler);
-		void Notify(Message* message);
-		void DelayedNotify(double delaySec, Message* message);
+		void Notify(Event* message);
+		void DelayedNotify(double delaySec, Event* message);
 	private:
 		EventManager() {}
 	private:
 		static EventManager* mpInstance;
-		std::priority_queue<Event, std::vector<Event>, EventComparator > mEvents;
+		std::priority_queue<EventWrapper, std::vector<EventWrapper>, EventComparator > mEvents;
 		std::unordered_map<std::string, std::vector<EventHandler*>*> mSubscribers;
 	};
 }

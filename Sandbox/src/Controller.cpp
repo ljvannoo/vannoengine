@@ -219,7 +219,7 @@ void Controller::Update(double deltaTime) {
 	}
 
 	//LOG_DEBUG("({}) Targetspeed: {}", mCurrentState, targetSpeed);
-	speed.x = MoveTowards(speed.x, targetSpeed * moveInput, cWalkAccel * deltaTime);
+	speed.x = MoveTowards(speed.x, targetSpeed * moveInput, cWalkAccel * (float)deltaTime);
 	//LOG_DEBUG("SpeedY: {}, State: {}", speed.y, mCurrentState);
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);

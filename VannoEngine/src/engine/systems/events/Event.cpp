@@ -1,19 +1,11 @@
 #include "Event.h"
 
-#include "Message.h"
-
 namespace VannoEngine {
-	Event::Event(double time, Message* message) :
-		mTime{ time },
-		mMessage{ message }
+	Event::Event(std::string name) :
+		mName{ name }
 	{ }
 
 	Event::~Event() {
-		delete mMessage;
-	}
 
-	std::string Event::GetName()
-	{
-		return mMessage->GetName();
 	}
 }

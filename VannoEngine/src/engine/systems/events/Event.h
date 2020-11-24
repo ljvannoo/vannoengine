@@ -1,22 +1,18 @@
 #pragma once
+
 #include <string>
+
 namespace VannoEngine {
-	class Message;
-
-	class Event final
+	class Event
 	{
+	public: // Variables
+
 	public: // Methods
-		Event(double time, Message* message);
-		~Event();
+		Event(std::string name);
+		virtual ~Event();
 
-		std::string GetName();
-		double GetTime() const { return mTime; }
-		Message* GetMsg() { return mMessage; }
-
-	private: // Methods
-
-	private: // Variables
-		double mTime;
-		Message* mMessage;
+		std::string GetName() const { return mName; }
+	private:
+		std::string mName;
 	};
 }

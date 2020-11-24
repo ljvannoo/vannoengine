@@ -14,8 +14,8 @@ Creation Date:	2020-Oct-13
 *************************************************************************/
 #include "EventManager.h"
 
+#include "engine/systems/events/EventWrapper.h"
 #include "engine/systems/events/Event.h"
-#include "engine/systems/events/Message.h"
 
 #include "engine/core/Log.h"
 
@@ -45,7 +45,7 @@ namespace VannoEngine {
 	void EventManager::Update() {
 		TimeManager* timeManager = TimeManager::GetInstance();
 		while (!mEvents.empty()) {
-			Event evt = mEvents.top();
+			EventWrapper evt = mEvents.top();
 
 			if (timeManager->Now() < evt.GetTime()) {
 				break;
@@ -54,7 +54,7 @@ namespace VannoEngine {
 			std::vector<EventHandler*>* handlers = mSubscribers[evt.GetName()];
 			if (handlers) {
 				for (EventHandler* handler : *handlers) {
-					handler->HandleEvent(evt.GetName(), evt.GetMsg());
+					handler->HandleEvent(evt.GetName(), evt.GetEvent());
 				}
 			}
 		}
@@ -73,13 +73,13 @@ namespace VannoEngine {
 	void EventManager::Unsubscribe(std::string eventName, EventHandler* handler) {
 	}
 
-	void EventManager::Notify(Message* message) {
+	void EventManager::Notify(Event* message) {
 		DelayedNotify(0.0, message);
 	}
 
-	void EventManager::DelayedNotify(double delaySec, Message* message) {
+	void EventManager::DelayedNotify(double delaySec, Event* message) {
 		TimeManager* timeManager = TimeManager::GetInstance();
-		Event evt(timeManager->Now() + delaySec, message);
+		EventWrapper evt(timeManager->Now() + delaySec, message);
 		mEvents.push(evt);
 	}
 }
