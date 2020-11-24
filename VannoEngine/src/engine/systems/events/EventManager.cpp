@@ -45,20 +45,19 @@ namespace VannoEngine {
 	void EventManager::Update() {
 		TimeManager* timeManager = TimeManager::GetInstance();
 		while (!mEvents.empty()) {
-			EventWrapper evt = mEvents.top();
+			EventWrapper* evt = mEvents.top();
 
-			if (timeManager->Now() < evt.GetTime()) {
+			if (timeManager->Now() < evt->GetTime()) {
 				break;
 			}
 			mEvents.pop();
-			std::list<EventHandler*>* handlers = mSubscribers[evt.GetName()];
+			std::list<EventHandler*>* handlers = mSubscribers[evt->GetName()];
 			if (handlers) {
 				for (EventHandler* handler : *handlers) {
-					std::string evtName = evt.GetName();
-					Event* event = evt.GetEvent();
-					handler->HandleEvent(evtName, event);
+					handler->HandleEvent(evt->GetName(), evt->GetEvent());
 				}
 			}
+			delete evt;
 		}
 	}
 
@@ -83,7 +82,7 @@ namespace VannoEngine {
 
 	void EventManager::DelayedBroadcast(double delaySec, Event* message) {
 		TimeManager* timeManager = TimeManager::GetInstance();
-		EventWrapper evt(timeManager->Now() + delaySec, message);
+		EventWrapper* evt = new EventWrapper(timeManager->Now() + delaySec, message);
 		mEvents.push(evt);
 	}
 }

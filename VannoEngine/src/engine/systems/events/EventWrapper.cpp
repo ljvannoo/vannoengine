@@ -9,6 +9,7 @@ namespace VannoEngine {
 	{ }
 
 	EventWrapper::~EventWrapper() {
+		delete mEvent;
 	}
 
 	std::string EventWrapper::GetName()

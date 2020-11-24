@@ -28,8 +28,8 @@ namespace VannoEngine {
 
 	class EventComparator {
 	public:
-		bool operator()(const EventWrapper& lhs, EventWrapper& rhs) const {
-			return (lhs.GetTime() > rhs.GetTime());
+		bool operator()(EventWrapper const* lhs, EventWrapper const* rhs) const {
+			return (lhs->GetTime() > rhs->GetTime());
 		}
 	};
 
@@ -49,7 +49,7 @@ namespace VannoEngine {
 		EventManager() {}
 	private:
 		static EventManager* mpInstance;
-		std::priority_queue<EventWrapper, std::vector<EventWrapper>, EventComparator > mEvents;
+		std::priority_queue<EventWrapper*, std::vector<EventWrapper*>, EventComparator > mEvents;
 		std::unordered_map<std::string, std::list<EventHandler*>*> mSubscribers;
 	};
 }
