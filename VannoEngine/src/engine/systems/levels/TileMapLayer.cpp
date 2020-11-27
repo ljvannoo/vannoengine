@@ -33,8 +33,6 @@ Creation Date:	2020-Oct-29
 
 #include "engine/core/Log.h"
 
-#include "engine/util/bitmask.h"
-
 #include "glm/mat4x4.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

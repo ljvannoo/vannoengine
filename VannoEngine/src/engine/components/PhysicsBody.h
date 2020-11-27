@@ -21,6 +21,8 @@ Creation Date:	2020-Nov-01
 
 #include "engine/systems/physics/Aabb.h"
 
+#include "engine/util/Bits.h"
+
 #include <glm/vec2.hpp>
 
 #include <string>
@@ -55,6 +57,8 @@ namespace VannoEngine {
 		glm::vec2 GetAabbCenter();
 
 		void CheckCollision(PhysicsBody* pOtherBody);
+
+		void FallThroughFloor();
 	private: // Methods
 
 	private: // Variables
@@ -62,9 +66,8 @@ namespace VannoEngine {
 		glm::vec2 mAabbOffset;
 		float mMass;
 
-		bool mOnGround;
-		bool mAtCeiling;
-		bool mAgainstLeftWall;
-		bool mAgainstRightWall;
+		Bits<4> mPressingAgainst;
+		Bits<4> mSoftCollide;
+		
 	};
 }

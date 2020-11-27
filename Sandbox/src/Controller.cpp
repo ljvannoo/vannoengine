@@ -125,6 +125,7 @@ void Controller::Update(double deltaTime) {
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
 			mCurrentState = State::Crouch;
+			pBody->FallThroughFloor();
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_ATTACK)) {
 			mCurrentState = State::Attack;
@@ -147,6 +148,9 @@ void Controller::Update(double deltaTime) {
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
 		}
+		if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+			pBody->FallThroughFloor();
+		}
 		break;
 	case State::Run:
 		pAnimator->Play("run");
@@ -162,6 +166,9 @@ void Controller::Update(double deltaTime) {
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
 		}
+		if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+			pBody->FallThroughFloor();
+		}
 		if (speed.x == 0.0f) {
 			mCurrentState = State::Stand;
 		}
@@ -175,6 +182,9 @@ void Controller::Update(double deltaTime) {
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_DOWN)) {
+			pBody->FallThroughFloor();
 		}
 		break;
 	case State::Jump:
@@ -241,6 +251,9 @@ void Controller::Update(double deltaTime) {
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);
 
+	if (speed.y < 0.0f) {
+		mCurrentState = State::Fall;
+	}
 }
 
 void Controller::Jump() {

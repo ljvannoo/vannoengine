@@ -32,7 +32,7 @@ Creation Date:	2020-Nov-01
 
 #include "engine/systems/ConfigurationManager.h"
 
-#include "engine/util/bitmask.h"
+#include "engine/util/Directions.h"
 
 #include <math.h>
 #include <algorithm>
@@ -40,11 +40,7 @@ namespace VannoEngine {
 	PhysicsBody::PhysicsBody(GameObject* owner) :
 		GameComponent(owner),
 		mAabbOffset{ glm::vec2(0.0f, 0.0f) },
-		mMass{ 1.0f },
-		mOnGround{ false },
-		mAtCeiling{ false },
-		mAgainstLeftWall{ false },
-		mAgainstRightWall{ false }
+		mMass{ 1.0f }
 	{ 
 		EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
 	}
@@ -184,57 +180,62 @@ namespace VannoEngine {
 		}
 	}
 
+	void PhysicsBody::FallThroughFloor() {
+		mSoftCollide.Clear(static_cast<int>(Direction::DOWN));
+	}
 
-	void PhysicsBody::HandleEvent(std::string eventName, VannoEngine::Event* event) {
+
+	void PhysicsBody::HandleEvent(std::string eventName, Event* event) {
 		if (event->GetName() == EVT_MAP_COLLISION) {
-			mOnGround = false;
-			mAtCeiling = false;
-			mAgainstLeftWall = false;
-			mAgainstRightWall = false;
+			mPressingAgainst.Reset();
 
-			VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
-			VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+			MapCollisionEvent* pCollisionEvent = dynamic_cast<MapCollisionEvent*>(event);
+			PhysicsBody* pBody = dynamic_cast<PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 			if (pBody == pCollisionEvent->GetBody()) {
-				VannoEngine::AABB aabb = pBody->GetAabb();
+				AABB aabb = pBody->GetAabb();
 				glm::vec2 aabbOffset = pBody->GetAabbOffset();
 
-				VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+				Transform* pTransform = dynamic_cast<Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 				glm::vec2 newPosition = pTransform->GetPosition();
 				glm::vec2 newSpeed = pTransform->GetSpeed();
 
-				switch (pCollisionEvent->GetDirection()) {
-				case VannoEngine::Direction::DOWN:
-					if (newSpeed.y < 0.0f) {
-						newPosition.y = pCollisionEvent->GetPlane() + aabb.halfHeight - aabbOffset.y;
-						newSpeed.y = 0.0f;
-						mOnGround = true;
-					}
-					break;
-				case VannoEngine::Direction::UP:
-					if (newSpeed.y > 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
-						newPosition.y = pCollisionEvent->GetPlane() - aabb.halfHeight - aabbOffset.y;
-						newSpeed.y = 0.0f;
-						mAtCeiling = true;
-					}
-					break;
-				case VannoEngine::Direction::LEFT:
-					if (newSpeed.x < 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
-						newPosition.x = pCollisionEvent->GetPlane() + aabb.halfWidth - aabbOffset.x;
-						newSpeed.x = 0.0f;
-						mAgainstLeftWall = true;
-					}
-					break;
-				case VannoEngine::Direction::RIGHT:
-					if (newSpeed.x > 0.0f && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
-						newPosition.x = pCollisionEvent->GetPlane() - aabb.halfWidth - aabbOffset.x;
-						newSpeed.x = 0.0f;
-						mAgainstRightWall = true;
-					}
-					break;
+			switch (pCollisionEvent->GetDirection()) {
+			case Direction::DOWN:
+				if (newSpeed.y < 0.0f && (pCollisionEvent->GetType() == CollisionType::HARD || mSoftCollide.Get(static_cast<int>(Direction::DOWN)))) {
+					newPosition.y = pCollisionEvent->GetPlane() + aabb.halfHeight - aabbOffset.y;
+					newSpeed.y = 0.0f;
+					mPressingAgainst.Set(static_cast<int>(Direction::DOWN));
 				}
+				break;
+			case Direction::UP:
+				if (newSpeed.y > 0.0f && (pCollisionEvent->GetType() == CollisionType::HARD || mSoftCollide.Get(static_cast<int>(Direction::UP)))) {
+					newPosition.y = pCollisionEvent->GetPlane() - aabb.halfHeight - aabbOffset.y;
+					newSpeed.y = 0.0f;
+					mPressingAgainst.Set(static_cast<int>(Direction::UP));
+				}
+				break;
+			case Direction::LEFT:
+				if (newSpeed.x < 0.0f && (pCollisionEvent->GetType() == CollisionType::HARD || mSoftCollide.Get(static_cast<int>(Direction::LEFT)))) {
+					newPosition.x = pCollisionEvent->GetPlane() + aabb.halfWidth - aabbOffset.x;
+					newSpeed.x = 0.0f;
+					mPressingAgainst.Set(static_cast<int>(Direction::LEFT));
+				}
+				break;
+			case Direction::RIGHT:
+				if (newSpeed.x > 0.0f && (pCollisionEvent->GetType() == CollisionType::HARD || mSoftCollide.Get(static_cast<int>(Direction::RIGHT)))) {
+					newPosition.x = pCollisionEvent->GetPlane() - aabb.halfWidth - aabbOffset.x;
+					newSpeed.x = 0.0f;
+					mPressingAgainst.Set(static_cast<int>(Direction::RIGHT));
+				}
+				break;
+			}
 
-				pTransform->SetPosition(newPosition.x, newPosition.y);
-				pTransform->SetSpeed(newSpeed.x, newSpeed.y);
+			if (pCollisionEvent->GetDirection() != Direction::DOWN) {
+				mSoftCollide.Set(static_cast<int>(Direction::DOWN));
+			}
+
+			pTransform->SetPosition(newPosition.x, newPosition.y);
+			pTransform->SetSpeed(newSpeed.x, newSpeed.y);
 			}
 		}
 	}
