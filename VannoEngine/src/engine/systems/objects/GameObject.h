@@ -22,6 +22,7 @@ Creation Date:	2020-Oct-24
 namespace VannoEngine {
 	class GameComponent;
 	class ObjectMapLayer;
+	class Event;
 
 	class GameObject
 	{
@@ -51,6 +52,8 @@ namespace VannoEngine {
 		void AddChildObject(GameObject* pChildObject) { mChildObjects.push_back(pChildObject); }
 		ObjectMapLayer* GetMapLayer() { return mpMapLayer; }
 		void Destroy();
+
+		void HandleLocalEvent(std::string eventName, Event* event);
 	private:
 		std::string mName;
 		std::unordered_map<std::string, GameComponent*> mComponents;

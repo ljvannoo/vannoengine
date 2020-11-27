@@ -19,6 +19,7 @@ Creation Date:	2020-Oct-24
 #include "engine/components/PhysicsBody.h"
 
 #include "engine/systems/events/EventManager.h"
+#include "engine/systems/events/Event.h"
 #include "engine/systems/objects/DestroyObjectEvent.h"
 
 #include "engine/util/uuid.h"
@@ -106,5 +107,11 @@ namespace VannoEngine {
 	void GameObject::Destroy() {
 		DestroyObjectEvent* pEvent = new DestroyObjectEvent(this);
 		EventManager::GetInstance()->Broadcast(pEvent);
+	}
+
+	void GameObject::HandleLocalEvent(std::string eventName, Event* event) {
+		for (auto pair : mComponents) {
+			pair.second->HandleLocalEvent(eventName, event);
+		}
 	}
 }

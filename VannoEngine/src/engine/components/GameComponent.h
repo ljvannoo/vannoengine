@@ -20,6 +20,7 @@ Creation Date:	2020-Oct-15
 
 namespace VannoEngine {
 	class GameObject;
+	class Event;
 
 	class GameComponent
 	{
@@ -32,6 +33,8 @@ namespace VannoEngine {
 
 		virtual void Update(double deltaTime) {}
 		virtual void Draw() {}
+
+		virtual void HandleLocalEvent(std::string eventName, Event* event) {}
 
 		GameObject* GetOwner() { return mpOwner; }
 	private:
