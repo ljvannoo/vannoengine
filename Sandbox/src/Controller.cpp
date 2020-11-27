@@ -24,8 +24,7 @@ Creation Date:	2020-Oct-19
 #include "engine/components/Animator.h"
 #include "engine/components/Camera.h"
 
-#include "engine/systems/objects/GameObject.h"
-
+#include "engine/systems/objects/GameObjectFactory.h"
 #include "engine/systems/objects/GameObject.h"
 
 #include "engine/systems/events/EventManager.h"
@@ -60,7 +59,9 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mpConfigManager{ VannoEngine::ConfigurationManager::GetInstance() },
 	mpLevelManager{ VannoEngine::LevelManager::GetInstance() },
 	mpTimeManager{ VannoEngine::TimeManager::GetInstance() },
-	mHasSword{ false }
+	mHasSword{ false },
+	mHasBow{ false },
+	mAttackStartTime{ 0 }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 }
@@ -91,7 +92,7 @@ void Controller::Update(double deltaTime) {
 		pSprite->SetFlipHorizontal(true);
 		moveInput = -1.0f;
 	}
-
+	std::stringstream ss;
 	float targetSpeed = 0.0f;
 	switch (mCurrentState) {
 	case State::Stand:
@@ -136,6 +137,11 @@ void Controller::Update(double deltaTime) {
 			else {
 				mAttackDuration = 400l;
 			}
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_FIRE) && mHasBow) {
+			mCurrentState = State::Shoot;
+			mAttackStartTime = mpTimeManager->GetElapsedMillis();
+			mAttackDuration = 600l;
 		}
 		break;
 	case State::Walk:
@@ -223,7 +229,6 @@ void Controller::Update(double deltaTime) {
 		}
 		break;
 	case State::Attack:
-		std::stringstream ss;
 		if(mHasSword) {
 			ss << "sword" << mAttackNum;
 		}
@@ -241,6 +246,22 @@ void Controller::Update(double deltaTime) {
 				mCurrentState = State::Stand;
 				mAttackNum = 1;
 			}
+		}
+		break;
+	case State::Shoot:
+		pAnimator->Play("shoot");
+		targetSpeed = 0.0f;
+		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + mAttackDuration) {
+			VannoEngine::GameObjectFactory* pFactory = VannoEngine::GameObjectFactory::GetInstance();
+			VannoEngine::GameObject* pArrow = pFactory->CreateObject("objects\\arrow1.json", GetOwner()->GetMapLayer());
+			VannoEngine::Transform* pArrowTransform = dynamic_cast<VannoEngine::Transform*>(pArrow->GetComponent(TRANSFORM_COMPONENT));
+			glm::vec2 pos = pBody->GetAabbCenter();
+			
+			pArrowTransform->SetPosition(pos.x, pos.y);
+			
+			pArrowTransform->SetSpeed(10.0f, 1.0f);
+
+			mCurrentState = State::Stand;
 		}
 		break;
 	}
@@ -273,9 +294,12 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 			VannoEngine::GameObject* pObject = pCollisionEvent->GetOtherBody()->GetOwner();
 
 			if (pObject->HasComponent(POWERUP_COMPONENT)) {
-				LOG_DEBUG("Collided with: {}", pObject->GetName());
+				if(pObject->GetName() == "sword") {
+					mHasSword = true;
+				} else if (pObject->GetName() == "bow") {
+					mHasBow = true;
+				}
 				pObject->Destroy();
-				mHasSword = true;
 			}
 		}
 	}

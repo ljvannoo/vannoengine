@@ -1,0 +1,28 @@
+{
+  "name": "arrow",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\arrow1.png",
+          "cols": 1,
+          "rows": 1
+        }
+      }
+    },
+    {
+      "type": "physicsbody",
+      "data": {
+        "mass": 0.1
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 0.75
+      }
+    }
+  ]
+}

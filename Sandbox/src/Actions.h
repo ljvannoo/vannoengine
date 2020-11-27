@@ -8,3 +8,4 @@
 #define ACTION_WALK		"walk"
 #define ACTION_DASH		"dash"
 #define ACTION_ATTACK	"attack"
+#define ACTION_FIRE		"fire"

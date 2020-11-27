@@ -146,6 +146,13 @@
             "frameCount": 6,
             "frameDuration": 0.1,
             "loop": false
+          },
+          {
+            "name": "shoot",
+            "frameOffset": 182,
+            "frameCount": 6,
+            "frameDuration": 0.1,
+            "loop": false
           }
         ]
       }

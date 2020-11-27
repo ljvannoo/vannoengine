@@ -189,6 +189,23 @@
                  "width":16,
                  "x":256,
                  "y":480
+                }, 
+                {
+                 "height":16,
+                 "id":5,
+                 "name":"bow",
+                 "properties":[
+                        {
+                         "name":"objectFile",
+                         "type":"file",
+                         "value":"objects\/bow_powerup.json"
+                        }],
+                 "rotation":0,
+                 "type":"powerup",
+                 "visible":true,
+                 "width":16,
+                 "x":960,
+                 "y":480
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -221,7 +238,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":5,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.10.28",

@@ -27,6 +27,8 @@ Creation Date:	2020-Oct-15
 #include "engine/components/Sprite.h"
 #include "engine/components/ComponentCreator.h"
 
+#include "engine/systems/levels/ObjectMapLayer.h"
+
 #include <rapidjson/document.h>
 
 namespace VannoEngine {
@@ -63,17 +65,17 @@ namespace VannoEngine {
 		mCreators[name] = pCreator;
 	}
 
-	GameObject* GameObjectFactory::BuildObject(const std::string relativeFilePath) {
+	GameObject* GameObjectFactory::BuildObject(const std::string relativeFilePath, ObjectMapLayer* pMapLayer) {
 		ResourceManager* pResourceManager = ResourceManager::GetInstance();
 		rapidjson::Document* pData = pResourceManager->LoadJsonData(relativeFilePath);
 
 		GameObject* pObject = nullptr;
 
 		if (pData->HasMember("parentObjectFile") && (*pData)["parentObjectFile"].IsString()) {
-			pObject = BuildObject((*pData)["parentObjectFile"].GetString());
+			pObject = BuildObject((*pData)["parentObjectFile"].GetString(), pMapLayer);
 		}
 		else {
-			pObject = new GameObject();
+			pObject = new GameObject(pMapLayer);
 		}
 
 		if (pData->HasMember("name") && (*pData)["name"].IsString()) {
@@ -113,18 +115,21 @@ namespace VannoEngine {
 				const rapidjson::Value& childObjectFile = childObjectFiles[i];
 
 				if (childObjectFile.IsString()) {
-					GameObject* pChildObject = CreateObject(childObjectFile.GetString());
+					GameObject* pChildObject = CreateObject(childObjectFile.GetString(), pMapLayer);
 					pChildObject->SetParentObject(pObject);
 					pObject->AddChildObject(pChildObject);
 				}
 			}
 		}
+		if(pObject->GetMapLayer()) {
+			pObject->GetMapLayer()->AddObject(pObject);
+		}
 
 		return pObject;
 	}
 
-	GameObject* GameObjectFactory::CreateObject(const std::string relativeFilePath) {
-		GameObject* pObject = BuildObject(relativeFilePath);
+	GameObject* GameObjectFactory::CreateObject(const std::string relativeFilePath, ObjectMapLayer* pMapLayer) {
+		GameObject* pObject = BuildObject(relativeFilePath, pMapLayer);
 		if (pObject) {
 			mObjects.push_front(pObject);
 		}

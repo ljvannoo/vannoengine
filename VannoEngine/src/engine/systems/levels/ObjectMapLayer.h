@@ -47,6 +47,8 @@ namespace VannoEngine {
 
 		void HandleEvent(std::string eventName, Event* event) override;
 
+		void AddObject(GameObject* pObject);
+
 	private: // Methods
 
 	private: // Variables

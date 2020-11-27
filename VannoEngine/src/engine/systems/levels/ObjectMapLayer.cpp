@@ -74,7 +74,7 @@ namespace VannoEngine {
 
 						if (property.HasMember("name") && property["name"].IsString() && std::string(property["name"].GetString()) == "objectFile" &&
 							property.HasMember("value") && property["value"].IsString()) {
-							pGameObject = pObjectFactory->CreateObject(property["value"].GetString());
+							pGameObject = pObjectFactory->CreateObject(property["value"].GetString(), this);
 						}
 					}
 				}
@@ -119,7 +119,7 @@ namespace VannoEngine {
 						pBody->SetHeight(height);
 					}
 					*/
-					mObjects.push_back(pGameObject);
+					//mObjects.push_back(pGameObject);
 				}
 				else {
 					LOG_CORE_ERROR("Failed to load game object");
@@ -161,5 +161,8 @@ namespace VannoEngine {
 			GameObject* pObj = pEvent->GetObj();
 			mObjects.remove(pObj);
 		}
+	}
+	void ObjectMapLayer::AddObject(GameObject* pObject) {
+		mObjects.push_back(pObject);
 	}
 }

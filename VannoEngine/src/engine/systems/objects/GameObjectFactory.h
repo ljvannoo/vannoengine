@@ -26,6 +26,7 @@ namespace VannoEngine {
 	class GameObject;
 	class GameComponent;
 	class ComponentCreatorInterface;
+	class ObjectMapLayer;
 
 	class GameObjectFactory : public EventHandler
 	{
@@ -39,7 +40,7 @@ namespace VannoEngine {
 
 		void RegisterComponent(const std::string name, ComponentCreatorInterface* pCreator);
 
-		GameObject* CreateObject(const std::string relativeFilePath);
+		GameObject* CreateObject(const std::string relativeFilePath, ObjectMapLayer* pMapLayer);
 
 		bool HasObjects() { return !mObjects.empty(); }
 		/*
@@ -49,7 +50,7 @@ namespace VannoEngine {
 	private:
 		GameObjectFactory();
 
-		GameObject* BuildObject(const std::string relativeFilePath);
+		GameObject* BuildObject(const std::string relativeFilePath, ObjectMapLayer* pMapLayer);
 	private:
 		static GameObjectFactory* mpInstance;
 

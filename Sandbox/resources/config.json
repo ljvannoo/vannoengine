@@ -10,13 +10,14 @@
     "down": "s",
     "left": "a",
     "right": "d",
+    "attack": "enter",
+    "fire": "'",
     "jump": "space",
-    "debug": "f1",
     "walk": "lshift",
     "dash": "lctrl",
     "quit": "esc",
+    "debug": "f1",
     "zoomIn": ".",
-    "zoomOut": ",",
-    "attack": "enter"
+    "zoomOut": ","
   }
 }

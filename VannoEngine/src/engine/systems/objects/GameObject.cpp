@@ -24,7 +24,7 @@ Creation Date:	2020-Oct-24
 #include "engine/util/uuid.h"
 
 namespace VannoEngine {
-	GameObject::GameObject() : mName(""), mpParentObject(nullptr)
+	GameObject::GameObject(ObjectMapLayer* pMapLayer) : mpMapLayer{ pMapLayer }, mName{ "" }, mpParentObject{ nullptr }
 	{
 		mUuid = UUID::Generate();
 	}

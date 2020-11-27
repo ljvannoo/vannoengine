@@ -87,6 +87,8 @@ namespace VannoEngine {
 		mScanCodes["z"] = SDL_SCANCODE_Z;
 		mScanCodes["."] = SDL_SCANCODE_PERIOD;
 		mScanCodes[","] = SDL_SCANCODE_COMMA;
+		mScanCodes["."] = SDL_SCANCODE_PERIOD;
+		mScanCodes["'"] = SDL_SCANCODE_APOSTROPHE;
 		mScanCodes["f1"] = SDL_SCANCODE_F1;
 		mScanCodes["f2"] = SDL_SCANCODE_F2;
 		mScanCodes["f3"] = SDL_SCANCODE_F3;

@@ -26,7 +26,7 @@ namespace VannoEngine {
 	class GameObject
 	{
 	public:
-		GameObject();
+		GameObject(ObjectMapLayer* pMapLayer);
 		~GameObject();
 
 		void UpdatePhysics(double deltaTime);
@@ -49,7 +49,7 @@ namespace VannoEngine {
 		GameObject* GetParentObject() { return mpParentObject; }
 
 		void AddChildObject(GameObject* pChildObject) { mChildObjects.push_back(pChildObject); }
-
+		ObjectMapLayer* GetMapLayer() { return mpMapLayer; }
 		void Destroy();
 	private:
 		std::string mName;
@@ -57,5 +57,7 @@ namespace VannoEngine {
 		GameObject* mpParentObject;
 		std::vector<GameObject*> mChildObjects;
 		std::string mUuid;
+
+		ObjectMapLayer* mpMapLayer;
 	};
 }

@@ -44,7 +44,7 @@ namespace VannoEngine {
 		}
 
 		if (pLevelData->HasMember("camera") && (*pLevelData)["camera"].IsString()) {
-			mpCamera = pObjectFactory->CreateObject((*pLevelData)["camera"].GetString());
+			mpCamera = pObjectFactory->CreateObject((*pLevelData)["camera"].GetString(), nullptr);
 		}
 
 		if (pLevelData->HasMember("map") && (*pLevelData)["map"].IsString()) {

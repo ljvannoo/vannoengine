@@ -32,7 +32,8 @@ enum class State : int {
 	Jumping,
 	Jump,
 	Fall,
-	Attack
+	Attack,
+	Shoot
 };
 
 namespace VannoEngine {
@@ -83,8 +84,9 @@ private:
 	unsigned long mAttackDuration = 400l;
 
 	State mCurrentState;
+
 	unsigned long mAttackStartTime;
 	unsigned short mAttackNum = 1;
-
 	bool mHasSword;
+	bool mHasBow;
 };

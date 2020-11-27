@@ -1,0 +1,48 @@
+{
+  "name": "bow_powerup",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\bow1.png",
+          "cols": 6,
+          "rows": 1
+        }
+      }
+    },
+    {
+      "type": "physicsbody",
+      "data": {
+        "mass": 0.0,
+        "offsetX": 0.0,
+        "offsetY": 0.0
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    },
+    {
+      "type": "animator",
+      "defaultAnimation": "idle",
+      "data": {
+        "animations": [
+          {
+            "name": "idle",
+            "frameOffset": 0,
+            "frameCount": 6,
+            "frameDuration": 0.15,
+            "loop": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "powerup"
+    }
+  ]
+}
