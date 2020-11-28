@@ -17,6 +17,8 @@ Creation Date:	2020-Oct-13
 #include "engine/systems/events/EventWrapper.h"
 #include "engine/systems/events/Event.h"
 
+#include "engine/systems/objects/GameObject.h"
+
 #include "engine/core/Log.h"
 
 #include "engine/systems/events/EventHandler.h"
@@ -84,5 +86,10 @@ namespace VannoEngine {
 		TimeManager* timeManager = TimeManager::GetInstance();
 		EventWrapper* evt = new EventWrapper(timeManager->Now() + delaySec, message);
 		mEvents.push(evt);
+	}
+
+	void EventManager::Direct(GameObject* pObj, Event* event) {
+		pObj->HandleLocalEvent(event->GetName(), event);
+		delete event;
 	}
 }

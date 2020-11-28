@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #define ARROW_CONTROLLER_COMPONENT "arrow_controller"
 
@@ -28,4 +27,5 @@ public:
 
 private:
 	double mTimeToLive;
+	float mDamage;
 };

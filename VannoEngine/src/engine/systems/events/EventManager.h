@@ -25,6 +25,7 @@ Creation Date:	2020-Oct-13
 
 namespace VannoEngine {
 	class EventHandler;
+	class GameObject;
 
 	class EventComparator {
 	public:
@@ -45,6 +46,7 @@ namespace VannoEngine {
 		void Unsubscribe(std::string eventName, EventHandler* handler);
 		void Broadcast(Event* message);
 		void DelayedBroadcast(double delaySec, Event* message);
+		void Direct(GameObject* pObj, Event* event);
 	private:
 		EventManager() {}
 	private:

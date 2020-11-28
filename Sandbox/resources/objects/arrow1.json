@@ -29,7 +29,10 @@
       }
     },
     {
-      "type": "arrow_controller"
+      "type": "arrow_controller",
+      "data": {
+        "damage": 25.0
+      }
     }
   ]
 }

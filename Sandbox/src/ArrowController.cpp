@@ -1,5 +1,7 @@
 #include "ArrowController.h"
 
+#include "DamageEvent.h"
+
 #include "engine/systems/events/EventManager.h"
 
 #include "engine/components/PhysicsBody.h"
@@ -26,6 +28,9 @@ ArrowController::~ArrowController() {
 
 
 void ArrowController::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
+	if (pData->HasMember("damage") && (*pData)["damage"].IsNumber()) {
+		mDamage = (*pData)["damage"].GetFloat();
+	}
 }
 
 void ArrowController::Update(double deltaTime) {
@@ -45,16 +50,7 @@ void ArrowController::Update(double deltaTime) {
 }
 
 void ArrowController::Draw() {
-	/*if (GetOwner()->HasComponent(PHYSICSBODY_COMPONENT)) {
-		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
-		LOG_DEBUG("Pressing against... FLOOR={}, CEILING={}, RIGHT={}, LEFT={}",
-			pBody->IsAgainstWall(VannoEngine::Direction::DOWN),
-			pBody->IsAgainstWall(VannoEngine::Direction::UP),
-			pBody->IsAgainstWall(VannoEngine::Direction::RIGHT),
-			pBody->IsAgainstWall(VannoEngine::Direction::LEFT)
-			);
-	}*/
 }
 
 void ArrowController::HandleEvent(std::string eventName, VannoEngine::Event* event) {
@@ -73,7 +69,11 @@ void ArrowController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
 		if (pCollisionEvent->GetBody() == pBody && pCollisionEvent->GetOtherBody()->GetPhysicsLayer() == "enemy") {
-			LOG_DEBUG("Struck object: {}", pCollisionEvent->GetOtherBody()->GetOwner()->GetName());
+			VannoEngine::GameObject* pSource = GetOwner();
+			VannoEngine::GameObject* pTarget = pCollisionEvent->GetOtherBody()->GetOwner();
+			DamageEvent* pEvent = new DamageEvent(pSource, pTarget, mDamage);
+			VannoEngine::EventManager::GetInstance()->Direct(pTarget, pEvent);
+			GetOwner()->Destroy();
 		}
 	}
 }

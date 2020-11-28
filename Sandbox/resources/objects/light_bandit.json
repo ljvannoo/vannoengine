@@ -41,6 +41,12 @@
           }
         ]
       }
+    },
+    {
+      "type": "health_tracker",
+      "data": {
+        "maxHealth": 100
+      }
     }
   ]
 }
