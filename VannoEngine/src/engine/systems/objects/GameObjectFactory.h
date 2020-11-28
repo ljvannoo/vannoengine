@@ -47,6 +47,7 @@ namespace VannoEngine {
 		std::list<GameObject*>::iterator ObjectsBegin();
 		std::list<GameObject*>::iterator ObjectsEnd();
 		*/
+		void CollectGarbage();
 	private:
 		GameObjectFactory();
 
@@ -56,5 +57,7 @@ namespace VannoEngine {
 
 		std::unordered_map<std::string, ComponentCreatorInterface*> mCreators;
 		std::list<GameObject*> mObjects;
+
+		std::list<std::pair<unsigned long, GameObject*>> mGarbage;
 	};
 }

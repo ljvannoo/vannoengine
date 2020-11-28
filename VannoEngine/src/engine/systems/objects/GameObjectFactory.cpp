@@ -29,6 +29,8 @@ Creation Date:	2020-Oct-15
 
 #include "engine/systems/levels/ObjectMapLayer.h"
 
+#include "engine/systems/TimeManager.h"
+
 #include <rapidjson/document.h>
 
 namespace VannoEngine {
@@ -151,7 +153,24 @@ namespace VannoEngine {
 
 			GameObject* pObj = pEvent->GetObj();
 			mObjects.remove(pObj);
-			delete pObj;
+			
+			// Move destory objects to a garbage list to keep them alive for any remaining events to resolve this frame.
+			// Garbage items will be collected later
+			unsigned long time = TimeManager::GetInstance()->GetElapsedMillis();
+			time += 500;
+			mGarbage.push_back(std::make_pair(time, pObj));
+		}
+	}
+
+	void GameObjectFactory::CollectGarbage() {
+		unsigned long time = TimeManager::GetInstance()->GetElapsedMillis();
+
+		for (auto it : mGarbage) {
+			if (it.first > time) {
+				mGarbage.remove(it);
+				delete it.second;
+				break; // To keep things simple, only delete one thing per frame
+			}
 		}
 	}
 }

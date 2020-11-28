@@ -115,6 +115,9 @@ namespace VannoEngine {
 			mpGraphicsManager->EndDraw();
 			mpTimeManager->StopTimer("draw");
 
+			// Clean up any game objects waiting to be destroyed
+			mpObjectFactory->CollectGarbage();
+
 			mpFramerateManager->EndFrame();
 		}
 	}
