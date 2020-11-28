@@ -38,7 +38,8 @@ namespace VannoEngine {
 	PhysicsBody::PhysicsBody(GameObject* owner) :
 		GameComponent(owner),
 		mAabbOffset{ glm::vec2(0.0f, 0.0f) },
-		mMass{ 1.0f }
+		mMass{ 1.0f },
+		mPhysicsLayer{ "default" }
 	{ 
 		EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
 	}

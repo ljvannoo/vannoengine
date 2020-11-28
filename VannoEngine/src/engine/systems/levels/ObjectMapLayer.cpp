@@ -92,7 +92,7 @@ namespace VannoEngine {
 					if (object.HasMember("height") && object["height"].IsNumber()) {
 						height = object["height"].GetFloat();
 					}
-					
+
 					Transform* pTransform = static_cast<Transform*>(pGameObject->GetComponent(TRANSFORM_COMPONENT));
 					if (pTransform) {
 						float x = 0.0f;
@@ -111,6 +111,14 @@ namespace VannoEngine {
 					}
 					else {
 						LOG_CORE_ERROR("Game object has no transform!");
+					}
+
+					if (pGameObject->HasComponent(PHYSICSBODY_COMPONENT) && object.HasMember("type") && object["type"].IsString()) {
+						std::string type = object["type"].GetString();
+						if(type.length() > 0) {
+							PhysicsBody* pBody = dynamic_cast<PhysicsBody*>(pGameObject->GetComponent(PHYSICSBODY_COMPONENT));
+							pBody->SetPhysicsLayer(type);
+						}
 					}
 					/*
 					PhysicsBody* pBody = static_cast<PhysicsBody*>(pGameObject->GetComponent(PHYSICSBODY_COMPONENT));

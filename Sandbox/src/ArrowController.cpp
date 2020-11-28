@@ -5,6 +5,7 @@
 #include "engine/components/PhysicsBody.h"
 #include "engine/components/Transform.h"
 #include "engine/systems/physics/MapCollisionEvent.h"
+#include "engine/systems/physics/ObjectCollisionEvent.h"
 
 #include "engine/core/Log.h"
 
@@ -15,10 +16,12 @@ ArrowController::ArrowController(VannoEngine::GameObject* owner) :
 	mTimeToLive{ 3.0 }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
+	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 }
 
 ArrowController::~ArrowController() {
 	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_MAP_COLLISION, this);
+	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_OBJECT_COLLISION, this);
 }
 
 
@@ -64,6 +67,13 @@ void ArrowController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 
 			pBody->SetMass(0.0f);
 			pTransform->SetSpeed(0.0f, 0.0f);
+		}
+	} else if (event->GetName() == EVT_OBJECT_COLLISION) {
+		VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
+		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+
+		if (pCollisionEvent->GetBody() == pBody && pCollisionEvent->GetOtherBody()->GetPhysicsLayer() == "enemy") {
+			LOG_DEBUG("Struck object: {}", pCollisionEvent->GetOtherBody()->GetOwner()->GetName());
 		}
 	}
 }

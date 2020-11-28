@@ -59,6 +59,9 @@ namespace VannoEngine {
 
 		void SetMass(float mass) { mMass = mass; }
 
+		void SetPhysicsLayer(std::string physicsLayer) { mPhysicsLayer = physicsLayer; }
+		std::string GetPhysicsLayer() { return mPhysicsLayer; }
+
 		void CheckCollision(PhysicsBody* pOtherBody);
 
 		bool IsAgainstWall(Direction dir);
@@ -74,5 +77,6 @@ namespace VannoEngine {
 		Bits<4> mPressingAgainst;
 		Bits<4> mSoftCollide;
 		
+		std::string mPhysicsLayer;
 	};
 }
