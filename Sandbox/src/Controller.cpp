@@ -47,6 +47,7 @@ Creation Date:	2020-Oct-19
 #include "engine/util/Directions.h"
 
 #include "PowerUp.h"
+#include "DamageEvent.h"
 
 #include <algorithm>
 #include <sstream>
@@ -61,7 +62,10 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mpTimeManager{ VannoEngine::TimeManager::GetInstance() },
 	mHasSword{ false },
 	mHasBow{ false },
-	mAttackStartTime{ 0 }
+	mAttackStartTime{ 0 },
+	mCanDoDamage{ false },
+	mFistDamage{ 0.0f },
+	mSwordDamage{ 0.0f }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 }
@@ -71,7 +75,12 @@ Controller::~Controller() {
 }
 
 void Controller::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
-
+	if (pData->HasMember("fistDamage") && (*pData)["fistDamage"].IsNumber()) {
+		mFistDamage = (*pData)["fistDamage"].GetFloat();
+	}
+	if (pData->HasMember("swordDamage") && (*pData)["swordDamage"].IsNumber()) {
+		mSwordDamage = (*pData)["swordDamage"].GetFloat();
+	}
 }
 
 void Controller::Update(double deltaTime) {
@@ -96,6 +105,7 @@ void Controller::Update(double deltaTime) {
 	float targetSpeed = 0.0f;
 	switch (mCurrentState) {
 	case State::Stand:
+		mCanDoDamage = false;
 		pAnimator->Play("idle");
 		speed.x = 0.0f;
 		if (mpInputManager->IsKeyPressed(ACTION_WALK)) {
@@ -243,6 +253,7 @@ void Controller::Update(double deltaTime) {
 				mAttackNum++;
 			}
 			else {
+				mCanDoDamage = true;
 				mCurrentState = State::Stand;
 				mAttackNum = 1;
 			}
@@ -292,7 +303,7 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 	if (event->GetName() == EVT_OBJECT_COLLISION) {
 		VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
-
+		VannoEngine::PhysicsBody* pOtherBody = pCollisionEvent->GetOtherBody();
 		if(pCollisionEvent->GetBody() == pBody) {
 			VannoEngine::GameObject* pObject = pCollisionEvent->GetOtherBody()->GetOwner();
 
@@ -303,6 +314,14 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 					mHasBow = true;
 				}
 				pObject->Destroy();
+			} else if(pOtherBody->GetPhysicsLayer() == "enemy" && mCanDoDamage) {
+				float damage = mFistDamage;
+				if (mHasSword) {
+					damage = mSwordDamage;
+				}
+				DamageEvent* pEvent = new DamageEvent(GetOwner(), pOtherBody->GetOwner(), damage);
+				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
+				mCanDoDamage = false;
 			}
 		}
 	}

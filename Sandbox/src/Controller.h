@@ -89,4 +89,8 @@ private:
 	unsigned short mAttackNum = 1;
 	bool mHasSword;
 	bool mHasBow;
+	bool mCanDoDamage;
+
+	float mFistDamage;
+	float mSwordDamage;
 };

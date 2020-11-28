@@ -110,7 +110,13 @@
             "frameOffset": 112,
             "frameCount": 4,
             "frameDuration": 0.1,
-            "loop": false
+            "loop": false,
+            "aabb": {
+              "offsetX": 0.0,
+              "offsetY": -16.5,
+              "width": 30.0,
+              "height": 15.0
+            }
           },
           {
             "name": "punch2",
@@ -131,7 +137,13 @@
             "frameOffset": 41,
             "frameCount": 6,
             "frameDuration": 0.1,
-            "loop": false
+            "loop": false,
+            "aabb": {
+              "offsetX": 10.0,
+              "offsetY": -12.0,
+              "width": 35.0,
+              "height": 27.0
+            }
           },
           {
             "name": "sword2",
@@ -168,7 +180,11 @@
       }
     },
     {
-      "type": "controller"
+      "type": "controller",
+      "data": {
+        "fistDamage": 20.0,
+        "swordDamage": 40.0
+      }
     },
     {
       "type": "health_tracker",

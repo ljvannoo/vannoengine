@@ -37,7 +37,9 @@ void HealthTracker::LoadData(const rapidjson::GenericObject<true, rapidjson::Val
 }
 
 void HealthTracker::Update(double deltaTime) {
-	
+	if (mCurrentHealth < 0.0f) {
+		mCurrentHealth == 0.0f;
+	}
 }
 
 void HealthTracker::Draw() {
@@ -50,8 +52,10 @@ void HealthTracker::Draw() {
 		float percentage = mCurrentHealth / mMaxHealth;
 		float width = 24.0f;
 		mpGraphicsManager->RenderSquare(pos, width, 5.0f, glm::vec4(0.0f, 0.3f, 0.0f, 1.0f), true);
-		pos.x -= (width - (width * percentage)) / 2.0f;
-		mpGraphicsManager->RenderSquare(pos, width * percentage, 5.0f, glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), true);
+		if(mCurrentHealth > 0.0f) {
+			pos.x -= (width - (width * percentage)) / 2.0f;
+			mpGraphicsManager->RenderSquare(pos, width * percentage, 5.0f, glm::vec4(0.0f, 0.5f, 0.0f, 1.0f), true);
+		}
 	}
 }
 
@@ -61,9 +65,6 @@ void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* 
 
 		if(mCurrentHealth > 0.0f) {
 			mCurrentHealth -= pEvent->GetAmount();
-			if (mCurrentHealth < 0.0f) {
-				mCurrentHealth == 0.0f;
-			}
 		}
 		LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), pEvent->GetSource()->GetName());
 	}
