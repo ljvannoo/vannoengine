@@ -22,24 +22,24 @@ project "VannoEngine"
 
 	files { 
 		"%{prj.name}/src/**.h", 
-		"%{prj.name}/src/**.cpp" 
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/freetype/include",
-		"%{prj.name}/vendor/glew/include",
-		"%{prj.name}/vendor/sdl/include",
+		"%{prj.name}/../vendor/freetype/include",
+		"%{prj.name}/../vendor/glew/include",
+		"%{prj.name}/../vendor/sdl/include",
 		"%{prj.name}/vendor/stb_image/include",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/../vendor/rapidjson/include",
-		"%{prj.name}/..//vendor/glm/include"
+		"%{prj.name}/../vendor/glm/include"
 	}
 
 	libdirs {
-		"%{prj.name}/vendor/freetype/win64",
-		"%{prj.name}/vendor/sdl/lib/x64",
-		"%{prj.name}/vendor/glew/lib/Release/x64"
+		"%{prj.name}/../vendor/freetype/win64",
+		"%{prj.name}/../vendor/sdl/lib/x64",
+		"%{prj.name}/../vendor/glew/lib/Release/x64"
 	}
 
 	links {
@@ -62,8 +62,8 @@ project "VannoEngine"
 		}
 
 		postbuildcommands {
-			("xcopy /y \"%{wks.location}\\%{prj.name}\\vendor\\sdl\\lib\\x64\\SDL2.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
-			("xcopy /y \"%{wks.location}\\%{prj.name}\\vendor\\freetype\\win64\\freetype.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
+			("xcopy /y \"%{wks.location}\\vendor\\sdl\\lib\\x64\\SDL2.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
+			("xcopy /y \"%{wks.location}\\vendor\\freetype\\win64\\freetype.dll\" \"%{wks.location}\\bin\\" .. outputdir .. "\\Sandbox\\\""),
 		}
 
 
@@ -91,7 +91,9 @@ project "Sandbox"
 
 	files { 
 		"%{prj.name}/src/**.h", 
-		"%{prj.name}/src/**.cpp" 
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/resources/**.json",
+		"%{prj.name}/resources/**.shader"
 	}
 
 	includedirs {
@@ -99,7 +101,10 @@ project "Sandbox"
 		"VannoEngine/vendor/spdlog/include",
 		"VannoEngine/src",
 		"%{prj.name}/../vendor/rapidjson/include",
-		"%{prj.name}/..//vendor/glm/include"
+		"%{prj.name}/../vendor/glm/include",
+		"%{prj.name}/../vendor/glew/include",
+		"%{prj.name}/../vendor/freetype/include",
+		"%{prj.name}/../vendor/sdl/include"
 	}
 
 	links {
