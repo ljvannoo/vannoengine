@@ -9,6 +9,7 @@
 
 #include "Controller.h"
 #include "PowerUp.h"
+#include "ArrowController.h"
 #include "DebugComponent.h"
 
 class Sandbox : public VannoEngine::Game {
@@ -34,6 +35,7 @@ public:
 		VannoEngine::GameObjectFactory* pObjectFactory = VannoEngine::GameObjectFactory::GetInstance();
 		pObjectFactory->RegisterComponent(CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<Controller>());
 		pObjectFactory->RegisterComponent(POWERUP_COMPONENT, new VannoEngine::ComponentCreator<PowerUp>());
+		pObjectFactory->RegisterComponent(ARROW_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<ArrowController>());
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());
 
 		// Load the level

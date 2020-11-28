@@ -22,6 +22,7 @@ Creation Date:	2020-Nov-01
 #include "engine/systems/physics/Aabb.h"
 
 #include "engine/util/Bits.h"
+#include "engine/util/Directions.h"
 
 #include <glm/vec2.hpp>
 
@@ -56,7 +57,11 @@ namespace VannoEngine {
 		glm::vec2 GetAabbHalfDimensions() { return glm::vec2(mAabb.halfWidth, mAabb.halfHeight); }
 		glm::vec2 GetAabbCenter();
 
+		void SetMass(float mass) { mMass = mass; }
+
 		void CheckCollision(PhysicsBody* pOtherBody);
+
+		bool IsAgainstWall(Direction dir);
 
 		void FallThroughFloor();
 	private: // Methods

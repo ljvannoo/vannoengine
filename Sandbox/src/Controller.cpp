@@ -254,12 +254,15 @@ void Controller::Update(double deltaTime) {
 		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + mAttackDuration) {
 			VannoEngine::GameObjectFactory* pFactory = VannoEngine::GameObjectFactory::GetInstance();
 			VannoEngine::GameObject* pArrow = pFactory->CreateObject("objects\\arrow1.json", GetOwner()->GetMapLayer());
+			VannoEngine::Sprite* pArrowSprite = dynamic_cast<VannoEngine::Sprite*>(pArrow->GetComponent(SPRITE_COMPONENT));
 			VannoEngine::Transform* pArrowTransform = dynamic_cast<VannoEngine::Transform*>(pArrow->GetComponent(TRANSFORM_COMPONENT));
 			glm::vec2 pos = pBody->GetAabbCenter();
 			
 			pArrowTransform->SetPosition(pos.x, pos.y);
-			
-			pArrowTransform->SetSpeed(10.0f, 1.0f);
+			if (pSprite->IsHorizontalFlipped()) {
+				pArrowTransform->SetSpeedX(pArrowTransform->GetSpeed().x * -1.0f);
+				pArrowSprite->SetFlipHorizontal(false);
+			}
 
 			mCurrentState = State::Stand;
 		}

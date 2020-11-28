@@ -57,6 +57,8 @@ namespace VannoEngine {
 		void IncreaseSpeed(float x, float y) { mSpeed.x += x; mSpeed.y += y; }
 		glm::vec2 GetSpeed() { return mSpeed; }
 
+		void SetRotation(float angleDeg) { mRotation = angleDeg; }
+
 		glm::mat4 GetTranslationMatrix();
 		glm::mat4 GetRotationMatrix();
 		glm::mat4 GetScaleMatrix();

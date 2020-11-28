@@ -66,6 +66,14 @@ namespace VannoEngine {
 		if (pData->HasMember("posY") && (*pData)["posY"].IsFloat()) {
 			mPosition.y = (*pData)["posY"].GetFloat();
 		}
+
+		if (pData->HasMember("speedX") && (*pData)["speedX"].IsFloat()) {
+			mSpeed.x = (*pData)["speedX"].GetFloat();
+		}
+
+		if (pData->HasMember("speedY") && (*pData)["speedY"].IsFloat()) {
+			mSpeed.y = (*pData)["speedY"].GetFloat();
+		}
 	}
 
 

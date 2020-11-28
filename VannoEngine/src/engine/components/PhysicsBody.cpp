@@ -32,8 +32,6 @@ Creation Date:	2020-Nov-01
 
 #include "engine/systems/ConfigurationManager.h"
 
-#include "engine/util/Directions.h"
-
 #include <math.h>
 #include <algorithm>
 namespace VannoEngine {
@@ -238,5 +236,9 @@ namespace VannoEngine {
 			pTransform->SetSpeed(newSpeed.x, newSpeed.y);
 			}
 		}
+	}
+
+	bool PhysicsBody::IsAgainstWall(Direction dir) {
+		return mPressingAgainst.Get(static_cast<int>(dir));
 	}
 }

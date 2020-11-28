@@ -31,6 +31,8 @@ Creation Date:	2020-Oct-29
 
 #include "engine/systems/events/EventManager.h"
 
+#include "engine/systems/objects/GameObject.h"
+
 #include "engine/core/Log.h"
 
 #include "glm/mat4x4.hpp"
