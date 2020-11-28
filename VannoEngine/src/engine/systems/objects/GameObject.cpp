@@ -112,6 +112,7 @@ namespace VannoEngine {
 	void GameObject::HandleLocalEvent(std::string eventName, Event* event) {
 		for (auto pair : mComponents) {
 			pair.second->HandleLocalEvent(eventName, event);
+			delete event;
 		}
 	}
 }

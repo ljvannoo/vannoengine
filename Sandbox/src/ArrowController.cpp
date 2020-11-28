@@ -11,12 +11,13 @@
 #include <glm/gtx/vector_angle.hpp>
 
 ArrowController::ArrowController(VannoEngine::GameObject* owner) :
-	GameComponent(owner)
-{ 
+	GameComponent(owner),
+	mTimeToLive{ 3.0 }
+{
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
 }
 
-ArrowController::~ArrowController() { 
+ArrowController::~ArrowController() {
 	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_MAP_COLLISION, this);
 }
 
@@ -29,10 +30,15 @@ void ArrowController::Update(double deltaTime) {
 	glm::vec2 forward(1.0f, 0.0f);
 	glm::vec2 speed = pTransform->GetSpeed();
 	speed = glm::normalize(speed);
-	if(glm::length(speed) > 0.0f) {
+	if (glm::abs(glm::length(speed)) > 0.0f) {
 		pTransform->SetRotation(glm::degrees(glm::angle(speed, forward)));
 	}
-
+	else {
+		mTimeToLive -= deltaTime;
+		if (mTimeToLive <= 0.0) {
+			GetOwner()->Destroy();
+		}
+	}
 }
 
 void ArrowController::Draw() {
