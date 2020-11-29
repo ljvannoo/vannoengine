@@ -1,0 +1,62 @@
+{
+  "name": "slime",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\slime.png",
+          "cols": 8,
+          "rows": 3
+        }
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    },
+    {
+      "type": "physicsbody",
+      "data": {
+        "mass": 1.0,
+        "offsetY": -10.0,
+        "width": 20.0,
+        "height": 16.0
+      }
+    },
+    {
+      "type": "animator",
+      "defaultAnimation": "idle",
+      "data": {
+        "animations": [
+          {
+            "name": "idle",
+            "frameOffset": 0,
+            "frameCount": 4,
+            "frameDuration": 0.2,
+            "loop": true
+          },
+          {
+            "name": "walk",
+            "frameOffset": 4,
+            "frameCount": 4,
+            "frameDuration": 0.2,
+            "loop": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "health_tracker",
+      "data": {
+        "maxHealth": 100
+      }
+    },
+    {
+      "type": "slime_controller"
+    }
+  ]
+}

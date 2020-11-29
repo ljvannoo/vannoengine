@@ -18,7 +18,6 @@ Creation Date:	2020-Oct-19
 #include "engine/core/Log.h"
 
 #include "engine/components/Transform.h"
-#include "engine/components/Animator.h"
 #include "engine/components/Sprite.h"
 #include "engine/components/PhysicsBody.h"
 #include "engine/components/Animator.h"

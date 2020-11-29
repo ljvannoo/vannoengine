@@ -144,6 +144,23 @@
                  "width":48,
                  "x":1286,
                  "y":400
+                }, 
+                {
+                 "height":32,
+                 "id":6,
+                 "name":"slime",
+                 "properties":[
+                        {
+                         "name":"objectFile",
+                         "type":"file",
+                         "value":"objects\/slime.json"
+                        }],
+                 "rotation":0,
+                 "type":"enemy",
+                 "visible":true,
+                 "width":32,
+                 "x":1232,
+                 "y":460
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -238,7 +255,7 @@
          "y":0
         }],
  "nextlayerid":12,
- "nextobjectid":6,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.10.28",
