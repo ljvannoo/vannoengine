@@ -47,6 +47,7 @@ Creation Date:	2020-Oct-19
 
 #include "PowerUp.h"
 #include "DamageEvent.h"
+#include "InvulnerableEvent.h"
 
 #include <algorithm>
 #include <sstream>
@@ -146,6 +147,8 @@ void Controller::Update(double deltaTime) {
 			else {
 				mAttackDuration = 400l;
 			}
+
+			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), true));
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_FIRE) && mHasBow) {
 			mCurrentState = State::Shoot;
@@ -255,6 +258,7 @@ void Controller::Update(double deltaTime) {
 				mCanDoDamage = true;
 				mCurrentState = State::Stand;
 				mAttackNum = 1;
+				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), false));
 			}
 		}
 		break;

@@ -35,4 +35,8 @@ private:
 
 	float mMaxHealth;
 	float mCurrentHealth;
+
+	bool mVisible;
+
+	bool mInvulnerable;
 };

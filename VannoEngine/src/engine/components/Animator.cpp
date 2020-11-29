@@ -22,6 +22,7 @@ Creation Date:	2020-Nov-03
 #include "engine/systems/objects/GameObject.h"
 #include "engine/components/Transform.h"
 #include "engine/components/PhysicsBody.h"
+#include "engine/components/Sprite.h"
 
 #include "engine/core/Log.h"
 
@@ -144,9 +145,14 @@ namespace VannoEngine {
 
 				if (mpCurrentAnimation->aabbDefined && GetOwner()->HasComponent(PHYSICSBODY_COMPONENT)) {
 					PhysicsBody* pBody = dynamic_cast<PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+					Sprite* pSprite = dynamic_cast<Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
 
+					float xOffset = mpCurrentAnimation->aabbOffsetX;
+					if (pSprite->IsHorizontalFlipped()) {
+						xOffset *= -1.0f;
+					}
 					pBody->SetAabbDimensions(mpCurrentAnimation->aabbWidth, mpCurrentAnimation->aabbHeight);
-					pBody->SetAabbOffset(mpCurrentAnimation->aabbOffsetX, mpCurrentAnimation->aabbOffsetY);
+					pBody->SetAabbOffset(xOffset, mpCurrentAnimation->aabbOffsetY);
 				}
 			}
 			else {

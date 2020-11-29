@@ -30,7 +30,8 @@ namespace VannoEngine {
 		MapLayer() : 
 			mName(""),
 			mPosition(glm::vec2(0.0f, 0.0f)), 
-			mDimensions(glm::vec2(0.0f, 0.0f))
+			mDimensions(glm::vec2(0.0f, 0.0f)),
+			mUpperLeft(glm::vec2(0.0f, 0.0f))
 		{}
 
 		virtual ~MapLayer() {}
@@ -51,6 +52,7 @@ namespace VannoEngine {
 		float GetWidth() { return mDimensions.x; }
 		float GetHeight() { return mDimensions.y; }
 		glm::vec2 GetUpperLeft() { return mUpperLeft; }
+		std::string GetName() { return mName; }
 	protected:
 		glm::vec2 mPosition;
 		glm::vec2 mDimensions;

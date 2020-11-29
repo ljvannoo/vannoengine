@@ -1,6 +1,7 @@
 #include "SlimeController.h"
 
 #include "DamageEvent.h"
+#include "DeathEvent.h"
 
 #include "engine/components/Transform.h"
 #include "engine/components/Sprite.h"
@@ -13,6 +14,8 @@
 #include "engine/components/Transform.h"
 #include "engine/systems/physics/MapCollisionEvent.h"
 #include "engine/systems/physics/ObjectCollisionEvent.h"
+
+#include "engine/systems/objects/GameObjectFactory.h"
 
 #include "engine/util/Directions.h"
 
@@ -43,6 +46,8 @@ void SlimeController::Update(double deltaTime) {
 	VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
+	//LOG_DEBUG("{} ({}) on physics layer {}", GetOwner()->GetName(), GetOwner()->GetUuid(), pBody->GetPhysicsLayer());
+
 	glm::vec2 speed = pTransform->GetSpeed();
 	float targetSpeed = 0.0f;
 	switch (mCurrentState) {
@@ -54,6 +59,23 @@ void SlimeController::Update(double deltaTime) {
 		pAnimator->Play("walk");
 		targetSpeed = cWalkSpeed;
 		break;
+	case State::Dieing:
+		pAnimator->Play("dieing");
+		targetSpeed = 0.0f;
+		mCooldown -= deltaTime;
+		if (mCooldown <= 0.0) {
+			mCurrentState = State::Dead;
+			mCooldown = 3.0;
+		}
+		break;
+	case State::Dead:
+		pAnimator->Play("dead");
+		targetSpeed = 0.0f;
+		mCooldown -= deltaTime;
+		if (mCooldown <= 0.0) {
+			GetOwner()->Destroy();
+		}
+		break;
 	}
 
 	if (speed.y < 0.0f) {
@@ -63,7 +85,7 @@ void SlimeController::Update(double deltaTime) {
 	speed.x = MoveTowards(speed.x, targetSpeed * mDirection, cWalkAccel * (float)deltaTime);
 	pTransform->SetSpeed(speed.x, speed.y);
 
-	if (mCooldown > 0.0f) {
+	if (mCooldown > 0.0) {
 		mCooldown -= deltaTime;
 	}
 }
@@ -73,30 +95,43 @@ void SlimeController::Draw() {
 }
 
 void SlimeController::HandleEvent(std::string eventName, VannoEngine::Event* event) {
-	if (event->GetName() == EVT_OBJECT_COLLISION) {
-		VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
-		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
-		VannoEngine::PhysicsBody* pOtherBody = pCollisionEvent->GetOtherBody();
+	if(mCurrentState < State::Dieing) {
+		if (event->GetName() == EVT_OBJECT_COLLISION) {
+			VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
+			VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+			VannoEngine::PhysicsBody* pOtherBody = pCollisionEvent->GetOtherBody();
 
-		if (pCollisionEvent->GetBody() == pBody) {
-			if (pOtherBody->GetPhysicsLayer() == "player" && mCooldown <= 0.0) {
-				DamageEvent* pEvent = new DamageEvent(GetOwner(), pOtherBody->GetOwner(), 10.0f);
-				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
-				mCooldown = cDamageCooldown;
+			if (pCollisionEvent->GetBody() == pBody) {
+				if (pOtherBody->GetPhysicsLayer() == "player" && mCooldown <= 0.0) {
+					DamageEvent* pEvent = new DamageEvent(GetOwner(), pOtherBody->GetOwner(), 10.0f);
+					VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
+					mCooldown = cDamageCooldown;
+				}
+			}
+		}
+		if (event->GetName() == EVT_MAP_COLLISION) {
+			VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
+			VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+
+			if (pBody == pCollisionEvent->GetBody()) {
+				switch (pCollisionEvent->GetDirection()) {
+				case VannoEngine::Direction::RIGHT:
+				case VannoEngine::Direction::LEFT:
+					TurnAround();
+					break;
+				}
 			}
 		}
 	}
-	if (event->GetName() == EVT_MAP_COLLISION) {
-		VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
-		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+}
 
-		if (pBody == pCollisionEvent->GetBody()) {
-			switch (pCollisionEvent->GetDirection()) {
-			case VannoEngine::Direction::RIGHT:
-			case VannoEngine::Direction::LEFT:
-				TurnAround();
-				break;
-			}
+void SlimeController::HandleLocalEvent(std::string eventName, VannoEngine::Event* event) {
+	if (event->GetName() == EVT_DEATH) {
+		mCurrentState = State::Dieing;
+		mCooldown = 0.8;
+		VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+		if (pTransform->GetScale().x == 1.0f) {
+			SpawnMinis();
 		}
 	}
 }
@@ -121,4 +156,26 @@ void SlimeController::TurnAround() {
 	pos.x += 5.0f * mDirection;
 	pTransform->SetPositionX(pos.x);
 	pSprite->FlipHorizontal();
+}
+
+void SlimeController::SpawnMinis() {
+	VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
+	VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+	glm::vec2 pos = pTransform->GetPosition();
+
+	VannoEngine::GameObject* pMini = VannoEngine::GameObjectFactory::GetInstance()->CreateObject("objects\\mini_slime.json", GetOwner()->GetMapLayer());
+	VannoEngine::Transform* pMiniTransform = dynamic_cast<VannoEngine::Transform*>(pMini->GetComponent(TRANSFORM_COMPONENT));
+	VannoEngine::PhysicsBody* pMiniBody = dynamic_cast<VannoEngine::PhysicsBody*>(pMini->GetComponent(PHYSICSBODY_COMPONENT));
+	pMiniBody->SetPhysicsLayer(pBody->GetPhysicsLayer());
+	pMiniTransform->SetPosition(pos.x, pos.y);
+
+	pMini = VannoEngine::GameObjectFactory::GetInstance()->CreateObject("objects\\mini_slime.json", GetOwner()->GetMapLayer());
+	pMiniTransform = dynamic_cast<VannoEngine::Transform*>(pMini->GetComponent(TRANSFORM_COMPONENT));
+	pMiniBody = dynamic_cast<VannoEngine::PhysicsBody*>(pMini->GetComponent(PHYSICSBODY_COMPONENT));
+	pMiniBody->SetPhysicsLayer(pBody->GetPhysicsLayer());
+	pMiniTransform->SetPosition(pos.x, pos.y);
+
+	SlimeController* pMiniController = dynamic_cast<SlimeController*>(pMini->GetComponent(SLIME_CONTROLLER_COMPONENT));
+	pMiniController->TurnAround();
+	
 }

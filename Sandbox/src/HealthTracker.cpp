@@ -1,6 +1,8 @@
 #include "HealthTracker.h"
 
 #include "DamageEvent.h"
+#include "DeathEvent.h"
+#include "InvulnerableEvent.h"
 
 #include "engine/systems/graphics/GraphicsManager.h"
 
@@ -8,6 +10,8 @@
 
 #include "engine/components/PhysicsBody.h"
 #include "engine/components/Transform.h"
+
+#include "engine/systems/levels/ObjectMapLayer.h"
 
 #include "engine/core/Log.h"
 
@@ -19,7 +23,9 @@ HealthTracker::HealthTracker(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
 	mpGraphicsManager{ VannoEngine::GraphicsManager::GetInstance() },
 	mMaxHealth{ 0.0f },
-	mCurrentHealth{ 0.0f }
+	mCurrentHealth{ 0.0f },
+	mVisible{ true },
+	mInvulnerable{ false }
 {
 	
 }
@@ -38,12 +44,12 @@ void HealthTracker::LoadData(const rapidjson::GenericObject<true, rapidjson::Val
 
 void HealthTracker::Update(double deltaTime) {
 	if (mCurrentHealth < 0.0f) {
-		mCurrentHealth == 0.0f;
+		mCurrentHealth = 0.0f;
 	}
 }
 
 void HealthTracker::Draw() {
-	if(mCurrentHealth < mMaxHealth) {
+	if(mCurrentHealth < mMaxHealth && mVisible) {
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
 		glm::vec2 pos = pBody->GetAabbCenter();
@@ -63,9 +69,23 @@ void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* 
 	if (event->GetName() == EVT_DAMAGE) {
 		DamageEvent* pEvent = dynamic_cast<DamageEvent*>(event);
 
-		if(mCurrentHealth > 0.0f) {
+		if(mCurrentHealth > 0.0f && !mInvulnerable) {
 			mCurrentHealth -= pEvent->GetAmount();
+			LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), pEvent->GetSource()->GetName());
+
+			if (mCurrentHealth <= 0.0f) {
+				DeathEvent* pDeathEvent = new DeathEvent(GetOwner());
+				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), pDeathEvent);
+				mVisible = false;
+			}
 		}
-		LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), pEvent->GetSource()->GetName());
+		else if (mInvulnerable) {
+			LOG_DEBUG("{} is invulnerable", GetOwner()->GetName());
+		}
+	}
+	else if (event->GetName() == EVT_INVULNERABLE) {
+		InvulnerableEvent* pEvent = dynamic_cast<InvulnerableEvent*>(event);
+
+		mInvulnerable = pEvent->GetState();
 	}
 }

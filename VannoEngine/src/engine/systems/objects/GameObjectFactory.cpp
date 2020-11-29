@@ -168,6 +168,7 @@ namespace VannoEngine {
 		for (auto it : mGarbage) {
 			if (it.first > time) {
 				mGarbage.remove(it);
+				LOG_CORE_DEBUG("Deleting object '{}' ({})", it.second->GetName(), it.second->GetUuid());
 				delete it.second;
 				break; // To keep things simple, only delete one thing per frame
 			}
