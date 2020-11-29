@@ -1,8 +1,5 @@
 #pragma once
 
-
-#include "engine/systems/events/EventHandler.h"
-
 #include <string>
 
 namespace VannoEngine {
@@ -33,7 +30,6 @@ namespace VannoEngine {
 		virtual void Draw() {}
 
 		void Run();
-
 	protected:
 		bool IsRunning;
 
