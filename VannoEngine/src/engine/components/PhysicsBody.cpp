@@ -42,6 +42,7 @@ namespace VannoEngine {
 		mPhysicsLayer{ "default" }
 	{ 
 		EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
+		mSoftCollide.Set(static_cast<int>(Direction::DOWN));
 	}
 
 	PhysicsBody::~PhysicsBody() {
