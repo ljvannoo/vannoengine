@@ -68,7 +68,8 @@ namespace VannoEngine {
 			int col,
 			int row,
 			bool flipHorizontal,
-			int debugMode = 0);
+			int debugMode = 0,
+			bool uiMode = false);
 		void RenderSquare(glm::vec2 center, float width, float height, glm::vec4 color, bool fill);
 		void RenderCircle(glm::vec2 center, float radius, glm::vec4 color, bool fill);
 		void RenderLine(glm::vec2 start, float length, float angleDeg, glm::vec4 color);

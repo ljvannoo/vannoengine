@@ -33,6 +33,7 @@ Creation Date:	2020-Oct-05
 namespace VannoEngine {
 	Game::Game():
 		IsRunning(false),
+		IsPaused(false),
 		mIsInitialized(false),
 		mpInputManager(nullptr),
 		mpFramerateManager(nullptr),
@@ -96,15 +97,19 @@ namespace VannoEngine {
 
 			// Physics
 			mpTimeManager->StartTimer("physics");
-			mpLevelManager->UpdatePhysics(deltaTime);
-			UpdatePhysics(deltaTime);
+			if (!IsPaused) {
+				mpLevelManager->UpdatePhysics(deltaTime);
+				UpdatePhysics(deltaTime);
+			}
 			mpTimeManager->StopTimer("physics");
 
 			// Update
 			mpTimeManager->StartTimer("update");
-			mpEventManager->Update();
-			mpLevelManager->Update(deltaTime);
-			Update(deltaTime);
+			if (!IsPaused) {
+				mpEventManager->Update();
+				mpLevelManager->Update(deltaTime);
+				Update(deltaTime);
+			}
 			mpTimeManager->StopTimer("update");
 
 			// Draw

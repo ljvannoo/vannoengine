@@ -39,7 +39,8 @@ namespace VannoEngine {
 		mSheetRows(1),
 		mSheetCols(1),
 		mFlipHorizontal(false),
-		mZOrder(0.0f)
+		mZOrder(0.0f),
+		mUiMode{ false }
 	{}
 
 	Sprite::~Sprite() {
@@ -61,6 +62,10 @@ namespace VannoEngine {
 
 		if (pData->HasMember("zOrder") && (*pData)["zOrder"].IsFloat()) {
 			mZOrder = (*pData)["zOrder"].GetFloat();
+		}
+
+		if (pData->HasMember("uiMode") && (*pData)["uiMode"].IsBool()) {
+			mUiMode = (*pData)["uiMode"].GetBool();
 		}
 
 		if (pData->HasMember("texture")) {
@@ -130,7 +135,7 @@ namespace VannoEngine {
 			int cols = (int)(spriteSheetWidth / spriteWidth);
 			int col = spriteIndex % cols;
 			int row = spriteIndex / cols;
-			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, col, row, mFlipHorizontal);
+			pGraphicsManager->Render(mpSurface, &model, spriteSheetWidth, spriteSheetHeight, spriteWidth, spriteHeight, col, row, mFlipHorizontal, 0, mUiMode);
 		}
 	}
 

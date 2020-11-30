@@ -15,7 +15,7 @@
     "jump": "space",
     "walk": "lshift",
     "dash": "lctrl",
-    "quit": "esc",
+    "pause": "esc",
     "debug": "f1",
     "zoomIn": ".",
     "zoomOut": ","

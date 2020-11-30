@@ -32,6 +32,7 @@ namespace VannoEngine {
 		void Run();
 	protected:
 		bool IsRunning;
+		bool IsPaused;
 
 	private:
 		InputManager* mpInputManager;

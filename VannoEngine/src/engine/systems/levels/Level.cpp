@@ -69,6 +69,10 @@ namespace VannoEngine {
 
 	void Level::Draw() {
 		mpMap->Draw();
+
+		for (auto it : mUiObjects) {
+			it->Draw();
+		}
 	}
 
 	void Level::CheckCollisions(PhysicsBody* pBody) {
@@ -81,5 +85,13 @@ namespace VannoEngine {
 
 	float Level::GetHeight() {
 		return mpMap->GetHeight();
+	}
+
+	void Level::AddUiObject(GameObject* pObj) {
+		mUiObjects.push_back(pObj);
+	}
+
+	void Level::RemoveUiObject(GameObject* pObj) {
+		mUiObjects.remove(pObj);
 	}
 }

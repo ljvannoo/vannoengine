@@ -84,6 +84,7 @@ namespace VannoEngine {
 
 	void EventManager::DelayedBroadcast(double delaySec, Event* message) {
 		TimeManager* timeManager = TimeManager::GetInstance();
+		// TODO: Event execution time is set up front. This is incompatible with a pause feature.
 		EventWrapper* evt = new EventWrapper(timeManager->Now() + delaySec, message);
 		mEvents.push(evt);
 	}

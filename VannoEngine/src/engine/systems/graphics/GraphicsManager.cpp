@@ -391,7 +391,7 @@ namespace VannoEngine {
 		mpGeneralShader->Unuse();
 	}
 
-	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int col, int row, bool flipHorizontal, int debugMode) {
+	void GraphicsManager::Render(Surface* pSurface, glm::mat4* transformation, float spriteSheetWidth, float spriteSheetHeight, float spriteWidth, float spriteHeight, int col, int row, bool flipHorizontal, int debugMode, bool uiMode) {
 		mpGeneralShader->Use();
 
 		GLuint loc = 0;
@@ -400,8 +400,14 @@ namespace VannoEngine {
 			glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(*transformation));
 		}
 
-		LevelManager* pLevelManager = LevelManager::GetInstance();
-		glm::mat4 projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		glm::mat4 projection(1.0f);
+		if (!uiMode) {
+			LevelManager* pLevelManager = LevelManager::GetInstance();
+			projection = pLevelManager->GetCamera()->GetProjectionMatrix();
+		}
+		else {
+			projection = glm::ortho(0.0f, static_cast<float>(mWindowWidth), 0.0f, static_cast<float>(mWindowHeight));		
+		}
 		loc = mpGeneralShader->GetUniformLocation("projection");
 		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(projection));
 

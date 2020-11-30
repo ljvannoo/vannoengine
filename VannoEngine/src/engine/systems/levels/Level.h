@@ -49,7 +49,9 @@ namespace VannoEngine {
 		Camera* GetCamera() { return static_cast<Camera*>(mpCamera->GetComponent(CAMERA_COMPONENT)); }
 
 		void CheckCollisions(PhysicsBody* pBody);
-		//Collision Collides(PhysicsBody* pBody);
+		
+		void AddUiObject(GameObject* pObj);
+		void RemoveUiObject(GameObject* pObj);
 	private: // Methods
 
 	private: // Variables
@@ -57,6 +59,8 @@ namespace VannoEngine {
 
 		GameObject* mpCamera;
 		Map* mpMap;
+
+		std::list<GameObject*> mUiObjects;
 	};
 
 }

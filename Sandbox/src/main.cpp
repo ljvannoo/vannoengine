@@ -1,6 +1,10 @@
 #include <VannoEngine.h>
 #include "engine/systems/levels/LevelManager.h"
+#include "engine/systems/levels/Level.h"
+
 #include "engine/systems/objects/GameObjectFactory.h"
+#include "engine/systems/objects/GameObject.h"
+
 #include "engine/systems/InputManager.h"
 #include "engine/components/ComponentCreator.h"
 #include "engine/systems/ConfigurationManager.h"
@@ -48,6 +52,8 @@ public:
 
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());
 
+		pPauseScreen = pObjectFactory->CreateObject("objects\\pause_screen.json", nullptr);
+
 		// Load the level
 		VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 		pLevelManager->LoadLevel(pConfigurationManager->GetString("/initialLevel"));
@@ -57,8 +63,16 @@ public:
 	void HandleInput() override {
 		VannoEngine::InputManager* pInputManager = VannoEngine::InputManager::GetInstance();
 
-		if (pInputManager->IsKeyTriggered("quit")) {
-			IsRunning = false;
+		if (pInputManager->IsKeyTriggered("pause")) {
+			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+			IsPaused = !IsPaused;
+
+			if (IsPaused) {
+				pLevelManager->GetCurrentLevel()->AddUiObject(pPauseScreen);
+			}
+			else {
+				pLevelManager->GetCurrentLevel()->RemoveUiObject(pPauseScreen);
+			}
 		}
 
 		// TODO: Fix debug mode
@@ -83,6 +97,8 @@ public:
 
 		}
 	}
+private:
+	VannoEngine::GameObject* pPauseScreen;
 };
 
 VannoEngine::Game* VannoEngine::CreateGame() {

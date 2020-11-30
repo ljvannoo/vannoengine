@@ -59,5 +59,7 @@ namespace VannoEngine {
 		bool mFlipHorizontal;
 
 		float mZOrder;
+
+		bool mUiMode;
 	};
 }
