@@ -60,5 +60,7 @@ namespace VannoEngine {
 		std::vector<Tileset*>* mpTilesets;
 		bool mSolid;
 		bool mPlatform;
+
+		float mDamage;
 	};
 }

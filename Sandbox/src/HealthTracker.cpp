@@ -1,6 +1,6 @@
 #include "HealthTracker.h"
 
-#include "DamageEvent.h"
+#include "engine/systems/events/DamageEvent.h"
 #include "DeathEvent.h"
 #include "InvulnerableEvent.h"
 
@@ -25,13 +25,14 @@ HealthTracker::HealthTracker(VannoEngine::GameObject* owner) :
 	mMaxHealth{ 0.0f },
 	mCurrentHealth{ 0.0f },
 	mVisible{ true },
-	mInvulnerable{ false }
+	mInvulnerable{ false },
+	mDamageCooldown{ 0.0 }
 {
-	
+	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_DAMAGE, this);
 }
 
 HealthTracker::~HealthTracker() {
-	
+	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_DAMAGE, this);
 }
 
 
@@ -45,6 +46,9 @@ void HealthTracker::LoadData(const rapidjson::GenericObject<true, rapidjson::Val
 void HealthTracker::Update(double deltaTime) {
 	if (mCurrentHealth < 0.0f) {
 		mCurrentHealth = 0.0f;
+	}
+	if (mDamageCooldown > 0.0) {
+		mDamageCooldown -= deltaTime;
 	}
 }
 
@@ -67,11 +71,11 @@ void HealthTracker::Draw() {
 
 void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* event) {
 	if (event->GetName() == EVT_DAMAGE) {
-		DamageEvent* pEvent = dynamic_cast<DamageEvent*>(event);
+		VannoEngine::DamageEvent* pEvent = dynamic_cast<VannoEngine::DamageEvent*>(event);
 
 		if(mCurrentHealth > 0.0f && !mInvulnerable) {
 			mCurrentHealth -= pEvent->GetAmount();
-			LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), pEvent->GetSource()->GetName());
+			LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), (pEvent->GetSource()?pEvent->GetSource()->GetName():"the level"));
 
 			if (mCurrentHealth <= 0.0f) {
 				DeathEvent* pDeathEvent = new DeathEvent(GetOwner());
@@ -89,3 +93,23 @@ void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* 
 		mInvulnerable = pEvent->GetState();
 	}
 }
+
+void HealthTracker::HandleEvent(std::string eventName, VannoEngine::Event* event) {
+	if (event->GetName() == EVT_DAMAGE) {
+		VannoEngine::DamageEvent* pEvent = dynamic_cast<VannoEngine::DamageEvent*>(event);
+		if(pEvent->GetTarget() == GetOwner() && mCurrentHealth > 0.0f && !mInvulnerable) {
+			if (pEvent->GetAmount() > 0.0f) {
+				if (mDamageCooldown <= 0.0) {
+					mCurrentHealth -= pEvent->GetAmount();
+					mDamageCooldown = 1.0;
+					LOG_DEBUG("{} took {} damage from level", pEvent->GetTarget()->GetName(), pEvent->GetAmount());
+					if (mCurrentHealth <= 0.0f) {
+						VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new DeathEvent(GetOwner()));
+						mVisible = false;
+					}
+				}
+			}
+		}
+	}
+}
+

@@ -1,6 +1,6 @@
 #include "ArrowController.h"
 
-#include "DamageEvent.h"
+#include "engine/systems/events/DamageEvent.h"
 
 #include "engine/systems/events/EventManager.h"
 
@@ -71,8 +71,7 @@ void ArrowController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 		if (pCollisionEvent->GetBody() == pBody && pCollisionEvent->GetOtherBody()->GetPhysicsLayer() == "enemy") {
 			VannoEngine::GameObject* pSource = GetOwner();
 			VannoEngine::GameObject* pTarget = pCollisionEvent->GetOtherBody()->GetOwner();
-			DamageEvent* pEvent = new DamageEvent(pSource, pTarget, mDamage);
-			VannoEngine::EventManager::GetInstance()->Direct(pTarget, pEvent);
+			VannoEngine::EventManager::GetInstance()->Direct(pTarget, new VannoEngine::DamageEvent(pSource, pTarget, mDamage));
 			GetOwner()->Destroy();
 		}
 	}

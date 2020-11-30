@@ -1,6 +1,6 @@
 #include "SlimeController.h"
 
-#include "DamageEvent.h"
+#include "engine/systems/events/DamageEvent.h"
 #include "DeathEvent.h"
 
 #include "engine/components/Transform.h"
@@ -103,7 +103,7 @@ void SlimeController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 
 			if (pCollisionEvent->GetBody() == pBody) {
 				if (pOtherBody->GetPhysicsLayer() == "player" && mCooldown <= 0.0) {
-					DamageEvent* pEvent = new DamageEvent(GetOwner(), pOtherBody->GetOwner(), 10.0f);
+					VannoEngine::DamageEvent* pEvent = new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), 10.0f);
 					VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
 					mCooldown = cDamageCooldown;
 				}

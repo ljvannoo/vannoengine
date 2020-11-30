@@ -23,6 +23,7 @@ Creation Date:	2020-Oct-29
 
 #include "engine/systems/physics/Aabb.h"
 #include "engine/systems/physics/MapCollisionEvent.h"
+#include "engine/systems/events/DamageEvent.h"
 
 #include "engine/components/PhysicsBody.h"
 
@@ -50,7 +51,8 @@ namespace VannoEngine {
 		mpTilesets{nullptr},
 		mSolid{false},
 		mCols{0},
-		mPlatform{false}
+		mPlatform{false},
+		mDamage{ 0.0f }
 	{ }
 
 	TileMapLayer::~TileMapLayer() {
@@ -108,6 +110,10 @@ namespace VannoEngine {
 				if (property.HasMember("name") && property["name"].IsString() && std::string(property["name"].GetString()) == "platform" &&
 					property.HasMember("value") && property["value"].IsBool()) {
 					mPlatform = property["value"].GetBool();
+				}
+				if (property.HasMember("name") && property["name"].IsString() && std::string(property["name"].GetString()) == "damage" &&
+					property.HasMember("value") && property["value"].IsNumber()) {
+					mDamage = property["value"].GetFloat();
 				}
 			}
 		}
@@ -180,7 +186,7 @@ namespace VannoEngine {
 	}
 
 	void TileMapLayer::CheckCollisions(PhysicsBody* pBody) {
-		if (mSolid) {
+		if (mSolid || mDamage > 0.0f) {
 			EventManager* pEventManager = EventManager::GetInstance();
 			MapCollisionEvent* collisionEvent;
 			float tH = (float)mTileHeight;
@@ -197,6 +203,8 @@ namespace VannoEngine {
 
 			int testCol, testRow, index;
 			float test;
+
+			bool collision = false;
 			
 			CollisionType type = CollisionType::HARD;
 			if (mPlatform) {
@@ -209,14 +217,18 @@ namespace VannoEngine {
 				
 				index = topRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
-					collisionEvent = new MapCollisionEvent(pBody, mName, type, Direction::UP, GetUpperLeft().y - ((index / mCols) * tH) - tH);
-					pEventManager->Broadcast(collisionEvent);
+					if(mSolid) {
+						pEventManager->Broadcast(new MapCollisionEvent(pBody, mName, type, Direction::UP, GetUpperLeft().y - ((index / mCols) * tH) - tH));
+					}
+					collision = true;
 				}
 
 				index = bottomRow * mCols + testCol;
 				if (index < mData.size() && mData[index] != 0) {
-					collisionEvent = new MapCollisionEvent(pBody, mName, type, Direction::DOWN, GetUpperLeft().y - ((index / mCols) * tH));
-					pEventManager->Broadcast(collisionEvent);
+					if (mSolid) {
+						pEventManager->Broadcast(new MapCollisionEvent(pBody, mName, type, Direction::DOWN, GetUpperLeft().y - ((index / mCols) * tH)));
+					}
+					collision = true;
 				}
 
 				test += tW;
@@ -229,16 +241,24 @@ namespace VannoEngine {
 
 				index = testRow * mCols + leftCol;
 				if (index < mData.size() && mData[index] != 0) {
-					collisionEvent = new MapCollisionEvent(pBody, mName, type, Direction::LEFT, mPosition.x + ((index % mCols) * tW) + tW);
-					pEventManager->Broadcast(collisionEvent);
+					if (mSolid) {
+						pEventManager->Broadcast(new MapCollisionEvent(pBody, mName, type, Direction::LEFT, mPosition.x + ((index % mCols) * tW) + tW));
+					}
+					collision = true;
 				}
 
 				index = testRow * mCols + rightCol;
 				if (index < mData.size() && mData[index] != 0) {
-					collisionEvent = new MapCollisionEvent(pBody, mName, type, Direction::RIGHT, mPosition.x + ((index % mCols) * tW));
-					pEventManager->Broadcast(collisionEvent);
+					if (mSolid) {
+						pEventManager->Broadcast(new MapCollisionEvent(pBody, mName, type, Direction::RIGHT, mPosition.x + ((index % mCols) * tW)));
+					}
+					collision = true;
 				}
 				test += tH;
+			}
+
+			if (collision && mDamage > 0.0f) {
+				pEventManager->Broadcast(new DamageEvent(nullptr, pBody->GetOwner(), mDamage));
 			}
 		}
 	}

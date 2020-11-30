@@ -28,6 +28,7 @@ Creation Date:	2020-Oct-19
 
 #include "engine/systems/events/EventManager.h"
 #include "engine/systems/events/Event.h"
+#include "engine/systems/events/DamageEvent.h"
 #include "engine/systems/physics/ObjectCollisionEvent.h"
 
 #include "engine/systems/FramerateController.h"
@@ -46,7 +47,6 @@ Creation Date:	2020-Oct-19
 #include "engine/util/Directions.h"
 
 #include "PowerUp.h"
-#include "DamageEvent.h"
 #include "InvulnerableEvent.h"
 
 #include <algorithm>
@@ -323,7 +323,7 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 				if (mHasSword) {
 					damage = mSwordDamage;
 				}
-				DamageEvent* pEvent = new DamageEvent(GetOwner(), pOtherBody->GetOwner(), damage);
+				VannoEngine::DamageEvent* pEvent = new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), damage);
 				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
 				mCanDoDamage = false;
 			}

@@ -1,6 +1,6 @@
 #include "LightBanditController.h"
 
-#include "DamageEvent.h"
+#include "engine/systems/events/DamageEvent.h"
 #include "DeathEvent.h"
 #include "TurnAroundEvent.h"
 #include "DetectedEnemyEvent.h"
@@ -146,7 +146,7 @@ void LightBanditController::HandleEvent(std::string eventName, VannoEngine::Even
 			VannoEngine::GameObject* pObject = pCollisionEvent->GetOtherBody()->GetOwner();
 
 			if (pOtherBody->GetPhysicsLayer() == "player" && mCanDoDamage) {
-				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), new DamageEvent(GetOwner(), pOtherBody->GetOwner(), mDamage));
+				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), mDamage));
 				mCanDoDamage = false;
 			}
 		}
