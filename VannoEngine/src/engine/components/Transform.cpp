@@ -115,4 +115,53 @@ namespace VannoEngine {
 		}
 		return glm::scale(result, glm::vec3(GetScale().x, GetScale().y, 1.0f));
 	}
+
+	glm::vec2 Transform::GetPosition() {
+
+		GameObject* pParent = GetOwner()->GetParentObject();
+		if (pParent && pParent->HasComponent(TRANSFORM_COMPONENT)) {
+			Transform* pParentTransform = dynamic_cast<Transform*>(pParent->GetComponent(TRANSFORM_COMPONENT));
+			glm::vec2 parentPos = pParentTransform->GetPosition();
+			return mPosition + parentPos;
+		}
+
+		return mPosition;
+	}
+
+	void Transform::SetPosition(float x, float y) { 
+		GameObject* pParent = GetOwner()->GetParentObject();
+		if (pParent && pParent->HasComponent(TRANSFORM_COMPONENT)) {
+			Transform* pParentTransform = dynamic_cast<Transform*>(pParent->GetComponent(TRANSFORM_COMPONENT));
+			glm::vec2 parentPos = pParentTransform->GetPosition();
+			mPosition.x = x - parentPos.x;
+			mPosition.y = y - parentPos.y;
+		}
+		else {
+			mPosition = glm::vec2(x, y);
+		}
+	}
+
+	void Transform::SetPositionX(float x) { 
+		GameObject* pParent = GetOwner()->GetParentObject();
+		if (pParent && pParent->HasComponent(TRANSFORM_COMPONENT)) {
+			Transform* pParentTransform = dynamic_cast<Transform*>(pParent->GetComponent(TRANSFORM_COMPONENT));
+			glm::vec2 parentPos = pParentTransform->GetPosition();
+			mPosition.x = x - parentPos.x;
+		}
+		else {
+			mPosition.x = x;
+		}
+	}
+
+	void Transform::SetPositionY(float y) {
+		GameObject* pParent = GetOwner()->GetParentObject();
+		if (pParent && pParent->HasComponent(TRANSFORM_COMPONENT)) {
+			Transform* pParentTransform = dynamic_cast<Transform*>(pParent->GetComponent(TRANSFORM_COMPONENT));
+			glm::vec2 parentPos = pParentTransform->GetPosition();
+			mPosition.y = y - parentPos.y;
+		}
+		else {
+			mPosition.y = y;
+		}
+	}
 }

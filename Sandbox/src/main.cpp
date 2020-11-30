@@ -13,6 +13,8 @@
 #include "DebugComponent.h"
 #include "HealthTracker.h"
 #include "SlimeController.h"
+#include "LightBanditController.h"
+#include "Sensor.h"
 
 class Sandbox : public VannoEngine::Game {
 public:
@@ -40,6 +42,8 @@ public:
 		pObjectFactory->RegisterComponent(ARROW_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<ArrowController>());
 		pObjectFactory->RegisterComponent(HEALTH_TRACKER_COMPONENT, new VannoEngine::ComponentCreator<HealthTracker>());
 		pObjectFactory->RegisterComponent(SLIME_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<SlimeController>());
+		pObjectFactory->RegisterComponent(LIGHT_BANDIT_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<LightBanditController>());
+		pObjectFactory->RegisterComponent(SENSOR_COMPONENT, new VannoEngine::ComponentCreator<Sensor>());
 		
 
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());

@@ -95,6 +95,7 @@ void Controller::Update(double deltaTime) {
 
 	if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
 		pSprite->SetFlipHorizontal(false);
+		
 		moveInput = 1.0f;
 	}
 	if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {

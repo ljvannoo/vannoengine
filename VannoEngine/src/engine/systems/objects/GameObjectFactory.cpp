@@ -91,22 +91,27 @@ namespace VannoEngine {
 				const rapidjson::Value& componentData = components[i];
 				LOG_CORE_INFO("Loading component {0} for object {1}", componentData["type"].GetString(), pObject->GetName());
 				ComponentCreatorInterface* pComponentCreator = mCreators[componentData["type"].GetString()];
-				GameComponent* pComponent = pObject->GetComponent(componentData["type"].GetString());
-				if (pComponent) {
-					if(componentData.HasMember("data")) {
-						pComponent->LoadData(&componentData["data"].GetObject());
+				if (pComponentCreator) {
+
+					GameComponent* pComponent = pObject->GetComponent(componentData["type"].GetString());
+					if (pComponent) {
+						if (componentData.HasMember("data")) {
+							pComponent->LoadData(&componentData["data"].GetObject());
+						}
+					}
+					else {
+						if (componentData.HasMember("data")) {
+							pComponent = pComponentCreator->Create(pObject, &componentData["data"].GetObject());
+						}
+						else {
+							pComponent = pComponentCreator->Create(pObject, nullptr);
+						}
+						pObject->AttachComponent(pComponent);
 					}
 				}
 				else {
-					if (componentData.HasMember("data")) {
-						pComponent = pComponentCreator->Create(pObject, &componentData["data"].GetObject());
-					}
-					else {
-						pComponent = pComponentCreator->Create(pObject, nullptr);
-					}
-					pObject->AttachComponent(pComponent);
+					LOG_CORE_ERROR("Unable to find creator for {} component", componentData["type"].GetString());
 				}
-
 			}
 		}
 

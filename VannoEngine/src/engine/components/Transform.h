@@ -42,13 +42,13 @@ namespace VannoEngine {
 			return TRANSFORM_COMPONENT;
 		}
 
-		glm::vec2 GetPosition() const { return mPosition; }
+		glm::vec2 GetPosition();
 		glm::vec2 GetScale() const { return mScale; }
 		float GetRotation() const { return mRotation; }
 
-		void SetPosition(float x, float y) { mPosition = glm::vec2(x, y); }
-		void SetPositionX(float x) { mPosition.x = x; }
-		void SetPositionY(float y) { mPosition.y = y; }
+		void SetPosition(float x, float y);
+		void SetPositionX(float x);
+		void SetPositionY(float y);
 		void SetScale(float x, float y) { mScale = glm::vec2(x, y); }
 
 		void SetSpeed(float x, float y) { mSpeed = glm::vec2(x, y); }

@@ -104,7 +104,6 @@ namespace VannoEngine {
 
 			if(pTransform) {
 				glm::vec2 center = pTransform->GetPosition() + mAabbOffset;
-		
 				pGraphicsManager->RenderSquare(center, mAabb.halfWidth * 2.0f, mAabb.halfHeight * 2.0f, RED, false);
 				pGraphicsManager->RenderCircle(center, 3.0f, RED, true);
 		//

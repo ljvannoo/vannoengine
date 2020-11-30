@@ -1,0 +1,21 @@
+{
+  "name": "sensor",
+  "components": [
+    {
+      "type": "transform"
+    },
+    {
+      "type": "physicsbody",
+      "data": {
+        "mass": 0.0,
+        "offsetY": -10.0,
+        "offsetX": 50.0,
+        "width": 200.0,
+        "height": 35.0
+      }
+    },
+    {
+      "type": "sensor"
+    }
+  ]
+}
