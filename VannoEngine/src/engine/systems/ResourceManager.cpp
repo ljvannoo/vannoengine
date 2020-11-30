@@ -21,9 +21,15 @@ Creation Date:	2020-Oct-10
 #include "engine/core/Log.h"
 
 #include <fstream>
+#include <time.h>
+#include <stdlib.h>
 
 namespace VannoEngine {
 	ResourceManager* ResourceManager::mpInstance = nullptr;
+	ResourceManager::ResourceManager() 
+	{
+		srand(static_cast<unsigned int>(time(0)));
+	}
 
 	ResourceManager::~ResourceManager() {
 		// Delete cached textures
@@ -180,5 +186,12 @@ namespace VannoEngine {
 		}
 
 		return pShaderProgram;
+	}
+
+	float ResourceManager::GenerateRandomNumber(float min, float max, float precision) {
+		float actualMin = (float)min * precision;
+		float actualMax = (float)max * precision;
+		int result = (rand() % static_cast<int>((actualMax - actualMin)) + actualMin);
+		return (float)result / precision;
 	}
 }

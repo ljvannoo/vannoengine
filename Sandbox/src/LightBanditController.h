@@ -14,6 +14,8 @@ private:
 	enum class State : int {
 		Idle,
 		Alert,
+		Run,
+		Attack,
 		Dieing,
 		Dead
 	};
@@ -37,16 +39,24 @@ public:
 private:
 	float MoveTowards(float current, float target, float maxDelta);
 private:
-	const float cWalkSpeed = 1.0f;
+	const float cWalkSpeed = 2.0f;
 	const float cWalkAccel = 60.0f;
 	const double cDamageCooldown = 1.0;
-
-	float mDirection = 1.0f;
+	const double cPatrolCooldown = 3.0;
+	const double cAttackDuration = 1.6;
+	float mDirection;
 
 	double mCooldown;
 
+	double mAttackCooldown;
+
 	const double cAlertCooldown = 5.0;
 	double mAlertCooldown;
+
+	bool mCanDoDamage;
+
+	float mDamage;
+
 
 	State mCurrentState;
 };

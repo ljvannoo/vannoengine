@@ -36,8 +36,10 @@ namespace VannoEngine {
 		std::string* LoadTextData(const std::string& relativePath);
 		rapidjson::Document* LoadJsonData(const std::string& relativePath);
 		ShaderProgram* LoadShaderProgram(const std::string& relativePath);
+
+		float GenerateRandomNumber(float min, float max, float precision);
 	private:
-		ResourceManager() {}
+		ResourceManager();
 		std::string* LoadFile(const std::string& relativePath);
 	private:
 		static ResourceManager* mpInstance;

@@ -44,7 +44,13 @@
             "frameOffset": 6,
             "frameCount": 6,
             "frameDuration": 0.2,
-            "loop": true
+            "loop": true,
+            "aabb": {
+              "offsetX": 0.0,
+              "offsetY": -3.0,
+              "width": 20.0,
+              "height": 35.0
+            }
           },
           {
             "name": "run",
@@ -57,8 +63,14 @@
             "name": "attack",
             "frameOffset": 20,
             "frameCount": 8,
-            "frameDuration": 0.2,
-            "loop": false
+            "frameDuration": 0.1,
+            "loop": false,
+            "aabb": {
+              "offsetX": 10.0,
+              "offsetY": -3.0,
+              "width": 35.0,
+              "height": 35.0
+            }
           },
           {
             "name": "hurt",
@@ -105,7 +117,10 @@
       }
     },
     {
-      "type": "light_bandit_controller"
+      "type": "light_bandit_controller",
+      "data": {
+        "damage": 30.0
+      }
     }
   ],
   "childObjectFiles": [

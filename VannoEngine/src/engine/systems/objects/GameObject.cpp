@@ -105,8 +105,10 @@ namespace VannoEngine {
 	}
 
 	void GameObject::Destroy() {
-		DestroyObjectEvent* pEvent = new DestroyObjectEvent(this);
-		EventManager::GetInstance()->Broadcast(pEvent);
+		EventManager::GetInstance()->Broadcast(new DestroyObjectEvent(this));
+		for (auto it : mChildObjects) {
+			it->Destroy();
+		}
 	}
 
 	void GameObject::HandleLocalEvent(std::string eventName, Event* event) {

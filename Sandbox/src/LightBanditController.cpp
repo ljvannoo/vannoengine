@@ -11,6 +11,7 @@
 #include "engine/components/Animator.h"
 
 #include "engine/systems/events/EventManager.h"
+#include "engine/systems/ResourceManager.h"
 
 #include "engine/components/PhysicsBody.h"
 #include "engine/components/Transform.h"
@@ -28,8 +29,12 @@
 LightBanditController::LightBanditController(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
 	mCurrentState{ State::Idle },
-	mCooldown{ 0.0f },
-	mAlertCooldown{ cAlertCooldown }
+	mAlertCooldown{ cAlertCooldown },
+	mCooldown{ cPatrolCooldown },
+	mDirection{ 1.0f },
+	mAttackCooldown{ 0.0 },
+	mCanDoDamage{ false },
+	mDamage{ 0.0f }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
@@ -42,6 +47,9 @@ LightBanditController::~LightBanditController() {
 
 
 void LightBanditController::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
+	if (pData->HasMember("damage") && (*pData)["damage"].IsNumber()) {
+		mDamage = (*pData)["damage"].GetFloat();
+	}
 }
 
 void LightBanditController::Update(double deltaTime) {
@@ -55,13 +63,43 @@ void LightBanditController::Update(double deltaTime) {
 	case State::Idle:
 		pAnimator->Play("idle");
 		speed.x = 0.0f;
+		mCooldown -= deltaTime;
+		if (mCooldown <= 0.0) {
+			mCurrentState = State::Run;
+			mCooldown = cPatrolCooldown + VannoEngine::ResourceManager::GetInstance()->GenerateRandomNumber(-2.0f, 2.0f, 100);
+		}
 		break;
 	case State::Alert:
 		pAnimator->Play("combat_idle");
 		speed.x = 0.0f;
 		mAlertCooldown -= deltaTime;
+		if (mAttackCooldown > 0.0f) {
+			mAttackCooldown -= deltaTime;
+		}
 		if (mAlertCooldown <= 0.0) {
 			mCurrentState = State::Idle;
+		}
+		break;
+	case State::Run:
+		pAnimator->Play("run");
+		targetSpeed = cWalkSpeed;
+		mCooldown -= deltaTime;
+		if (mCooldown <= 0.0) {
+			mCurrentState = State::Idle;
+			mCooldown = cPatrolCooldown + VannoEngine::ResourceManager::GetInstance()->GenerateRandomNumber(-2.0f, 2.0f, 100);
+			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
+		}
+		break;
+	case State::Attack:
+		pAnimator->Play("attack");
+		targetSpeed = 0.0f;
+		mCooldown -= deltaTime;
+		if (mCooldown <= 0.0) {
+			mCurrentState = State::Alert;
+			mAttackCooldown = 1.0f;
+		}
+		else if (mCooldown > (cAttackDuration / 2.0 - deltaTime) && mCooldown < (cAttackDuration / 2.0 + deltaTime)) {
+			mCanDoDamage = true;
 		}
 		break;
 	case State::Dieing:
@@ -84,7 +122,7 @@ void LightBanditController::Update(double deltaTime) {
 	}
 
 	if (speed.y < 0.0f) {
-		TurnAround();
+		VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
 	}
 
 	speed.x = MoveTowards(speed.x, targetSpeed * mDirection, cWalkAccel * (float)deltaTime);
@@ -100,33 +138,18 @@ void LightBanditController::Draw() {
 }
 
 void LightBanditController::HandleEvent(std::string eventName, VannoEngine::Event* event) {
-	if (mCurrentState < State::Dieing) {
-		/*if (event->GetName() == EVT_OBJECT_COLLISION) {
-			VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
-			VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
-			VannoEngine::PhysicsBody* pOtherBody = pCollisionEvent->GetOtherBody();
+	if (event->GetName() == EVT_OBJECT_COLLISION) {
+		VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
+		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
+		VannoEngine::PhysicsBody* pOtherBody = pCollisionEvent->GetOtherBody();
+		if (pCollisionEvent->GetBody() == pBody) {
+			VannoEngine::GameObject* pObject = pCollisionEvent->GetOtherBody()->GetOwner();
 
-			if (pCollisionEvent->GetBody() == pBody) {
-				if (pOtherBody->GetPhysicsLayer() == "player" && mCooldown <= 0.0) {
-					DamageEvent* pEvent = new DamageEvent(GetOwner(), pOtherBody->GetOwner(), 10.0f);
-					VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
-					mCooldown = cDamageCooldown;
-				}
+			if (pOtherBody->GetPhysicsLayer() == "player" && mCanDoDamage) {
+				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), new DamageEvent(GetOwner(), pOtherBody->GetOwner(), mDamage));
+				mCanDoDamage = false;
 			}
-		}*/
-		/*if (event->GetName() == EVT_MAP_COLLISION) {
-			VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
-			VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
-
-			if (pBody == pCollisionEvent->GetBody()) {
-				switch (pCollisionEvent->GetDirection()) {
-				case VannoEngine::Direction::RIGHT:
-				case VannoEngine::Direction::LEFT:
-					TurnAround();
-					break;
-				}
-			}
-		}*/
+		}
 	}
 }
 
@@ -135,19 +158,29 @@ void LightBanditController::HandleLocalEvent(std::string eventName, VannoEngine:
 		mCurrentState = State::Dieing;
 		mCooldown = 0.8;
 	}
-	else if (event->GetName() == EVT_DETECTED_ENEMY) {
+	else if (event->GetName() == EVT_DETECTED_ENEMY && mCurrentState < State::Dieing) {
 		DetectedEnemyEvent* pEvent = dynamic_cast<DetectedEnemyEvent*>(event);
 
 		VannoEngine::Sprite* pSprite = dynamic_cast<VannoEngine::Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
 		VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 		VannoEngine::Transform* pEnemyTransform = dynamic_cast<VannoEngine::Transform*>(pEvent->GetEnemy()->GetComponent(TRANSFORM_COMPONENT));
-		if (pEnemyTransform->GetPosition().x < pTransform->GetPosition().x && !pSprite->IsHorizontalFlipped()) {
-			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
-		} else if (pEnemyTransform->GetPosition().x > pTransform->GetPosition().x && pSprite->IsHorizontalFlipped()) {
-			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
+		if(mCurrentState != State::Attack) {
+			if (pEnemyTransform->GetPosition().x < pTransform->GetPosition().x && !pSprite->IsHorizontalFlipped()) {
+				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
+			} else if (pEnemyTransform->GetPosition().x > pTransform->GetPosition().x && pSprite->IsHorizontalFlipped()) {
+				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
+			}
+			if (glm::distance(pEnemyTransform->GetPosition(), pTransform->GetPosition()) < 45.0f && mAttackCooldown <= 0.0) {
+				mCurrentState = State::Attack;
+				mCooldown = cAttackDuration;
+			}
+			else {
+				mCurrentState = State::Alert;
+				mAlertCooldown = cAlertCooldown;
+				mCooldown = cPatrolCooldown;
+			}
 		}
-		mCurrentState = State::Alert;
-		mAlertCooldown = cAlertCooldown;
+		
 	}
 	else if (event->GetName() == EVT_TURN_AROUND) {
 		TurnAround();
