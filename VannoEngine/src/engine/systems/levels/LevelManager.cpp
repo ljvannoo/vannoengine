@@ -19,6 +19,7 @@ Creation Date:	2020-Oct-21
 
 #include "engine/systems/levels/Level.h"
 #include "engine/components/Camera.h"
+#include "engine/Game.h"
 
 #include <rapidjson/document.h>
 
@@ -45,12 +46,16 @@ namespace VannoEngine {
 
 	void LevelManager::UpdatePhysics(double deltaTime) {
 		Level* pLevel = GetCurrentLevel();
-		pLevel->UpdatePhysics(deltaTime);
+		if(pLevel) {
+			pLevel->UpdatePhysics(deltaTime);
+		}
 	}
 
 	void LevelManager::Update(double deltaTime) {
 		Level* pLevel = GetCurrentLevel();
-		pLevel->Update(deltaTime);
+		if (pLevel) {
+			pLevel->Update(deltaTime);
+		}
 	}
 
 	void LevelManager::LoadLevel(const std::string& relativePath) {
@@ -63,20 +68,30 @@ namespace VannoEngine {
 	}
 
 	void LevelManager::UnloadLevel() {
-		Level* pLevel = mLevels.top();
-		delete pLevel;
-		mLevels.pop();
+		if (!mLevels.empty()) {
+			Level* pLevel = mLevels.top();
+			delete pLevel;
+			mLevels.pop();
+		}
 	}
 
 	Level* LevelManager::GetCurrentLevel() {
+		if(mLevels.empty()) {
+			return nullptr;
+		}
 		return mLevels.top();
 	}
 
 	Camera* LevelManager::GetCamera() {
+		if (mLevels.empty()) {
+			return nullptr;
+		}
 		return GetCurrentLevel()->GetCamera();
 	}
 
 	void LevelManager::Draw() {
-		GetCurrentLevel()->Draw();
+		if(!mLevels.empty()) {
+			GetCurrentLevel()->Draw();
+		}
 	}
 }

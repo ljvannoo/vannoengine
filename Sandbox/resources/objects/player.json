@@ -165,6 +165,20 @@
             "frameCount": 6,
             "frameDuration": 0.1,
             "loop": false
+          },
+          {
+            "name": "dieing",
+            "frameOffset": 145,
+            "frameCount": 7,
+            "frameDuration": 0.2,
+            "loop": false
+          },
+          {
+            "name": "dead",
+            "frameOffset": 151,
+            "frameCount": 1,
+            "frameDuration": 0.2,
+            "loop": false
           }
         ]
       }

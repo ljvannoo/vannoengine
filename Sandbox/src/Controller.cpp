@@ -48,6 +48,8 @@ Creation Date:	2020-Oct-19
 
 #include "PowerUp.h"
 #include "InvulnerableEvent.h"
+#include "DeathEvent.h"
+#include "EndLevelEvent.h"
 
 #include <algorithm>
 #include <sstream>
@@ -65,7 +67,8 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mAttackStartTime{ 0 },
 	mCanDoDamage{ false },
 	mFistDamage{ 0.0f },
-	mSwordDamage{ 0.0f }
+	mSwordDamage{ 0.0f },
+	mCooldown{ 0.0 }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 }
@@ -93,14 +96,16 @@ void Controller::Update(double deltaTime) {
 
 	float moveInput = 0.0f;
 
-	if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
-		pSprite->SetFlipHorizontal(false);
+	if(mCurrentState < State::Dieing) {
+		if (mpInputManager->IsKeyPressed(ACTION_RIGHT)) {
+			pSprite->SetFlipHorizontal(false);
 		
-		moveInput = 1.0f;
-	}
-	if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
-		pSprite->SetFlipHorizontal(true);
-		moveInput = -1.0f;
+			moveInput = 1.0f;
+		}
+		if (mpInputManager->IsKeyPressed(ACTION_LEFT)) {
+			pSprite->SetFlipHorizontal(true);
+			moveInput = -1.0f;
+		}
 	}
 	std::stringstream ss;
 	float targetSpeed = 0.0f;
@@ -282,6 +287,17 @@ void Controller::Update(double deltaTime) {
 			mCurrentState = State::Stand;
 		}
 		break;
+	case State::Dieing:
+		pAnimator->Play("dieing");
+		mCooldown -= deltaTime;
+		if (mCooldown < 0.0) {
+			mCurrentState = State::Dead;
+			VannoEngine::EventManager::GetInstance()->DelayedBroadcast(1.0, new EndLevelEvent());
+		}
+		break;
+	case State::Dead:
+		pAnimator->Play("dead");
+		break;
 	}
 
 	//LOG_DEBUG("({}) Targetspeed: {}", mCurrentState, targetSpeed);
@@ -301,6 +317,17 @@ void Controller::Jump() {
 
 void Controller::Draw() {
 
+}
+
+void Controller::HandleLocalEvent(std::string eventName, VannoEngine::Event* event) {
+	if (event->GetName() == EVT_DEATH) {
+		DeathEvent* pEvent = dynamic_cast<DeathEvent*>(event);
+		if (pEvent->GetObj() == GetOwner()) {
+			LOG_DEBUG("Player died!");
+			mCooldown = 1.4;
+			mCurrentState = State::Dieing;
+		}
+	}
 }
 
 void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {

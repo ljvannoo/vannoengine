@@ -78,8 +78,7 @@ void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* 
 			LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), (pEvent->GetSource()?pEvent->GetSource()->GetName():"the level"));
 
 			if (mCurrentHealth <= 0.0f) {
-				DeathEvent* pDeathEvent = new DeathEvent(GetOwner());
-				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), pDeathEvent);
+				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new DeathEvent(GetOwner()));
 				mVisible = false;
 			}
 		}

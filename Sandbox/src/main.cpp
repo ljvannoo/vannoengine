@@ -11,6 +11,9 @@
 
 #include "engine/components/Camera.h"
 
+#include "engine/systems/events/EventManager.h"
+#include "engine/systems/events/EventHandler.h"
+
 #include "Controller.h"
 #include "PowerUp.h"
 #include "ArrowController.h"
@@ -19,10 +22,13 @@
 #include "SlimeController.h"
 #include "LightBanditController.h"
 #include "Sensor.h"
+#include "EndLevelEvent.h"
 
-class Sandbox : public VannoEngine::Game {
+class Sandbox : public VannoEngine::Game, VannoEngine::EventHandler {
 public:
-	Sandbox() {
+	Sandbox() :
+		pPauseScreen{ nullptr }
+	{
 
 	}
 
@@ -58,6 +64,8 @@ public:
 		VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 		pLevelManager->LoadLevel(pConfigurationManager->GetString("/initialLevel"));
 		pLevelManager->GetCamera()->SetScreenDimensions(windowWidth, windowHeight);
+
+		VannoEngine::EventManager::GetInstance()->Subscribe(EVT_END_LEVEL, this);
 	}
 
 	void HandleInput() override {
@@ -95,6 +103,17 @@ public:
 			}
 			pLevelManager->GetCamera()->SetScale(scale);
 
+		}
+	}
+
+	void HandleEvent(std::string eventName, VannoEngine::Event* message) {
+		if (eventName == EVT_END_LEVEL) {
+			VannoEngine::ConfigurationManager* pConfigurationManager = VannoEngine::ConfigurationManager::GetInstance();
+			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+			pLevelManager->UnloadLevel();
+			if (!pLevelManager->GetCurrentLevel()) {
+				IsRunning = false;
+			}
 		}
 	}
 private:

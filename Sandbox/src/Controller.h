@@ -33,7 +33,9 @@ enum class State : int {
 	Jump,
 	Fall,
 	Attack,
-	Shoot
+	Shoot,
+	Dieing,
+	Dead
 };
 
 namespace VannoEngine {
@@ -61,7 +63,8 @@ public:
 		return CONTROLLER_COMPONENT;
 	}
 
-	virtual void HandleEvent(std::string eventName, VannoEngine::Event* event);
+	void HandleLocalEvent(std::string eventName, VannoEngine::Event* event);
+	void HandleEvent(std::string eventName, VannoEngine::Event* event);
 
 private:
 	//void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);
@@ -93,4 +96,6 @@ private:
 
 	float mFistDamage;
 	float mSwordDamage;
+
+	double mCooldown;
 };
