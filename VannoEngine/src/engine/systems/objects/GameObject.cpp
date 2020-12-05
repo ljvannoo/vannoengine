@@ -25,7 +25,7 @@ Creation Date:	2020-Oct-24
 #include "engine/util/uuid.h"
 
 namespace VannoEngine {
-	GameObject::GameObject(ObjectMapLayer* pMapLayer) : mpMapLayer{ pMapLayer }, mName{ "" }, mpParentObject{ nullptr }
+	GameObject::GameObject(ObjectMapLayer* pMapLayer) : mpMapLayer{ pMapLayer }, mName{ "" }, mpParentObject{ nullptr }, mIsVisible{ true }
 	{
 		mUuid = UUID::Generate();
 	}
@@ -91,17 +91,18 @@ namespace VannoEngine {
 	}
 
 	void GameObject::Draw() {
-		for (auto pair : mComponents) {
-			pair.second->Draw();
-		}
-		/*if (HasComponent("sprite")) {
-			GetComponent("sprite")->Draw();
-		}*/
+		if(mIsVisible) {
+			for (auto pair : mComponents) {
+				pair.second->Draw();
+			}
+			/*if (HasComponent("sprite")) {
+				GetComponent("sprite")->Draw();
+			}*/
 		
-		for (GameObject* pObject : mChildObjects) {
-			pObject->Draw();
+			for (GameObject* pObject : mChildObjects) {
+				pObject->Draw();
+			}
 		}
-		
 	}
 
 	void GameObject::Destroy() {

@@ -166,4 +166,13 @@ namespace VannoEngine {
 		}
 		return false;
 	}
+
+	bool InputManager::IsAnyKeyTriggered() {
+		for (int i = 0; i < 512; ++i) {
+			if (mCurrentState[i] && !mPreviousState[i]) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

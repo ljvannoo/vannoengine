@@ -16,6 +16,7 @@ public:
 	enum class State : int {
 		PlayGame,
 		ViewControls,
+		ShowingControls,
 		QuitGame
 	};
 

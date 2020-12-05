@@ -52,6 +52,9 @@ namespace VannoEngine {
 		void AddChildObject(GameObject* pChildObject) { mChildObjects.push_back(pChildObject); }
 		GameObject* GetChildObject(int index) { return mChildObjects[index]; }
 		ObjectMapLayer* GetMapLayer() { return mpMapLayer; }
+
+		bool IsVisible() { return mIsVisible; }
+		void SetVisible(bool visible) { mIsVisible = visible; }
 		void Destroy();
 
 		void HandleLocalEvent(std::string eventName, Event* event);
@@ -63,5 +66,7 @@ namespace VannoEngine {
 		std::string mUuid;
 
 		ObjectMapLayer* mpMapLayer;
+
+		bool mIsVisible;
 	};
 }

@@ -32,6 +32,7 @@ void MainMenuController::LoadData(const rapidjson::GenericObject<true, rapidjson
 
 void MainMenuController::Update(double deltaTime) {
 	VannoEngine::GameObject* pObj = GetOwner();
+	VannoEngine::GameObject* pControlsScreen = pObj->GetChildObject(4);
 	VannoEngine::GameObject* pPlayGameObj = pObj->GetChildObject(1);
 	VannoEngine::Animator* pPlayGameAnimator = dynamic_cast<VannoEngine::Animator*>(pPlayGameObj->GetComponent(ANIMATOR_COMPONENT));
 	VannoEngine::GameObject* pViewControls = pObj->GetChildObject(2);
@@ -39,6 +40,7 @@ void MainMenuController::Update(double deltaTime) {
 	VannoEngine::GameObject* pQuitGame = pObj->GetChildObject(3);
 	VannoEngine::Animator* pQuitGameAnimator = dynamic_cast<VannoEngine::Animator*>(pQuitGame->GetComponent(ANIMATOR_COMPONENT));
 
+	pControlsScreen->SetVisible(false);
 	switch (mCurrentState) {
 	case State::PlayGame:
 		pPlayGameAnimator->Play("selected");
@@ -64,6 +66,17 @@ void MainMenuController::Update(double deltaTime) {
 			mCurrentState = State::PlayGame;
 		} else if (mpInputManager->IsKeyTriggered(ACTION_DOWN) || mpInputManager->IsKeyTriggered(ACTION_MENU_DOWN)) {
 			mCurrentState = State::QuitGame;
+		}
+
+		if (mpInputManager->IsKeyTriggered(ACTION_MENU_SELECT)) {
+			mCurrentState = State::ShowingControls;
+			
+		}
+		break;
+	case State::ShowingControls:
+		pControlsScreen->SetVisible(true);
+		if (mpInputManager->IsAnyKeyTriggered()) {
+			mCurrentState = State::ViewControls;
 		}
 		break;
 	case State::QuitGame:

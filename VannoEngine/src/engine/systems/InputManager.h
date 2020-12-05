@@ -35,6 +35,7 @@ namespace VannoEngine {
 		bool IsKeyTriggered(std::string action);
 		bool IsKeyPressed(std::string action);
 		bool IsKeyReleased(std::string action);
+		bool IsAnyKeyTriggered();
 	private:
 		InputManager();
 
