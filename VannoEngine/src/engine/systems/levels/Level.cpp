@@ -34,6 +34,9 @@ namespace VannoEngine {
 	Level::~Level() {
 		if (mpMap) {
 			delete mpMap;
+			for (auto it : mUiObjects) {
+				it->Destroy();
+			}
 		}
 	}
 

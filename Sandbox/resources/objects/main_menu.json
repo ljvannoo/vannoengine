@@ -2,7 +2,10 @@
 	"name": "main menu",
 	"components": [
 		{
-			"type": "main_menu_controller"
+			"type": "main_menu_controller",
+			"data": {
+				"firstLevel": "levels\\demo_level1.json"
+			}
 		}
 	],
 	"childObjectFiles": 

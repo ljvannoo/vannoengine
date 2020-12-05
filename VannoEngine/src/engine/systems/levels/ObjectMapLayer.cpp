@@ -36,7 +36,10 @@ namespace VannoEngine {
 	}
 
 	ObjectMapLayer::~ObjectMapLayer() {
-
+		EventManager::GetInstance()->Unsubscribe(EVT_DESTROY_OBJECT, this);
+		for (auto it : mObjects) {
+			it->Destroy();
+		}
 	}
 
 	void ObjectMapLayer::LoadData(const rapidjson::Value* pData)

@@ -4,6 +4,8 @@
 
 #include "engine/systems/InputManager.h"
 
+#include "engine/systems/levels/LevelManager.h"
+
 #include "engine/systems/events/EventManager.h"
 #include "EndLevelEvent.h"
 
@@ -14,7 +16,8 @@
 MainMenuController::MainMenuController(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
 	mpInputManager{ VannoEngine::InputManager::GetInstance() },
-	mCurrentState{ State::PlayGame }
+	mCurrentState{ State::PlayGame },
+	mFirstLevelFilename{ std::string() }
 { }
 
 MainMenuController::~MainMenuController()
@@ -22,6 +25,9 @@ MainMenuController::~MainMenuController()
 
 
 void MainMenuController::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
+	if (pData->HasMember("firstLevel") && (*pData)["firstLevel"].IsString()) {
+		mFirstLevelFilename = (*pData)["firstLevel"].GetString();
+	}
 }
 
 void MainMenuController::Update(double deltaTime) {
@@ -41,6 +47,12 @@ void MainMenuController::Update(double deltaTime) {
 
 		if (mpInputManager->IsKeyTriggered(ACTION_DOWN) || mpInputManager->IsKeyTriggered(ACTION_MENU_DOWN)) {
 			mCurrentState = State::ViewControls;
+		}
+
+		if (mpInputManager->IsKeyTriggered(ACTION_MENU_SELECT)) {
+			if(!mFirstLevelFilename.empty()) {
+				VannoEngine::LevelManager::GetInstance()->LoadLevel(mFirstLevelFilename);
+			}
 		}
 		break;
 	case State::ViewControls:
@@ -64,7 +76,6 @@ void MainMenuController::Update(double deltaTime) {
 		}
 
 		if (mpInputManager->IsKeyTriggered(ACTION_MENU_SELECT)) {
-			LOG_DEBUG("Quitting!");
 			VannoEngine::EventManager::GetInstance()->Broadcast(new EndLevelEvent());
 		}
 		break;

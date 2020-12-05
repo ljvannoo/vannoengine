@@ -34,4 +34,6 @@ public:
 private:
 	VannoEngine::InputManager* mpInputManager;
 	State mCurrentState;
+
+	std::string mFirstLevelFilename;
 };
