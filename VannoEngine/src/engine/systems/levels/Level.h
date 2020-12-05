@@ -36,7 +36,7 @@ namespace VannoEngine {
 		Level();
 		~Level();
 
-		void Init(rapidjson::Document* pLevelData);
+		void LoadData(rapidjson::Document* pLevelData);
 
 		void UpdatePhysics(double deltaTime);
 		void Update(double deltaTime);

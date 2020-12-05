@@ -97,11 +97,11 @@ namespace VannoEngine {
 		/*if (HasComponent("sprite")) {
 			GetComponent("sprite")->Draw();
 		}*/
-		/*
+		
 		for (GameObject* pObject : mChildObjects) {
 			pObject->Draw();
 		}
-		*/
+		
 	}
 
 	void GameObject::Destroy() {

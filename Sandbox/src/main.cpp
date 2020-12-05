@@ -22,6 +22,8 @@
 #include "SlimeController.h"
 #include "LightBanditController.h"
 #include "Sensor.h"
+#include "MainMenuController.h"
+
 #include "EndLevelEvent.h"
 
 class Sandbox : public VannoEngine::Game, VannoEngine::EventHandler {
@@ -54,6 +56,7 @@ public:
 		pObjectFactory->RegisterComponent(SLIME_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<SlimeController>());
 		pObjectFactory->RegisterComponent(LIGHT_BANDIT_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<LightBanditController>());
 		pObjectFactory->RegisterComponent(SENSOR_COMPONENT, new VannoEngine::ComponentCreator<Sensor>());
+		pObjectFactory->RegisterComponent(MAINMENU_COMPONENT, new VannoEngine::ComponentCreator<MainMenuController>());
 		
 
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());
@@ -83,7 +86,6 @@ public:
 			}
 		}
 
-		// TODO: Fix debug mode
 		if (pInputManager->IsKeyTriggered("debug")) {
 			VannoEngine::ConfigurationManager* pConfigrationManager = VannoEngine::ConfigurationManager::GetInstance();
 			pConfigrationManager->ToggleBool("/debugMode");

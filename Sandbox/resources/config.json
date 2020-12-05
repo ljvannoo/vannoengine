@@ -1,5 +1,5 @@
 {
-  "initialLevel": "levels/demo_level1.json",
+  "initialLevel": "levels\\main_menu.json",
   "maxFrameRate": 60,
   "window": {
     "width": 800,
@@ -18,6 +18,11 @@
     "pause": "esc",
     "debug": "f1",
     "zoomIn": ".",
-    "zoomOut": ","
+    "zoomOut": ",",
+    "menuUp": "up_arrow",
+    "menuDown": "down_arrow",
+    "menuLeft": "left_arrow",
+    "menuRight": "right_arrow",
+    "menuSelect": "enter"
   }
 }

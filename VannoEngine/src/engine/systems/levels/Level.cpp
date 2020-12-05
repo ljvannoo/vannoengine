@@ -32,11 +32,13 @@ namespace VannoEngine {
 	{ }
 
 	Level::~Level() {
-		delete mpMap;
+		if (mpMap) {
+			delete mpMap;
+		}
 	}
 
 
-	void Level::Init(rapidjson::Document* pLevelData) {
+	void Level::LoadData(rapidjson::Document* pLevelData) {
 		GameObjectFactory* pObjectFactory = GameObjectFactory::GetInstance();
 
 		if (pLevelData->HasMember("name") && (*pLevelData)["name"].IsString()) {
@@ -56,19 +58,40 @@ namespace VannoEngine {
 			mpMap = new Map();
 			mpMap->LoadData(mapData);
 		}
+
+		if (pLevelData->HasMember("uiObjects") && (*pLevelData)["uiObjects"].IsArray()) {
+			const rapidjson::Value& uiObjects = (*pLevelData)["uiObjects"];
+			for (rapidjson::SizeType i = 0; i < uiObjects.Size(); i++) {
+				const rapidjson::Value& uiObject = uiObjects[i];
+
+				if (uiObject.IsString()) {
+					mUiObjects.push_back(pObjectFactory->CreateObject(uiObject.GetString(), nullptr));
+				}
+			}
+		}
 	}
 
 	void Level::UpdatePhysics(double deltaTime) {
-		mpMap->UpdatePhysics(deltaTime);
+		if(mpMap) {
+			mpMap->UpdatePhysics(deltaTime);
+		}
 	}
 
 	void Level::Update(double deltaTime) {
 		mpCamera->Update(deltaTime);
-		mpMap->Update(deltaTime);
+		if (mpMap) {
+			mpMap->Update(deltaTime);
+		}
+
+		for (auto it : mUiObjects) {
+			it->Update(deltaTime);
+		}
 	}
 
 	void Level::Draw() {
-		mpMap->Draw();
+		if (mpMap) {
+			mpMap->Draw();
+		}
 
 		for (auto it : mUiObjects) {
 			it->Draw();
@@ -80,11 +103,17 @@ namespace VannoEngine {
 	}
 
 	float Level::GetWidth() {
-		return mpMap->GetWidth();
+		if (mpMap) {
+			return mpMap->GetWidth();
+		}
+		return 0.0f;
 	}
 
 	float Level::GetHeight() {
-		return mpMap->GetHeight();
+		if (mpMap) {
+			return mpMap->GetHeight();
+		}
+		return 0.0f;
 	}
 
 	void Level::AddUiObject(GameObject* pObj) {

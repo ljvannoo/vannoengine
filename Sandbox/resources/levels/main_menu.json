@@ -1,0 +1,7 @@
+{
+  "name": "Main Menu",
+  "camera": "objects\\camera.json",
+  "uiObjects": [
+    "objects\\main_menu.json"
+  ]
+}

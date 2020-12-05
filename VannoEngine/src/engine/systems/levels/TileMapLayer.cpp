@@ -188,7 +188,6 @@ namespace VannoEngine {
 	void TileMapLayer::CheckCollisions(PhysicsBody* pBody) {
 		if (mSolid || mDamage > 0.0f) {
 			EventManager* pEventManager = EventManager::GetInstance();
-			MapCollisionEvent* collisionEvent;
 			float tH = (float)mTileHeight;
 			float tW = (float)mTileWidth;
 			glm::vec2 center = pBody->GetAabbCenter();

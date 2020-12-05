@@ -1,0 +1,14 @@
+{
+	"name": "main menu",
+	"components": [
+		{
+			"type": "main_menu_controller"
+		}
+	],
+	"childObjectFiles": 
+		[
+			"objects\\menu-play_game.json",
+			"objects\\menu-view_controls.json",
+			"objects\\menu-quit_game.json"
+		]
+}

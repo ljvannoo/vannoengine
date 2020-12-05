@@ -108,6 +108,10 @@ namespace VannoEngine {
 		mScanCodes["lshift"] = SDL_SCANCODE_LSHIFT;
 		mScanCodes["lctrl"] = SDL_SCANCODE_LCTRL;
 		mScanCodes["lalt"] = SDL_SCANCODE_LALT;
+		mScanCodes["up_arrow"] = SDL_SCANCODE_UP;
+		mScanCodes["down_arrow"] = SDL_SCANCODE_DOWN;
+		mScanCodes["left_arrow"] = SDL_SCANCODE_LEFT;
+		mScanCodes["right_arrow"] = SDL_SCANCODE_RIGHT;
 		
 	}
 

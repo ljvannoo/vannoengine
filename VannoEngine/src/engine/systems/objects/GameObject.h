@@ -50,6 +50,7 @@ namespace VannoEngine {
 		GameObject* GetParentObject() { return mpParentObject; }
 
 		void AddChildObject(GameObject* pChildObject) { mChildObjects.push_back(pChildObject); }
+		GameObject* GetChildObject(int index) { return mChildObjects[index]; }
 		ObjectMapLayer* GetMapLayer() { return mpMapLayer; }
 		void Destroy();
 

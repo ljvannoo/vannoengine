@@ -1,0 +1,43 @@
+{
+  "name": "(menu)play game",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\playgame1.png",
+          "cols": 1,
+          "rows": 2
+        }
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0,
+        "posY": 50.0
+      }
+    },
+    {
+      "type": "animator",
+      "defaultAnimation": "unselected",
+      "data": {
+        "animations": [
+          {
+            "name": "unselected",
+            "frameOffset": 0,
+            "frameCount": 1,
+            "loop": false
+          },
+          {
+            "name": "selected",
+            "frameOffset": 1,
+            "frameCount": 1,
+            "loop": false
+          }
+        ]
+      }
+    }
+  ]
+}

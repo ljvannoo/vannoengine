@@ -63,7 +63,7 @@ namespace VannoEngine {
 		rapidjson::Document* pLevelData = pResourceManager->LoadJsonData(relativePath);
 
 		Level* pLevel = new Level();
-		pLevel->Init(pLevelData);
+		pLevel->LoadData(pLevelData);
 		mLevels.push(pLevel);
 	}
 
