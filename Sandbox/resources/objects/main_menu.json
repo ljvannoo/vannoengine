@@ -8,10 +8,11 @@
 			}
 		}
 	],
-	"childObjectFiles": 
-		[
-			"objects\\menu-play_game.json",
-			"objects\\menu-view_controls.json",
-			"objects\\menu-quit_game.json"
-		]
+	"childObjectFiles": [
+		"objects\\menu_background.json",
+		"objects\\menu-play_game.json",
+		"objects\\menu-view_controls.json",
+		"objects\\menu-quit_game.json"
+
+	]
 }

@@ -32,11 +32,11 @@ void MainMenuController::LoadData(const rapidjson::GenericObject<true, rapidjson
 
 void MainMenuController::Update(double deltaTime) {
 	VannoEngine::GameObject* pObj = GetOwner();
-	VannoEngine::GameObject* pPlayGameObj = pObj->GetChildObject(0);
+	VannoEngine::GameObject* pPlayGameObj = pObj->GetChildObject(1);
 	VannoEngine::Animator* pPlayGameAnimator = dynamic_cast<VannoEngine::Animator*>(pPlayGameObj->GetComponent(ANIMATOR_COMPONENT));
-	VannoEngine::GameObject* pViewControls = pObj->GetChildObject(1);
+	VannoEngine::GameObject* pViewControls = pObj->GetChildObject(2);
 	VannoEngine::Animator* pViewControlsAnimator = dynamic_cast<VannoEngine::Animator*>(pViewControls->GetComponent(ANIMATOR_COMPONENT));
-	VannoEngine::GameObject* pQuitGame = pObj->GetChildObject(2);
+	VannoEngine::GameObject* pQuitGame = pObj->GetChildObject(3);
 	VannoEngine::Animator* pQuitGameAnimator = dynamic_cast<VannoEngine::Animator*>(pQuitGame->GetComponent(ANIMATOR_COMPONENT));
 
 	switch (mCurrentState) {
