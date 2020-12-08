@@ -9,7 +9,7 @@ namespace VannoEngine {
 	void Log::Init() {
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 
-		sCoreLogger = spdlog::stdout_color_mt("VannoEngine");
+		sCoreLogger = spdlog::stdout_color_mt("Engine");
 		sCoreLogger->set_level(spdlog::level::trace);
 		sClientLogger = spdlog::stdout_color_mt("Game");
 		sClientLogger->set_level(spdlog::level::trace);
