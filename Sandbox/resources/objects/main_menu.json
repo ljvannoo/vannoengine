@@ -4,7 +4,7 @@
 		{
 			"type": "main_menu_controller",
 			"data": {
-				"firstLevel": "levels\\demo_level1.json"
+				"firstLevel": "levels\\level1.json"
 			}
 		}
 	],

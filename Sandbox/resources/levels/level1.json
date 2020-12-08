@@ -1,0 +1,5 @@
+{
+  "name": "Level 1",
+  "camera": "objects\\game_camera.json",
+  "map": "maps\\level1.json"
+}
