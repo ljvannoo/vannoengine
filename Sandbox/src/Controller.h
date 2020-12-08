@@ -24,18 +24,19 @@ Creation Date:	2020-Oct-19
 #include <rapidjson/document.h>
 
 enum class State : int {
-	Stand,
-	Crouch,
-	Walk,
-	Run,
-	Dash,
-	Jumping,
-	Jump,
-	Fall,
-	Attack,
-	Shoot,
-	Dieing,
-	Dead
+	Stand,	// 0
+	Crouch,	// 1
+	Walk,	// 2
+	Run,	// 3
+	Dash,	// 4
+	Jumping,// 5
+	Jump,	// 6
+	Fall,	// 7
+	Hurt,	// 8
+	Attack,	// 9
+	Shoot,	// 10
+	Dieing,	// 11
+	Dead	// 12
 };
 
 namespace VannoEngine {
@@ -84,12 +85,11 @@ private:
 	const float cRunSpeed = 4.0f;
 	const float cDashSpeed = 6.0f;
 	const float cJumpHeight = 1.2f;
-	unsigned long mAttackDuration = 400l;
+	unsigned long mAttackDuration = 200l;
 
 	State mCurrentState;
 
 	unsigned long mAttackStartTime;
-	unsigned short mAttackNum = 1;
 	bool mHasSword;
 	bool mHasBow;
 	bool mCanDoDamage;

@@ -30,6 +30,9 @@ public:
 		return HEALTH_TRACKER_COMPONENT;
 	}
 
+	bool IsInvulnerable() { return mInvulnerable; }
+	bool IsAlive() { return mCurrentHealth > 0.0f; }
+
 	void HandleLocalEvent(std::string eventName, VannoEngine::Event* event);
 	void HandleEvent(std::string eventName, VannoEngine::Event* event);
 

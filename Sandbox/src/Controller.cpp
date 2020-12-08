@@ -47,6 +47,7 @@ Creation Date:	2020-Oct-19
 #include "engine/util/Directions.h"
 
 #include "PowerUp.h"
+#include "HealthTracker.h"
 #include "InvulnerableEvent.h"
 #include "DeathEvent.h"
 #include "EndLevelEvent.h"
@@ -147,11 +148,12 @@ void Controller::Update(double deltaTime) {
 		if (mpInputManager->IsKeyPressed(ACTION_ATTACK)) {
 			mCurrentState = State::Attack;
 			mAttackStartTime = mpTimeManager->GetElapsedMillis();
+			mCanDoDamage = true;
 			if (mHasSword) {
-				mAttackDuration = 600l;
+				mAttackDuration = 300l;
 			}
 			else {
-				mAttackDuration = 400l;
+				mAttackDuration = 200l;
 			}
 
 			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), true));
@@ -159,7 +161,7 @@ void Controller::Update(double deltaTime) {
 		if (mpInputManager->IsKeyPressed(ACTION_FIRE) && mHasBow) {
 			mCurrentState = State::Shoot;
 			mAttackStartTime = mpTimeManager->GetElapsedMillis();
-			mAttackDuration = 600l;
+			mAttackDuration = 300l;
 		}
 		break;
 	case State::Walk:
@@ -246,26 +248,28 @@ void Controller::Update(double deltaTime) {
 			mCurrentState = State::Stand;
 		}
 		break;
+	case State::Hurt:
+		pAnimator->Play("hurt");
+		targetSpeed = 0.0f;
+		
+		if (mCooldown <= 0.0) {
+			mCurrentState = State::Stand;
+		}
+		mCooldown -= deltaTime;
+		break;
 	case State::Attack:
 		if(mHasSword) {
-			ss << "sword" << mAttackNum;
+			ss << "sword1";
 		}
 		else {
-			ss << "punch" << mAttackNum;
+			ss << "punch1";
 		}
 		pAnimator->Play(ss.str());
 		targetSpeed = 0.0f;
 		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + mAttackDuration) {
-			if (mpInputManager->IsKeyPressed(ACTION_ATTACK) && mAttackNum < 3) {
-				mAttackStartTime = mpTimeManager->GetElapsedMillis();
-				mAttackNum++;
-			}
-			else {
-				mCanDoDamage = true;
-				mCurrentState = State::Stand;
-				mAttackNum = 1;
-				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), false));
-			}
+			mCurrentState = State::Stand;
+			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), false));
+			
 		}
 		break;
 	case State::Shoot:
@@ -306,7 +310,7 @@ void Controller::Update(double deltaTime) {
 	pTransform->SetSpeed(speed.x, speed.y);
 	UpdateCamera(pTransform);
 
-	if (speed.y < 0.0f) {
+	if (speed.y < 0.0f && mCurrentState < State::Dieing) {
 		mCurrentState = State::Fall;
 	}
 }
@@ -328,10 +332,24 @@ void Controller::HandleLocalEvent(std::string eventName, VannoEngine::Event* eve
 			mCurrentState = State::Dieing;
 		}
 	}
+	else if (event->GetName() == EVT_DAMAGE) {
+		if(mCurrentState < State::Hurt) {
+			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), false));
+			HealthTracker* pHealthTracker = nullptr;
+			if (GetOwner()->HasComponent(HEALTH_TRACKER_COMPONENT)) {
+				HealthTracker* pHealthTracker = dynamic_cast<HealthTracker*>(GetOwner()->GetComponent(HEALTH_TRACKER_COMPONENT));
+			}
+
+			if(!pHealthTracker || !(pHealthTracker->IsInvulnerable() || pHealthTracker->IsAlive())) {
+				mCooldown = 0.3;
+				mCurrentState = State::Hurt;
+			}
+		}
+	}
 }
 
 void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
-	if (event->GetName() == EVT_OBJECT_COLLISION) {
+	if (event->GetName() == EVT_OBJECT_COLLISION && mCurrentState < State::Dieing) {
 		VannoEngine::ObjectCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::ObjectCollisionEvent*>(event);
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 		VannoEngine::PhysicsBody* pOtherBody = pCollisionEvent->GetOtherBody();

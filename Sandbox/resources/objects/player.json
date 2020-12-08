@@ -109,7 +109,7 @@
             "name": "punch1",
             "frameOffset": 112,
             "frameCount": 4,
-            "frameDuration": 0.1,
+            "frameDuration": 0.05,
             "loop": false,
             "aabb": {
               "offsetX": 0.0,
@@ -178,6 +178,13 @@
             "frameOffset": 151,
             "frameCount": 1,
             "frameDuration": 0.2,
+            "loop": false
+          },
+          {
+            "name": "hurt",
+            "frameOffset": 85,
+            "frameCount": 3,
+            "frameDuration": 0.1,
             "loop": false
           }
         ]
