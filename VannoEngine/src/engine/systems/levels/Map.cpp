@@ -84,29 +84,31 @@ namespace VannoEngine {
 			for (rapidjson::SizeType i = 0; i < layers.Size(); i++) {
 				const rapidjson::Value& layerData = layers[i];
 
-				if (layerData.HasMember("type") && layerData["type"].IsString()) {
-					std::string layerType = layerData["type"].GetString();
+				if (layerData.HasMember("visible") && layerData["visible"].IsBool() && layerData["visible"].GetBool()) {
+					if (layerData.HasMember("type") && layerData["type"].IsString()) {
+						std::string layerType = layerData["type"].GetString();
 
-					// Determine which type of layer we've found and load that
-					MapLayer* pMapLayer = NULL;
-					if (layerType == IMAGE_LAYER) {
-						pMapLayer = new ImageMapLayer();
-					}
-					else if (layerType == TILE_LAYER) {
-						pMapLayer = new TileMapLayer(mTileWidth, mTileHeight);
+						// Determine which type of layer we've found and load that
+						MapLayer* pMapLayer = NULL;
+						if (layerType == IMAGE_LAYER) {
+							pMapLayer = new ImageMapLayer();
+						}
+						else if (layerType == TILE_LAYER) {
+							pMapLayer = new TileMapLayer(mTileWidth, mTileHeight);
 
-						// TODO Move tilesets to ResourceManager?
-						TileMapLayer* pTileMapLayer = static_cast<TileMapLayer*>(pMapLayer);
-						pTileMapLayer->AddTilesets(&mTilesets);
-					}
-					else if (layerType == OBJECT_LAYER) {
-						pMapLayer = new ObjectMapLayer(static_cast<float>(mWidth * mTileWidth), static_cast<float>(mHeight * mTileHeight));
-					}
+							// TODO Move tilesets to ResourceManager?
+							TileMapLayer* pTileMapLayer = static_cast<TileMapLayer*>(pMapLayer);
+							pTileMapLayer->AddTilesets(&mTilesets);
+						}
+						else if (layerType == OBJECT_LAYER) {
+							pMapLayer = new ObjectMapLayer(static_cast<float>(mWidth * mTileWidth), static_cast<float>(mHeight * mTileHeight));
+						}
 
-					// If the layer is of a known type, load it
-					if(pMapLayer) {
-						pMapLayer->LoadData(&layerData);
-						mLayers.push_back(pMapLayer);
+						// If the layer is of a known type, load it
+						if (pMapLayer) {
+							pMapLayer->LoadData(&layerData);
+							mLayers.push_back(pMapLayer);
+						}
 					}
 				}
 			}
