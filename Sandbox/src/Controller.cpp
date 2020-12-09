@@ -31,6 +31,8 @@ Creation Date:	2020-Oct-19
 #include "engine/systems/events/DamageEvent.h"
 #include "engine/systems/physics/ObjectCollisionEvent.h"
 
+#include "engine/systems/objects/GameObjectFactory.h"
+
 #include "engine/systems/FramerateController.h"
 #include "engine/systems/InputManager.h"
 #include "engine/systems/ConfigurationManager.h"
@@ -51,6 +53,7 @@ Creation Date:	2020-Oct-19
 #include "InvulnerableEvent.h"
 #include "DeathEvent.h"
 #include "EndLevelEvent.h"
+#include "WinEvent.h"
 
 #include <algorithm>
 #include <sstream>
@@ -72,10 +75,12 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mCooldown{ 0.0 }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
+	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_WIN, this);
 }
 
 Controller::~Controller() {
 	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_OBJECT_COLLISION, this);
+	VannoEngine::EventManager::GetInstance()->Unsubscribe(EVT_WIN, this);
 }
 
 void Controller::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
@@ -296,11 +301,21 @@ void Controller::Update(double deltaTime) {
 		mCooldown -= deltaTime;
 		if (mCooldown < 0.0) {
 			mCurrentState = State::Dead;
-			VannoEngine::EventManager::GetInstance()->DelayedBroadcast(1.0, new EndLevelEvent());
+			mCooldown = 1.0;
 		}
 		break;
 	case State::Dead:
 		pAnimator->Play("dead");
+		if (mCooldown < 0.0) {
+			mCurrentState = State::GameOver;
+			mpLevelManager->GetCurrentLevel()->AddUiObject(VannoEngine::GameObjectFactory::GetInstance()->CreateObject("objects\\game_over_screen.json", nullptr));
+		}
+		mCooldown -= deltaTime;
+		break;
+	case State::GameOver:
+		if (mpInputManager->IsAnyKeyTriggered()) {
+			VannoEngine::EventManager::GetInstance()->Broadcast(new EndLevelEvent());
+		}
 		break;
 	}
 
@@ -373,6 +388,10 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 				mCanDoDamage = false;
 			}
 		}
+	}
+	else if (event->GetName() == EVT_WIN && mCurrentState != State::GameOver) {
+		mpLevelManager->GetCurrentLevel()->AddUiObject(VannoEngine::GameObjectFactory::GetInstance()->CreateObject("objects\\win_screen.json", nullptr));
+		mCurrentState = State::GameOver;
 	}
 }
 

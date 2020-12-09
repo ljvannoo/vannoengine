@@ -1,0 +1,25 @@
+{
+  "name": "game_over_screen",
+  "components": [
+    {
+      "type": "transform",
+      "data": {
+        "posX": 400.0,
+        "posY": 300.0,
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    },
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\game_over_screen.png",
+          "cols": 1,
+          "rows": 1
+        },
+        "uiMode": true
+      }
+    }
+  ]
+}

@@ -36,7 +36,8 @@ enum class State : int {
 	Attack,	// 9
 	Shoot,	// 10
 	Dieing,	// 11
-	Dead	// 12
+	Dead,	// 12
+	GameOver
 };
 
 namespace VannoEngine {
@@ -65,7 +66,7 @@ public:
 	}
 
 	void HandleLocalEvent(std::string eventName, VannoEngine::Event* event);
-	void HandleEvent(std::string eventName, VannoEngine::Event* event);
+	void HandleEvent(std::string eventName, VannoEngine::Event* event) override;
 
 private:
 	//void HandleCollisions(VannoEngine::Transform* pTransform, VannoEngine::PhysicsBody* pBody);

@@ -23,6 +23,7 @@
 #include "LightBanditController.h"
 #include "Sensor.h"
 #include "MainMenuController.h"
+#include "WinTrigger.h"
 
 #include "EndLevelEvent.h"
 
@@ -57,6 +58,7 @@ public:
 		pObjectFactory->RegisterComponent(LIGHT_BANDIT_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<LightBanditController>());
 		pObjectFactory->RegisterComponent(SENSOR_COMPONENT, new VannoEngine::ComponentCreator<Sensor>());
 		pObjectFactory->RegisterComponent(MAINMENU_COMPONENT, new VannoEngine::ComponentCreator<MainMenuController>());
+		pObjectFactory->RegisterComponent(WINTRIGGER_COMPONENT, new VannoEngine::ComponentCreator<WinTrigger>());
 		
 
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());

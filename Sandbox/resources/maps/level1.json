@@ -130,8 +130,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":32,
-                 "x":761.666666666667,
-                 "y":412.666666666667
+                 "x":761.667,
+                 "y":412.667
                 }, 
                 {
                  "height":32,
@@ -148,7 +148,7 @@
                  "visible":true,
                  "width":32,
                  "x":360,
-                 "y":267.666666666667
+                 "y":267.667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -175,8 +175,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":48,
-                 "x":871.333333333333,
-                 "y":380.666666666667
+                 "x":871.333,
+                 "y":380.667
                 }, 
                 {
                  "height":48,
@@ -192,8 +192,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":48,
-                 "x":1109.66666666667,
-                 "y":430.666666666667
+                 "x":1109.67,
+                 "y":430.667
                 }, 
                 {
                  "height":48,
@@ -209,8 +209,8 @@
                  "type":"enemy",
                  "visible":true,
                  "width":48,
-                 "x":332.666666666667,
-                 "y":78.6666666666667
+                 "x":332.667,
+                 "y":78.6667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -237,8 +237,25 @@
                  "type":"player",
                  "visible":true,
                  "width":25,
-                 "x":33.3900059136606,
-                 "y":462.350680070964
+                 "x":33.39,
+                 "y":462.351
+                }, 
+                {
+                 "height":8,
+                 "id":12,
+                 "name":"win_trigger",
+                 "properties":[
+                        {
+                         "name":"objectFile",
+                         "type":"file",
+                         "value":"objects\/win_trigger.json"
+                        }],
+                 "rotation":0,
+                 "type":"trigger",
+                 "visible":true,
+                 "width":8.33333333333326,
+                 "x":1255,
+                 "y":423.666666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -318,7 +335,7 @@
          "y":0
         }],
  "nextlayerid":18,
- "nextobjectid":11,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"2020.10.28",

@@ -1,0 +1,23 @@
+{
+  "name": "win_trigger",
+  "components": [
+    {
+      "type": "physicsbody",
+      "data": {
+        "mass": 0.0,
+        "offsetX": 0.0,
+        "offsetY": 0.0
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    },
+    {
+      "type": "win_trigger"
+    }
+  ]
+}
