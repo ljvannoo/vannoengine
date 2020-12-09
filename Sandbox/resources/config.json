@@ -16,6 +16,7 @@
     "walk": "lshift",
     "dash": "lctrl",
     "pause": "esc",
+    "quit": "q",
     "debug": "f1",
     "zoomIn": ".",
     "zoomOut": ",",

@@ -74,17 +74,25 @@ public:
 	void HandleInput() override {
 		VannoEngine::InputManager* pInputManager = VannoEngine::InputManager::GetInstance();
 
-		if (pInputManager->IsKeyTriggered("pause")) {
-			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
-			IsPaused = !IsPaused;
-
-			if (IsPaused) {
-				pLevelManager->GetCurrentLevel()->AddUiObject(pPauseScreen);
+		if (IsPaused) {
+			if (pInputManager->IsKeyTriggered("quit")) {
+				VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+				IsPaused = false;
+				pLevelManager->UnloadLevel();
+				return;
 			}
-			else {
+			else if (pInputManager->IsKeyTriggered("pause")) {
+				VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 				pLevelManager->GetCurrentLevel()->RemoveUiObject(pPauseScreen);
+				IsPaused = false;
 			}
 		}
+		else if (pInputManager->IsKeyTriggered("pause")) {
+			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
+			pLevelManager->GetCurrentLevel()->AddUiObject(pPauseScreen);
+			IsPaused = true;
+		}
+
 
 		if (pInputManager->IsKeyTriggered("debug")) {
 			VannoEngine::ConfigurationManager* pConfigrationManager = VannoEngine::ConfigurationManager::GetInstance();
@@ -110,7 +118,6 @@ public:
 
 	void HandleEvent(std::string eventName, VannoEngine::Event* message) {
 		if (eventName == EVT_END_LEVEL) {
-			VannoEngine::ConfigurationManager* pConfigurationManager = VannoEngine::ConfigurationManager::GetInstance();
 			VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 			pLevelManager->UnloadLevel();
 			if (!pLevelManager->GetCurrentLevel()) {
