@@ -1,11 +1,11 @@
 {
-  "name": "(menu)quit game",
+  "name": "(menu)credits",
   "components": [
     {
       "type": "sprite",
       "data": {
         "texture": {
-          "file": "sprites\\quitgame1.png",
+          "file": "sprites\\credits1.png",
           "cols": 1,
           "rows": 2
         }
@@ -16,7 +16,7 @@
       "data": {
         "scaleX": 1.0,
         "scaleY": 1.0,
-        "posY": -100.0
+        "posY": -50.0
       }
     },
     {

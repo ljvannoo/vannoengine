@@ -12,7 +12,9 @@
 		"objects\\menu_background.json",
 		"objects\\menu-play_game.json",
 		"objects\\menu-view_controls.json",
+		"objects\\menu-credits.json",
 		"objects\\menu-quit_game.json",
-		"objects\\controls_screen.json"
+		"objects\\controls_screen.json",
+		"objects\\credits_screen.json"
 	]
 }

@@ -17,6 +17,8 @@ public:
 		PlayGame,
 		ViewControls,
 		ShowingControls,
+		Credits,
+		ShowingCredits,
 		QuitGame
 	};
 

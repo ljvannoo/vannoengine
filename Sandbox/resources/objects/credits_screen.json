@@ -1,0 +1,22 @@
+{
+  "name": "(menu)credits screen",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\credits_screen.png",
+          "cols": 1,
+          "rows": 1
+        }
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    }
+  ]
+}
