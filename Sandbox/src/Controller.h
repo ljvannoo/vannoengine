@@ -13,7 +13,6 @@ Project:		CS529 - Final Project
 Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Oct-19
 *************************************************************************/
-#pragma once
 
 #define CONTROLLER_COMPONENT "controller"
 

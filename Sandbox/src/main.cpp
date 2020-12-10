@@ -1,3 +1,18 @@
+/************************************************************************
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+
+File Name:		main.cpp
+Purpose:		The main entry point of the game.
+Language:		C++
+Platform:		Windows 10, Microsoft Visual Studio 2019
+
+Project:		CS529 - Final Project
+Author:			Lukas VanNoord, lukas.vannoord, 60001020
+Creation Date:	2020-Oct-20
+*************************************************************************/
+
 #include <VannoEngine.h>
 #include "engine/systems/levels/LevelManager.h"
 #include "engine/systems/levels/Level.h"

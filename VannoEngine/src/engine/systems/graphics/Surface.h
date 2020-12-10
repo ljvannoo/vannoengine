@@ -1,5 +1,18 @@
 #pragma once
+/************************************************************************
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
 
+File Name:		Surface.h
+Purpose:		Defines a basic graphics surface
+Language:		C++
+Platform:		Windows 10, Microsoft Visual Studio 2019
+
+Project:		CS529 - Final Project
+Author:			Lukas VanNoord, lukas.vannoord, 60001020
+Creation Date:	2020-Oct-31
+*************************************************************************/
 #include "engine/systems/graphics/GLTexture.h"
 
 namespace VannoEngine {

@@ -1,3 +1,19 @@
+/************************************************************************
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+
+File Name:		Log.cpp
+Purpose:		Provides logging services to the engine and the game.
+Language:		C++
+Platform:		Windows 10, Microsoft Visual Studio 2019
+
+Project:		CS529 - Final Project
+Author:			Lukas VanNoord, lukas.vannoord, 60001020
+Creation Date:	2020-Oct-20
+*************************************************************************/
+
+
 #include "Log.h"
 
 #include "spdlog/sinks/stdout_color_sinks.h"

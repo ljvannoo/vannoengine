@@ -1,3 +1,18 @@
+/************************************************************************
+Copyright (C) 2020 DigiPen Institute of Technology.
+Reproduction or disclosure of this file or its contents without the
+prior written consent of DigiPen Institute of Technology is prohibited.
+
+File Name:		ChestController.cpp
+Purpose:		Defines the behavior of treasure chests
+Language:		C++
+Platform:		Windows 10, Microsoft Visual Studio 2019
+
+Project:		CS529 - Final Project
+Author:			Lukas VanNoord, lukas.vannoord, 60001020
+Creation Date:	2020-Dec-10
+*************************************************************************/
+
 #include "ChestController.h"
 
 #include "engine/core/Log.h"
