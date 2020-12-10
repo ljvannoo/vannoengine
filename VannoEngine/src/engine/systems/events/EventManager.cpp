@@ -34,6 +34,10 @@ namespace VannoEngine {
 			delete element.second;
 		}
 		mSubscribers.clear();
+
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	EventManager* EventManager::GetInstance() {

@@ -37,7 +37,9 @@ namespace VannoEngine {
 	}
 
 	ConfigurationManager::~ConfigurationManager() {
-
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 	 
 	void ConfigurationManager::Init(std::string relativePath) {

@@ -56,6 +56,10 @@ namespace VannoEngine {
 			delete pair.second;
 		}
 		mShaderPrograms.clear();
+
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	ResourceManager* ResourceManager::GetInstance() {
@@ -191,7 +195,7 @@ namespace VannoEngine {
 	float ResourceManager::GenerateRandomNumber(float min, float max, float precision) {
 		float actualMin = (float)min * precision;
 		float actualMax = (float)max * precision;
-		int result = (rand() % static_cast<int>((actualMax - actualMin)) + actualMin);
-		return (float)result / precision;
+		float result = (rand() % static_cast<int>((actualMax - actualMin)) + actualMin);
+		return result / precision;
 	}
 }

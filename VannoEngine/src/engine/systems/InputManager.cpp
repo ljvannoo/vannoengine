@@ -40,7 +40,9 @@ namespace VannoEngine {
 	}
 
 	InputManager::~InputManager() {
-
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	void InputManager::Init() {

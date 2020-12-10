@@ -120,6 +120,10 @@ namespace VannoEngine {
 		}
 
 		SDL_Quit();
+
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	void GraphicsManager::Init(int windowWidth, int windowHeight) {

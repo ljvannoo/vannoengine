@@ -42,6 +42,9 @@ namespace VannoEngine {
 		while (!mLevels.empty()) {
 			UnloadLevel();
 		}
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	void LevelManager::UpdatePhysics(double deltaTime) {

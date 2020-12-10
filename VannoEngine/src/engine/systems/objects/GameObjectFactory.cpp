@@ -58,6 +58,10 @@ namespace VannoEngine {
 			delete it.second;
 		}
 		mCreators.clear();
+
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	void GameObjectFactory::Init() {

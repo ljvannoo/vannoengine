@@ -33,7 +33,9 @@ namespace VannoEngine {
 	}
 
 	PhysicsManager::~PhysicsManager() {
-
+		if (mpInstance) {
+			delete mpInstance;
+		}
 	}
 
 	/*Collision PhysicsManager::CollidesWithMap(PhysicsBody* pBody) {
