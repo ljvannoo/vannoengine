@@ -1,0 +1,51 @@
+{
+  "name": "sword_ui",
+  "components": [
+    {
+      "type": "transform",
+      "data": {
+        "posX": 700.0,
+        "posY": 550.0,
+        "scaleX": 0.75,
+        "scaleY": 0.75
+      }
+    },
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\bow_powerup_ui.png",
+          "cols": 2,
+          "rows": 1
+        },
+        "uiMode": true
+      }
+    },
+    {
+      "type": "animator",
+      "data": {
+        "defaultAnimation": "unselected",
+        "animations": [
+          {
+            "name": "unselected",
+            "frameOffset": 0,
+            "frameCount": 1,
+            "loop": false
+          },
+          {
+            "name": "selected",
+            "frameOffset": 1,
+            "frameCount": 1,
+            "loop": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "powerup_ui",
+      "data": {
+        "powerupType": "bow"
+      }
+    }
+  ]
+}

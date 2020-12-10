@@ -55,6 +55,7 @@ Creation Date:	2020-Oct-19
 #include "EndLevelEvent.h"
 #include "WinEvent.h"
 #include "UnlockExitEvent.h"
+#include "PickupPowerupEvent.h"
 
 #include <algorithm>
 #include <sstream>
@@ -384,6 +385,7 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 					else if (pObject->GetName() == "prize") {
 						VannoEngine::EventManager::GetInstance()->Broadcast(new UnlockExitEvent());
 					}
+					VannoEngine::EventManager::GetInstance()->Broadcast(new PowerupPickupEvent(GetOwner(), pObject));
 					pObject->Destroy();
 				}
 			}

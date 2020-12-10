@@ -25,6 +25,7 @@
 #include "MainMenuController.h"
 #include "WinTrigger.h"
 #include "ChestController.h"
+#include "PowerupUi.h"
 
 #include "EndLevelEvent.h"
 
@@ -61,6 +62,7 @@ public:
 		pObjectFactory->RegisterComponent(MAINMENU_COMPONENT, new VannoEngine::ComponentCreator<MainMenuController>());
 		pObjectFactory->RegisterComponent(WINTRIGGER_COMPONENT, new VannoEngine::ComponentCreator<WinTrigger>());
 		pObjectFactory->RegisterComponent(CHEST_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<ChestController>());
+		pObjectFactory->RegisterComponent(POWERUP_UI_COMPONENT, new VannoEngine::ComponentCreator<PowerupUi>());
 		
 
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());

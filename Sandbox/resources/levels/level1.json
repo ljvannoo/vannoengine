@@ -1,5 +1,10 @@
 {
   "name": "Level 1",
   "camera": "objects\\game_camera.json",
-  "map": "maps\\level1.json"
+  "map": "maps\\level1.json",
+  "uiObjects": [
+    "objects\\sword_ui.json",
+    "objects\\bow_ui.json",
+    "objects\\prize_ui.json"
+  ]
 }
