@@ -16,9 +16,11 @@ public: // Methods
 	PowerUp(VannoEngine::GameObject* owner);
 	~PowerUp();
 
-	virtual std::string GetType() override { return POWERUP_COMPONENT; }
+	std::string GetType() override { return POWERUP_COMPONENT; }
+	
+	void Update(double deltaTime) override;
 
-	virtual void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
+	void LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) override;
 
 private: // Methods
 

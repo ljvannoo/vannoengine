@@ -1,5 +1,5 @@
 {
-  "name": "bow_powerup",
+  "name": "bow",
   "components": [
     {
       "type": "sprite",
@@ -14,9 +14,11 @@
     {
       "type": "physicsbody",
       "data": {
-        "mass": 0.0,
+        "mass": 1.0,
         "offsetX": 0.0,
-        "offsetY": 0.0
+        "offsetY": 0.0,
+        "width": 16.0,
+        "height": 16.0
       }
     },
     {

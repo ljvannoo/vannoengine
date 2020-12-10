@@ -1,0 +1,12 @@
+{
+  "name": "chest",
+  "templateObjectFile": "objects\\chest.json",
+  "components": [
+    {
+      "type": "chest_controller",
+      "data": {
+        "contents": "objects\\sword_powerup.json"
+      }
+    }
+  ]
+}

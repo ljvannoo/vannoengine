@@ -54,6 +54,7 @@ Creation Date:	2020-Oct-19
 #include "DeathEvent.h"
 #include "EndLevelEvent.h"
 #include "WinEvent.h"
+#include "UnlockExitEvent.h"
 
 #include <algorithm>
 #include <sstream>
@@ -372,13 +373,24 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 			VannoEngine::GameObject* pObject = pCollisionEvent->GetOtherBody()->GetOwner();
 
 			if (pObject->HasComponent(POWERUP_COMPONENT)) {
-				if(pObject->GetName() == "sword") {
-					mHasSword = true;
-				} else if (pObject->GetName() == "bow") {
-					mHasBow = true;
+				VannoEngine::Transform* pOtherTransform = dynamic_cast<VannoEngine::Transform*>(pObject->GetComponent(TRANSFORM_COMPONENT));
+				glm::vec2 otherVelocity = pOtherTransform->GetSpeed();
+				if(otherVelocity.x == 0.0f && otherVelocity.y == 0.0f) {
+					if(pObject->GetName() == "sword") {
+						mHasSword = true;
+					} else if (pObject->GetName() == "bow") {
+						mHasBow = true;
+					}
+					else if (pObject->GetName() == "prize") {
+						VannoEngine::EventManager::GetInstance()->Broadcast(new UnlockExitEvent());
+					}
+					pObject->Destroy();
 				}
-				pObject->Destroy();
-			} else if(pOtherBody->GetPhysicsLayer() == "enemy" && mCanDoDamage) {
+			}
+			else if (pOtherBody->GetPhysicsLayer() == "chest" && mCurrentState == State::Attack) {
+				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), 0));
+			}
+			else if (pOtherBody->GetPhysicsLayer() == "enemy" && mCanDoDamage) {
 				float damage = mFistDamage;
 				if (mHasSword) {
 					damage = mSwordDamage;

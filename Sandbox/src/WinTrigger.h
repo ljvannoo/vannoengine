@@ -26,4 +26,5 @@ public:
 	void HandleEvent(std::string eventName, VannoEngine::Event* event) override;
 
 private:
+	bool mUnlocked;
 };

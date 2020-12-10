@@ -136,7 +136,7 @@
             "name": "sword1",
             "frameOffset": 41,
             "frameCount": 6,
-            "frameDuration": 0.1,
+            "frameDuration": 0.05,
             "loop": false,
             "aabb": {
               "offsetX": 10.0,

@@ -73,6 +73,10 @@ namespace VannoEngine {
 					pAnimation->loop = animationData["loop"].GetBool();
 				}
 
+				if (animationData.HasMember("loopDelay") && animationData["loopDelay"].IsNumber()) {
+					pAnimation->loopDelay = animationData["loopDelay"].GetFloat();
+				}
+
 				if (animationData.HasMember("aabb") && animationData["aabb"].IsObject()) {
 					const rapidjson::Value& aabbData = animationData["aabb"];
 
@@ -103,7 +107,11 @@ namespace VannoEngine {
 		}
 
 		if (pData->HasMember("defaultAnimation") && (*pData)["defaultAnimation"].IsString()) {
+			LOG_CORE_DEBUG("Default animation: {}", (*pData)["defaultAnimation"].GetString());
 			Play((*pData)["defaultAnimation"].GetString());
+		}
+		else {
+			LOG_CORE_DEBUG("No default animation!");
 		}
 	}
 
@@ -111,8 +119,12 @@ namespace VannoEngine {
 		if(mpCurrentAnimation) {
 			mElapsedFrameTime += deltaTime;
 
-			//LOG_CORE_DEBUG("Animation: {}, Frame: {}, Loop: {}", mpCurrentAnimation->name, mpCurrentAnimation->frameOffset + mFrameIndex, mpCurrentAnimation->loop);
-			if (mElapsedFrameTime >= mpCurrentAnimation->frameDuration) {
+			double endTime = mpCurrentAnimation->frameDuration;
+
+			if (mFrameIndex == 0 && mpCurrentAnimation->loop) {
+				endTime += static_cast<double>(mpCurrentAnimation->loopDelay);
+			}
+			if (mElapsedFrameTime >= endTime) {
 				if(mFrameIndex < mpCurrentAnimation->frameCount-1 || mpCurrentAnimation->loop) {
 					mFrameIndex = (mFrameIndex + 1) % mpCurrentAnimation->frameCount;
 					mElapsedFrameTime = 0.0f;
@@ -137,6 +149,7 @@ namespace VannoEngine {
 	}
 
 	void Animator::Play(std::string animationName) {
+		//LOG_CORE_DEBUG("Playing animation: {}", animationName);
 		if(!mpCurrentAnimation || mpCurrentAnimation->name != animationName) {
 			if (HasAnimation(animationName)) {
 				mpCurrentAnimation = mAnimations[animationName];

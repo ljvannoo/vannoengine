@@ -24,6 +24,7 @@
 #include "Sensor.h"
 #include "MainMenuController.h"
 #include "WinTrigger.h"
+#include "ChestController.h"
 
 #include "EndLevelEvent.h"
 
@@ -59,6 +60,7 @@ public:
 		pObjectFactory->RegisterComponent(SENSOR_COMPONENT, new VannoEngine::ComponentCreator<Sensor>());
 		pObjectFactory->RegisterComponent(MAINMENU_COMPONENT, new VannoEngine::ComponentCreator<MainMenuController>());
 		pObjectFactory->RegisterComponent(WINTRIGGER_COMPONENT, new VannoEngine::ComponentCreator<WinTrigger>());
+		pObjectFactory->RegisterComponent(CHEST_CONTROLLER_COMPONENT, new VannoEngine::ComponentCreator<ChestController>());
 		
 
 		pObjectFactory->RegisterComponent(DEBUG_COMPONENT, new VannoEngine::ComponentCreator<DebugComponent>());
@@ -80,6 +82,7 @@ public:
 			if (pInputManager->IsKeyTriggered("quit")) {
 				VannoEngine::LevelManager* pLevelManager = VannoEngine::LevelManager::GetInstance();
 				IsPaused = false;
+				pLevelManager->GetCurrentLevel()->RemoveUiObject(pPauseScreen);
 				pLevelManager->UnloadLevel();
 				return;
 			}

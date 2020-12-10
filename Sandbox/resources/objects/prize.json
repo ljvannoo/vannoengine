@@ -1,13 +1,13 @@
 {
-  "name": "sword",
+  "name": "prize",
   "components": [
     {
       "type": "sprite",
       "data": {
         "texture": {
-          "file": "sprites\\sword1.png",
-          "cols": 6,
-          "rows": 1
+          "file": "sprites\\prize1.png",
+          "cols": 4,
+          "rows": 3
         }
       }
     },
@@ -16,9 +16,9 @@
       "data": {
         "mass": 1.0,
         "offsetX": 0.0,
-        "offsetY": 0.0,
-        "width": 16.0,
-        "height": 16.0
+        "offsetY": -5.0,
+        "width": 24.0,
+        "height": 24.0
       }
     },
     {
@@ -30,14 +30,14 @@
     },
     {
       "type": "animator",
-      "defaultAnimation": "idle",
       "data": {
+        "defaultAnimation": "idle",
         "animations": [
           {
             "name": "idle",
             "frameOffset": 0,
-            "frameCount": 6,
-            "frameDuration": 0.15,
+            "frameCount": 12,
+            "frameDuration": 0.1,
             "loop": true
           }
         ]

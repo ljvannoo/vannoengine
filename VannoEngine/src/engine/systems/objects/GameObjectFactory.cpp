@@ -73,8 +73,8 @@ namespace VannoEngine {
 
 		GameObject* pObject = nullptr;
 
-		if (pData->HasMember("parentObjectFile") && (*pData)["parentObjectFile"].IsString()) {
-			pObject = BuildObject((*pData)["parentObjectFile"].GetString(), pMapLayer);
+		if (pData->HasMember("templateObjectFile") && (*pData)["templateObjectFile"].IsString()) {
+			pObject = BuildObject((*pData)["templateObjectFile"].GetString(), pMapLayer);
 		}
 		else {
 			pObject = new GameObject(pMapLayer);

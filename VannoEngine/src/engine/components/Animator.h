@@ -27,6 +27,7 @@ namespace VannoEngine {
 		int frameCount;
 		float frameDuration;
 		bool loop;
+		float loopDelay;
 		bool aabbDefined;
 		float aabbOffsetX, aabbOffsetY;
 		float aabbWidth, aabbHeight;
@@ -41,7 +42,8 @@ namespace VannoEngine {
 			aabbOffsetX{ 0.0f },
 			aabbOffsetY{ 0.0f },
 			aabbWidth{ 0.0f },
-			aabbHeight{ 0.0f }
+			aabbHeight{ 0.0f },
+			loopDelay{ 0.0f }
 		{}
 		~Animation() {}
 	};

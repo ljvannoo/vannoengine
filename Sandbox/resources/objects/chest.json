@@ -1,0 +1,82 @@
+{
+  "name": "chest",
+  "components": [
+    {
+      "type": "sprite",
+      "data": {
+        "texture": {
+          "file": "sprites\\chest1.png",
+          "cols": 8,
+          "rows": 3
+        }
+      }
+    },
+    {
+      "type": "physicsbody",
+      "data": {
+        "mass": 0.0,
+        "offsetX": 0.0,
+        "offsetY": -5.0,
+        "width": 25.0,
+        "height": 20.0
+      }
+    },
+    {
+      "type": "transform",
+      "data": {
+        "scaleX": 1.0,
+        "scaleY": 1.0
+      }
+    },
+    {
+      "type": "animator",
+      "data": {
+        "defaultAnimation": "shine",
+        "animations": [
+          {
+            "name": "sparkle",
+            "frameOffset": 0,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": true,
+            "loopDelay": 1.0
+          },
+          {
+            "name": "wiggle",
+            "frameOffset": 4,
+            "frameCount": 3,
+            "frameDuration": 0.1,
+            "loop": true,
+            "loopDelay": 1.0
+          },
+          {
+            "name": "open",
+            "frameOffset": 7,
+            "frameCount": 1
+          },
+          {
+            "name": "closed",
+            "frameOffset": 0,
+            "frameCount": 1
+          },
+          {
+            "name": "shine",
+            "frameOffset": 8,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": true,
+            "loopDelay": 1.0
+          },
+          {
+            "name": "pulse",
+            "frameOffset": 12,
+            "frameCount": 4,
+            "frameDuration": 0.1,
+            "loop": true,
+            "loopDelay": 1.0
+          }
+        ]
+      }
+    }
+  ] 
+}
