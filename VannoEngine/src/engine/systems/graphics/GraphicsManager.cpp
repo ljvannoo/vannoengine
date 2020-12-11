@@ -179,14 +179,13 @@ namespace VannoEngine {
 
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		glDebugMessageCallback(openglCallbackFunction, nullptr);
-		GLuint unusedIds = 0;
 		glDebugMessageControl(GL_DONT_CARE,
 			GL_DONT_CARE,
 			GL_DONT_CARE,
 			0,
-			&unusedIds,
-			true);
-
+			NULL,
+			GL_FALSE);
+	
 		FT_Library ft;
 		FT_Face face;
 
