@@ -1,4 +1,8 @@
 #pragma once
+#ifdef ENGINE_RELEASET
+	#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
+#endif
+
 /************************************************************************
 Copyright (C) 2020 DigiPen Institute of Technology.
 Reproduction or disclosure of this file or its contents without the
