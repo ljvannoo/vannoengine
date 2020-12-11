@@ -14,7 +14,7 @@
     {
       "type": "physicsbody",
       "data": {
-        "mass": 0.3,
+        "mass": 0.4,
         "width": 24.0,
         "height": 8.0
       }
@@ -25,7 +25,7 @@
         "scaleX": 1.0,
         "scaleY": 0.75,
         "speedX": 15.0,
-        "speedY": 2.0
+        "speedY": 1.0
       }
     },
     {

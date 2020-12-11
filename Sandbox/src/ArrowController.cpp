@@ -24,6 +24,7 @@ Creation Date:	2020-Nov-27
 #include "engine/systems/physics/MapCollisionEvent.h"
 #include "engine/systems/physics/ObjectCollisionEvent.h"
 
+#include "HealthTracker.h"
 #include "engine/core/Log.h"
 
 #include <glm/gtx/vector_angle.hpp>
@@ -73,7 +74,7 @@ void ArrowController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 		VannoEngine::MapCollisionEvent* pCollisionEvent = dynamic_cast<VannoEngine::MapCollisionEvent*>(event);
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
-		if (pCollisionEvent->GetBody() == pBody) {
+		if (pCollisionEvent->GetBody() == pBody && pCollisionEvent->GetType() == VannoEngine::CollisionType::HARD) {
 			VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 
 			pBody->SetMass(0.0f);
@@ -84,10 +85,13 @@ void ArrowController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 		VannoEngine::PhysicsBody* pBody = dynamic_cast<VannoEngine::PhysicsBody*>(GetOwner()->GetComponent(PHYSICSBODY_COMPONENT));
 
 		if (pCollisionEvent->GetBody() == pBody && pCollisionEvent->GetOtherBody()->GetPhysicsLayer() == "enemy") {
-			VannoEngine::GameObject* pSource = GetOwner();
-			VannoEngine::GameObject* pTarget = pCollisionEvent->GetOtherBody()->GetOwner();
-			VannoEngine::EventManager::GetInstance()->Direct(pTarget, new VannoEngine::DamageEvent(pSource, pTarget, mDamage));
-			GetOwner()->Destroy();
+			HealthTracker* pEnemyHealth = dynamic_cast<HealthTracker*>(pCollisionEvent->GetOtherBody()->GetOwner()->GetComponent(HEALTH_TRACKER_COMPONENT));
+			if(pEnemyHealth->IsAlive()) {
+				VannoEngine::GameObject* pSource = GetOwner();
+				VannoEngine::GameObject* pTarget = pCollisionEvent->GetOtherBody()->GetOwner();
+				VannoEngine::EventManager::GetInstance()->Direct(pTarget, new VannoEngine::DamageEvent(pSource, pTarget, mDamage));
+				GetOwner()->Destroy();
+			}
 		}
 	}
 }
