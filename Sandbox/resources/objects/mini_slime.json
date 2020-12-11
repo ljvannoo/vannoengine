@@ -70,7 +70,10 @@
       }
     },
     {
-      "type": "slime_controller"
+      "type": "slime_controller",
+      "data": {
+        "damage": 20.0
+      }
     }
   ]
 }

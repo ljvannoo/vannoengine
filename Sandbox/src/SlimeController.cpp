@@ -40,7 +40,8 @@ Creation Date:	2020-Nov-28
 SlimeController::SlimeController(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
 	mCurrentState{ State::Walk },
-	mCooldown{0.0f}
+	mCooldown{0.0f},
+	mDamage{ 0.0f }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
@@ -53,6 +54,9 @@ SlimeController::~SlimeController() {
 
 
 void SlimeController::LoadData(const rapidjson::GenericObject<true, rapidjson::Value>* pData) {
+	if (pData->HasMember("damage") && (*pData)["damage"].IsNumber()) {
+		mDamage = (*pData)["damage"].GetFloat();
+	}
 }
 
 void SlimeController::Update(double deltaTime) {
@@ -117,7 +121,7 @@ void SlimeController::HandleEvent(std::string eventName, VannoEngine::Event* eve
 
 			if (pCollisionEvent->GetBody() == pBody) {
 				if (pOtherBody->GetPhysicsLayer() == "player" && mCooldown <= 0.0) {
-					VannoEngine::DamageEvent* pEvent = new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), 10.0f);
+					VannoEngine::DamageEvent* pEvent = new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), mDamage);
 					VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
 					mCooldown = cDamageCooldown;
 				}

@@ -61,4 +61,6 @@ private:
 	double mCooldown;
 
 	State mCurrentState;
+
+	float mDamage;
 };
