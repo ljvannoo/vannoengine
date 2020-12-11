@@ -102,7 +102,9 @@ void LightBanditController::Update(double deltaTime) {
 		if (mCooldown <= 0.0) {
 			mCurrentState = State::Idle;
 			mCooldown = cPatrolCooldown + VannoEngine::ResourceManager::GetInstance()->GenerateRandomNumber(-2.0f, 2.0f, 100);
-			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
+			if(VannoEngine::ResourceManager::GetInstance()->GenerateRandomNumber(0.0f, 1.0f, 100) > 0.5f) {
+				VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
+			}
 		}
 		break;
 	case State::Attack:
@@ -219,6 +221,7 @@ void LightBanditController::TurnAround() {
 
 	mDirection *= -1.0f;
 	glm::vec2 pos = pTransform->GetPosition();
+	pos.y += 2.0f;
 	pos.x += 5.0f * mDirection;
 	pTransform->SetPositionX(pos.x);
 	pSprite->FlipHorizontal();
