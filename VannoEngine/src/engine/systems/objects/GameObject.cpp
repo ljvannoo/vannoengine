@@ -38,10 +38,8 @@ namespace VannoEngine {
 	}
 
 	void GameObject::UpdatePhysics(double deltaTime) {
-		for (auto pair : mComponents) {
-			if (pair.first == PHYSICSBODY_COMPONENT) {
-				pair.second->Update(deltaTime);
-			}
+		if (HasComponent(PHYSICSBODY_COMPONENT)) {
+				GetComponent(PHYSICSBODY_COMPONENT)->Update(deltaTime);
 		}
 
 		for (GameObject* pObject : mChildObjects) {
