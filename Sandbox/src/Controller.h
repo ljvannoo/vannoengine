@@ -84,7 +84,7 @@ private:
 	const float cWalkAccel = 60.0f;
 	const float cRunSpeed = 4.0f;
 	const float cDashSpeed = 6.0f;
-	const float cJumpHeight = 1.2f;
+	const float cJumpHeight = 70.0f;
 	unsigned long mAttackDuration = 200l;
 
 	State mCurrentState;

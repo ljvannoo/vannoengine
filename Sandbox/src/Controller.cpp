@@ -225,7 +225,7 @@ void Controller::Update(double deltaTime) {
 		targetSpeed = cRunSpeed;
 		if (mpInputManager->IsKeyPressed(ACTION_JUMP)) {
 			mCurrentState = State::Jump;
-			speed.y = sqrtf(2.0f * cJumpHeight * fabsf(mpPhysicsManager->GetGravity())) ;
+			speed.y = sqrtf(2.0f * cJumpHeight * deltaTime * fabsf(mpPhysicsManager->GetGravity())) ;
 			mCurrentState = State::Jumping;
 		}
 		
