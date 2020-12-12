@@ -34,7 +34,7 @@ namespace VannoEngine {
 }
 
 // Core log macros
-#ifndef ENGINE_RELEASET
+#ifndef ENGINE_RELEASE
 	#define LOG_CORE_DEBUG(...)	::VannoEngine::Log::GetCoreLogger()->debug(__VA_ARGS__)
 	#define LOG_CORE_TRACE(...)	::VannoEngine::Log::GetCoreLogger()->trace(__VA_ARGS__)
 	#define LOG_CORE_INFO(...)	::VannoEngine::Log::GetCoreLogger()->info(__VA_ARGS__)

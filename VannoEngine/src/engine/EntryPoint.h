@@ -1,5 +1,5 @@
 #pragma once
-#ifdef ENGINE_RELEASET
+#ifdef ENGINE_RELEASE
 	#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #endif
 
@@ -27,7 +27,7 @@ extern VannoEngine::Game* VannoEngine::CreateGame();
 int main(int argc, char** argv) {
 	VannoEngine::Log::Init();
 	LOG_CORE_WARN("Initialized log");
-	LOG_INFO("Welcome to VannoEngine v0.0.1!");
+	LOG_INFO("Welcome to VannoEngine v0.2!");
 
 	auto game = VannoEngine::CreateGame();
 	game->Init();
