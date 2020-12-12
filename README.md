@@ -4,3 +4,9 @@ This project represents my first attempt at creating a 2D game engine from scrat
 
 ## Building
 Requires Windows and Visual Studio 2019. Run GenerateProjects.bat to build project files.
+
+## Dev Stats
+Some interesting statistics gathered during development.
+
+[Dev stats on old project](https://wakatime.com/projects/digipen-cs529-game%20engine?start=2020-10-04&end=2020-10-29)
+[Dev stats on current project, after reorganization](https://wakatime.com/projects/vannoengine?start=2020-10-27&end=2020-12-13)
