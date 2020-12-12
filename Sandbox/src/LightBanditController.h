@@ -21,6 +21,8 @@ Creation Date:	2020-Nov-29
 
 #include <rapidjson/document.h>
 
+#include <glm/vec3.hpp>
+
 class LightBanditController : public VannoEngine::GameComponent, public VannoEngine::EventHandler
 {
 private:
@@ -57,7 +59,9 @@ private:
 	const double cDamageCooldown = 1.0;
 	const double cPatrolCooldown = 3.0;
 	const double cAttackDuration = 1.6;
-	float mDirection;
+
+	glm::vec3 mLastGoodPos; // The Z coordinate determines which direction the bandit is facing
+
 
 	double mCooldown;
 

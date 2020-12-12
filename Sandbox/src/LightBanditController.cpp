@@ -46,7 +46,7 @@ LightBanditController::LightBanditController(VannoEngine::GameObject* owner) :
 	mCurrentState{ State::Idle },
 	mAlertCooldown{ cAlertCooldown },
 	mCooldown{ cPatrolCooldown },
-	mDirection{ 1.0f },
+	mLastGoodPos{ glm::vec3(0.0f, 0.0f, 1.0f) },
 	mAttackCooldown{ 0.0 },
 	mCanDoDamage{ false },
 	mDamage{ 0.0f }
@@ -141,8 +141,12 @@ void LightBanditController::Update(double deltaTime) {
 	if (speed.y < 0.0f) {
 		VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new TurnAroundEvent(GetOwner()));
 	}
+	else {
+		mLastGoodPos.x = pTransform->GetPosition().x;
+		mLastGoodPos.y = pTransform->GetPosition().y;
+	}
 
-	speed.x = MoveTowards(speed.x, targetSpeed * mDirection, cWalkAccel * (float)deltaTime);
+	speed.x = MoveTowards(speed.x, targetSpeed * mLastGoodPos.z, cWalkAccel * (float)deltaTime);
 	pTransform->SetSpeed(speed.x, speed.y);
 
 	if (mCooldown > 0.0) {
@@ -219,10 +223,10 @@ void LightBanditController::TurnAround() {
 	VannoEngine::Sprite* pSprite = dynamic_cast<VannoEngine::Sprite*>(GetOwner()->GetComponent(SPRITE_COMPONENT));
 	VannoEngine::Transform* pTransform = dynamic_cast<VannoEngine::Transform*>(GetOwner()->GetComponent(TRANSFORM_COMPONENT));
 
-	mDirection *= -1.0f;
+	mLastGoodPos.z *= -1.0f;
 	glm::vec2 pos = pTransform->GetPosition();
-	pos.y += 2.0f;
-	pos.x += 5.0f * mDirection;
+	pos.y = mLastGoodPos.y;
+	pos.x = mLastGoodPos.x + (5.0f * mLastGoodPos.z);
 	pTransform->SetPositionX(pos.x);
 	pSprite->FlipHorizontal();
 }
