@@ -59,11 +59,14 @@ void HealthTracker::LoadData(const rapidjson::GenericObject<true, rapidjson::Val
 }
 
 void HealthTracker::Update(double deltaTime) {
-	if (mCurrentHealth < 0.0f) {
-		mCurrentHealth = 0.0f;
+	if (mCurrentHealth < 0.0) {
+		mCurrentHealth = 0.0;
 	}
 	if (mDamageCooldown > 0.0) {
 		mDamageCooldown -= deltaTime;
+	}
+	else if (mDamageCooldown < 0.0) {
+		mDamageCooldown = 0.0;
 	}
 }
 
@@ -88,8 +91,9 @@ void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* 
 	if (event->GetName() == EVT_DAMAGE) {
 		VannoEngine::DamageEvent* pEvent = dynamic_cast<VannoEngine::DamageEvent*>(event);
 
-		if(mCurrentHealth > 0.0f && !mInvulnerable) {
+		if(mCurrentHealth > 0.0f && !mInvulnerable && mDamageCooldown == 0.0) {
 			mCurrentHealth -= pEvent->GetAmount();
+			mDamageCooldown = 0.5;
 			LOG_DEBUG("{} took {} damage from {}", GetOwner()->GetName(), pEvent->GetAmount(), (pEvent->GetSource()?pEvent->GetSource()->GetName():"the level"));
 
 			if (mCurrentHealth <= 0.0f) {
@@ -99,6 +103,9 @@ void HealthTracker::HandleLocalEvent(std::string eventName, VannoEngine::Event* 
 		}
 		else if (mInvulnerable) {
 			LOG_DEBUG("{} is invulnerable", GetOwner()->GetName());
+		}
+		else if (mDamageCooldown != 0.0) {
+			LOG_DEBUG("{} damage cooldown is {}", GetOwner()->GetName(), mDamageCooldown);
 		}
 	}
 	else if (event->GetName() == EVT_INVULNERABLE) {

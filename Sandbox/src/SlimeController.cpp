@@ -28,6 +28,7 @@ Creation Date:	2020-Nov-28
 #include "engine/components/Transform.h"
 #include "engine/systems/physics/MapCollisionEvent.h"
 #include "engine/systems/physics/ObjectCollisionEvent.h"
+#include "InvulnerableEvent.h"
 
 #include "engine/systems/objects/GameObjectFactory.h"
 
@@ -41,7 +42,8 @@ SlimeController::SlimeController(VannoEngine::GameObject* owner) :
 	GameComponent(owner),
 	mCurrentState{ State::Walk },
 	mCooldown{0.0f},
-	mDamage{ 0.0f }
+	mDamage{ 0.0f },
+	mInit{ false }
 {
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_OBJECT_COLLISION, this);
 	VannoEngine::EventManager::GetInstance()->Subscribe(EVT_MAP_COLLISION, this);
@@ -65,7 +67,11 @@ void SlimeController::Update(double deltaTime) {
 	VannoEngine::Animator* pAnimator = dynamic_cast<VannoEngine::Animator*>(GetOwner()->GetComponent(ANIMATOR_COMPONENT));
 
 	//LOG_DEBUG("{} ({}) on physics layer {}", GetOwner()->GetName(), GetOwner()->GetUuid(), pBody->GetPhysicsLayer());
-
+	if (!mInit) {
+		VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), true));
+		VannoEngine::EventManager::GetInstance()->DelayedDirect(0.5, GetOwner(), new InvulnerableEvent(GetOwner(), false));
+		mInit = true;
+	}
 	glm::vec2 speed = pTransform->GetSpeed();
 	float targetSpeed = 0.0f;
 	switch (mCurrentState) {

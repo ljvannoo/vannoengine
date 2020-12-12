@@ -71,7 +71,6 @@ Controller::Controller(VannoEngine::GameObject* owner) :
 	mHasSword{ false },
 	mHasBow{ false },
 	mAttackStartTime{ 0 },
-	mCanDoDamage{ false },
 	mFistDamage{ 0.0f },
 	mSwordDamage{ 0.0f },
 	mCooldown{ 0.0 }
@@ -119,7 +118,6 @@ void Controller::Update(double deltaTime) {
 	float targetSpeed = 0.0f;
 	switch (mCurrentState) {
 	case State::Stand:
-		mCanDoDamage = false;
 		pAnimator->Play("idle");
 		speed.x = 0.0f;
 		if (mpInputManager->IsKeyPressed(ACTION_WALK)) {
@@ -155,7 +153,6 @@ void Controller::Update(double deltaTime) {
 		if (mpInputManager->IsKeyPressed(ACTION_ATTACK)) {
 			mCurrentState = State::Attack;
 			mAttackStartTime = mpTimeManager->GetElapsedMillis();
-			mCanDoDamage = true;
 			if (mHasSword) {
 				mAttackDuration = 300l;
 			}
@@ -164,6 +161,7 @@ void Controller::Update(double deltaTime) {
 			}
 
 			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), true));
+			VannoEngine::EventManager::GetInstance()->DelayedDirect(0.5, GetOwner(), new InvulnerableEvent(GetOwner(), false));
 		}
 		if (mpInputManager->IsKeyPressed(ACTION_FIRE) && mHasBow) {
 			mCurrentState = State::Shoot;
@@ -275,8 +273,6 @@ void Controller::Update(double deltaTime) {
 		targetSpeed = 0.0f;
 		if (mpTimeManager->GetElapsedMillis() > mAttackStartTime + mAttackDuration) {
 			mCurrentState = State::Stand;
-			VannoEngine::EventManager::GetInstance()->Direct(GetOwner(), new InvulnerableEvent(GetOwner(), false));
-			
 		}
 		break;
 	case State::Shoot:
@@ -392,14 +388,13 @@ void Controller::HandleEvent(std::string eventName, VannoEngine::Event* event) {
 			else if (pOtherBody->GetPhysicsLayer() == "chest" && mCurrentState == State::Attack) {
 				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), 0));
 			}
-			else if (pOtherBody->GetPhysicsLayer() == "enemy" && mCanDoDamage) {
+			else if (pOtherBody->GetPhysicsLayer() == "enemy" && mCurrentState == State::Attack) {
 				float damage = mFistDamage;
 				if (mHasSword) {
 					damage = mSwordDamage;
 				}
 				VannoEngine::DamageEvent* pEvent = new VannoEngine::DamageEvent(GetOwner(), pOtherBody->GetOwner(), damage);
 				VannoEngine::EventManager::GetInstance()->Direct(pOtherBody->GetOwner(), pEvent);
-				mCanDoDamage = false;
 			}
 		}
 	}

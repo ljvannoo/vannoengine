@@ -63,4 +63,6 @@ private:
 	State mCurrentState;
 
 	float mDamage;
+
+	bool mInit;
 };

@@ -92,7 +92,6 @@ private:
 	unsigned long mAttackStartTime;
 	bool mHasSword;
 	bool mHasBow;
-	bool mCanDoDamage;
 
 	float mFistDamage;
 	float mSwordDamage;
