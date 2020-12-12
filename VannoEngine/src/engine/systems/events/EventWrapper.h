@@ -14,25 +14,34 @@ Author:			Lukas VanNoord, lukas.vannoord, 60001020
 Creation Date:	2020-Nov-23
 *************************************************************************/
 
-
+#include "engine/systems/events/Event.h"
 #include <string>
 namespace VannoEngine {
-	class Event;
+	class GameObject;
 
 	class EventWrapper final
 	{
 	public: // Methods
-		EventWrapper(double time, Event* message);
-		~EventWrapper();
+		EventWrapper(double time, GameObject* pObj, Event* message) :
+			mTime{ time },
+			mEvent{ message },
+			mpObj{ pObj }
+		{ }
 
-		std::string GetName();
+		~EventWrapper() {
+			delete mEvent;
+		}
+
+		std::string GetName() { return mEvent->GetName(); }
 		double GetTime() const { return mTime; }
 		Event* GetEvent() { return mEvent; }
+		GameObject* GetObj() { return mpObj; }
 
 	private: // Methods
 
 	private: // Variables
 		double mTime;
+		GameObject* mpObj;
 		Event* mEvent;
 	};
 }

@@ -57,10 +57,15 @@ namespace VannoEngine {
 				break;
 			}
 			mEvents.pop();
-			std::list<EventHandler*>* handlers = mSubscribers[evt->GetName()];
-			if (handlers) {
-				for (EventHandler* handler : *handlers) {
-					handler->HandleEvent(evt->GetName(), evt->GetEvent());
+			if (evt->GetObj() != nullptr) {
+				Direct(evt->GetObj(), evt->GetEvent());
+			}
+			else {
+				std::list<EventHandler*>* handlers = mSubscribers[evt->GetName()];
+				if (handlers) {
+					for (EventHandler* handler : *handlers) {
+						handler->HandleEvent(evt->GetName(), evt->GetEvent());
+					}
 				}
 			}
 			delete evt;
@@ -89,12 +94,17 @@ namespace VannoEngine {
 	void EventManager::DelayedBroadcast(double delaySec, Event* message) {
 		TimeManager* timeManager = TimeManager::GetInstance();
 		// TODO: Event execution time is set up front. This is incompatible with a pause feature.
-		EventWrapper* evt = new EventWrapper(timeManager->Now() + delaySec, message);
+		EventWrapper* evt = new EventWrapper(timeManager->Now() + delaySec, nullptr, message);
 		mEvents.push(evt);
 	}
 
 	void EventManager::Direct(GameObject* pObj, Event* event) {
 		pObj->HandleLocalEvent(event->GetName(), event);
-		delete event;
+	}
+
+	void EventManager::DelayedDirect(double delaySec, GameObject* pObj, Event* event) {
+		TimeManager* timeManager = TimeManager::GetInstance();
+		EventWrapper* evt = new EventWrapper(timeManager->Now() + delaySec, pObj, event);
+		mEvents.push(evt);
 	}
 }

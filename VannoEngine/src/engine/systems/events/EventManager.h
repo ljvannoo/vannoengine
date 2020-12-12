@@ -47,6 +47,7 @@ namespace VannoEngine {
 		void Broadcast(Event* message);
 		void DelayedBroadcast(double delaySec, Event* message);
 		void Direct(GameObject* pObj, Event* event);
+		void DelayedDirect(double delaySec, GameObject* pObj, Event* event);
 	private:
 		EventManager() {}
 	private:
