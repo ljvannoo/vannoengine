@@ -117,6 +117,10 @@ namespace VannoEngine {
 		
 	}
 
+	/* 
+	 * Record the current state of the keyboard and rememember the previous state during
+	 * every game loop
+	 */
 	void InputManager::Update() {
 		int count = 0;
 		const Uint8* currentKeyStates = SDL_GetKeyboardState(&count);

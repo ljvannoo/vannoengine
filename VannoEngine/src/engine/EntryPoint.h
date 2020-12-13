@@ -27,7 +27,7 @@ extern VannoEngine::Game* VannoEngine::CreateGame();
 int main(int argc, char** argv) {
 	VannoEngine::Log::Init();
 	LOG_CORE_WARN("Initialized log");
-	LOG_INFO("Welcome to VannoEngine v0.3!");
+	LOG_INFO("Welcome to VannoEngine v1.0!");
 
 	auto game = VannoEngine::CreateGame();
 	game->Init();
